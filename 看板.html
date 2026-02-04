@@ -169,39 +169,40 @@
 </head>
 <body class="min-h-screen text-white p-4 lg:p-6">
     <!-- 顶部标题 -->
-    <header class="mb-4">
-        <div class="glass-card rounded-xl p-4 glow">
+    <header class="mb-2">
+        <div class="glass-card rounded-lg p-2 glow">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex-1">
+                    <div class="text-lg font-bold text-cyan-400" id="current-time">--:--:--</div>
+                    <div class="text-slate-400 text-[10px]" id="current-date">----年--月--日</div>
+                </div>
+                <div class="flex items-center gap-2 flex-1 justify-center">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
+                        <h1 class="text-lg lg:text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
                             成型设备1科运营看板
                         </h1>
-                        <p class="text-slate-400 text-sm">丰田汽车保全业务日报</p>
+                        <p class="text-slate-400 text-[10px]">丰田汽车保全业务日报</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-2xl font-bold text-cyan-400" id="current-time">--:--:--</div>
-                    <div class="text-slate-400 text-sm" id="current-date">----年--月--日</div>
+                <div class="flex-1 flex items-center justify-end gap-2">
+                    <!-- 产线切换Tab -->
+                    <div class="flex items-center gap-1">
+                        <button onclick="switchLine('line1')" id="tab-line1" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md">一线保险杠</button>
+                        <button onclick="switchLine('line2')" id="tab-line2" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-cyan-300 hover:bg-cyan-900/50">二线保险杠</button>
+                        <button onclick="switchLine('dashboard')" id="tab-dashboard" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-yellow-300 hover:bg-yellow-900/50">仪表盘</button>
+                        <button onclick="switchLine('injection')" id="tab-injection" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-emerald-300 hover:bg-emerald-900/50">注塑</button>
+                        <button onclick="switchLine('mold')" id="tab-mold" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-purple-300 hover:bg-purple-900/50">模具</button>
+                    </div>
+                    <span id="current-line-label" class="hidden">一线保险杠</span>
                 </div>
             </div>
         </div>
     </header>
-    
-    <!-- 产线切换Tab -->
-    <div class="mb-2 flex items-center gap-1">
-        <button onclick="switchLine('line1')" id="tab-line1" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md">一线保险杠</button>
-        <button onclick="switchLine('line2')" id="tab-line2" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-cyan-300 hover:bg-cyan-900/50">二线保险杠</button>
-        <button onclick="switchLine('dashboard')" id="tab-dashboard" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-yellow-300 hover:bg-yellow-900/50">仪表盘</button>
-        <button onclick="switchLine('injection')" id="tab-injection" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-emerald-300 hover:bg-emerald-900/50">注塑</button>
-        <button onclick="switchLine('mold')" id="tab-mold" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-purple-300 hover:bg-purple-900/50">模具</button>
-        <span id="current-line-label" class="hidden">一线保险杠</span>
-    </div>
 
     <!-- 产线独立视图容器 -->
     <main>
@@ -225,35 +226,35 @@
                         <div class="flex items-center gap-3">
                             <!-- 当日数据 - 亮色风格 -->
                             <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 rounded-lg px-4 py-2 text-center border border-blue-500/30">
-                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-[11px] text-cyan-400">当日可动率</div>
                                 <div class="text-2xl font-bold text-green-400">100%</div>
                             </div>
                             <div class="bg-gradient-to-br from-cyan-900/50 to-cyan-800/30 rounded-lg px-4 py-2 text-center border border-cyan-500/30">
-                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-[11px] text-cyan-400">当日异常</div>
                                 <div class="text-2xl font-bold text-green-400">0</div>
                             </div>
                             <div class="bg-gradient-to-br from-orange-900/50 to-orange-800/30 rounded-lg px-4 py-2 text-center border border-orange-500/30">
-                                <div class="text-[10px] text-orange-400">当日不具合</div>
+                                <div class="text-[11px] text-orange-400">当日不具合</div>
                                 <div class="text-2xl font-bold text-orange-400">1</div>
                             </div>
                             <div class="w-px h-10 bg-slate-600/50 mx-1"></div>
                             <!-- 前日数据 - 暗色风格 -->
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-[11px] text-slate-500">前日可动率</div>
                                 <div class="text-lg font-medium text-slate-400">100%</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-[11px] text-slate-500">前日异常</div>
                                 <div class="text-lg font-medium text-slate-400">0</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日不具合</div>
+                                <div class="text-[11px] text-slate-500">前日不具合</div>
                                 <div class="text-lg font-medium text-slate-400">0</div>
                             </div>
                             <div class="w-px h-10 bg-slate-600/50 mx-1"></div>
                             <!-- 目标达成 -->
                             <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[140px]">
-                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="text-[11px] text-slate-500 mb-1">目标达成 99%</div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full" style="width: 100%"></div>
@@ -273,22 +274,22 @@
                             可动率推移
                         </h3>
                         <div class="flex bg-slate-800/60 rounded-lg p-0.5">
-                            <button onclick="switchAvailView('month')" id="btn-avail-month" class="px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white">月度</button>
-                            <button onclick="switchAvailView('year')" id="btn-avail-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
+                            <button onclick="switchAvailView('month')" id="btn-avail-month" class="px-3 py-1 text-[11px] rounded-md transition-all bg-cyan-600 text-white">月度</button>
+                            <button onclick="switchAvailView('year')" id="btn-avail-year" class="px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400" id="avail-today">100%</div>
-                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                            <div class="text-[10px] text-slate-500">当日可动率</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400" id="avail-stop">0分</div>
-                            <div class="text-[9px] text-slate-500">当日停机</div>
+                            <div class="text-[10px] text-slate-500">当日停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400" id="avail-total">22分</div>
-                            <div class="text-[9px] text-slate-500" id="avail-total-label">本月累计</div>
+                            <div class="text-[10px] text-slate-500" id="avail-total-label">本月累计</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-44">
@@ -303,7 +304,7 @@
                             <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
                             重大故障与对策
                         </h3>
-                        <div class="flex items-center gap-4 text-[10px]">
+                        <div class="flex items-center gap-4 text-[11px]">
                             <div class="flex items-center gap-1">
                                 <span class="w-2 h-2 bg-green-400 rounded-full"></span>
                                 <span class="text-slate-400">完成 2</span>
@@ -320,19 +321,19 @@
                             <div class="grid grid-cols-4 gap-2 mb-3">
                                 <div class="bg-slate-800/50 rounded p-2 text-center">
                                     <div class="text-lg font-bold text-red-400">1</div>
-                                    <div class="text-[9px] text-slate-500">本月故障</div>
+                                    <div class="text-[10px] text-slate-500">本月故障</div>
                                 </div>
                                 <div class="bg-slate-800/50 rounded p-2 text-center">
                                     <div class="text-lg font-bold text-orange-400">22分</div>
-                                    <div class="text-[9px] text-slate-500">累计停机</div>
+                                    <div class="text-[10px] text-slate-500">累计停机</div>
                                 </div>
                                 <div class="bg-slate-800/50 rounded p-2 text-center">
                                     <div class="text-lg font-bold text-purple-400">3</div>
-                                    <div class="text-[9px] text-slate-500">对策数</div>
+                                    <div class="text-[10px] text-slate-500">对策数</div>
                                 </div>
                                 <div class="bg-slate-800/50 rounded p-2 text-center">
                                     <div class="text-lg font-bold text-green-400">2</div>
-                                    <div class="text-[9px] text-slate-500">处置完成</div>
+                                    <div class="text-[10px] text-slate-500">处置完成</div>
                                 </div>
                             </div>
                             <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -341,7 +342,7 @@
                         </div>
                         <!-- 右侧：对策清单 -->
                         <div class="col-span-5 pl-2 bg-slate-800/20 rounded-lg p-3">
-                            <div class="text-[10px] text-purple-400 font-medium mb-2 flex items-center gap-1">
+                            <div class="text-[11px] text-purple-400 font-medium mb-2 flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                                 </svg>
@@ -352,10 +353,10 @@
                                 <!-- 固定表头 -->
                                 <div class="bg-slate-800/80 border-b border-slate-600/50">
                                     <div class="grid grid-cols-10 gap-1 px-2 py-1.5">
-                                        <div class="col-span-5 text-[8px] text-cyan-400 font-medium">对策内容</div>
-                                        <div class="col-span-2 text-[8px] text-cyan-400 font-medium">予定日</div>
-                                        <div class="col-span-1 text-[8px] text-cyan-400 font-medium">担当</div>
-                                        <div class="col-span-2 text-[8px] text-cyan-400 font-medium text-center">完成状态</div>
+                                        <div class="col-span-5 text-[9px] text-cyan-400 font-medium">对策内容</div>
+                                        <div class="col-span-2 text-[9px] text-cyan-400 font-medium">予定日</div>
+                                        <div class="col-span-1 text-[9px] text-cyan-400 font-medium">担当</div>
+                                        <div class="col-span-2 text-[9px] text-cyan-400 font-medium text-center">完成状态</div>
                                     </div>
                                 </div>
                                 <!-- 滚动列表 -->
@@ -363,53 +364,53 @@
                                     <div class="auto-scroll-content" id="countermeasure-scroll">
                                         <!-- 数据行 -->
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <!-- 复制内容实现无缝滚动 -->
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                         <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
-                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
-                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
-                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                            <div class="col-span-5 text-[10px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[10px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[10px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[8px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -426,30 +427,30 @@
                             定期定量推进
                         </h3>
                         <div class="flex bg-slate-800/60 rounded-lg p-0.5">
-                            <button onclick="switchMaintView('month')" id="btn-maint-month" class="px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white">月度</button>
-                            <button onclick="switchMaintView('year')" id="btn-maint-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
+                            <button onclick="switchMaintView('month')" id="btn-maint-month" class="px-3 py-1 text-[11px] rounded-md transition-all bg-emerald-600 text-white">月度</button>
+                            <button onclick="switchMaintView('year')" id="btn-maint-year" class="px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-5 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-sm font-bold text-emerald-400" id="maint-dq-plan">16</div>
-                            <div class="text-[8px] text-slate-500" id="maint-dq-plan-label">定期计划</div>
+                            <div class="text-[9px] text-slate-500" id="maint-dq-plan-label">定期计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-sm font-bold text-green-400" id="maint-dq-done">15</div>
-                            <div class="text-[8px] text-slate-500" id="maint-dq-done-label">定期完成</div>
+                            <div class="text-[9px] text-slate-500" id="maint-dq-done-label">定期完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-sm font-bold text-blue-400" id="maint-dl-plan">16</div>
-                            <div class="text-[8px] text-slate-500" id="maint-dl-plan-label">定量计划</div>
+                            <div class="text-[9px] text-slate-500" id="maint-dl-plan-label">定量计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-sm font-bold text-purple-400" id="maint-dl-done">15</div>
-                            <div class="text-[8px] text-slate-500" id="maint-dl-done-label">定量完成</div>
+                            <div class="text-[9px] text-slate-500" id="maint-dl-done-label">定量完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-sm font-bold text-cyan-400" id="maint-rate">94%</div>
-                            <div class="text-[8px] text-slate-500">完成率</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-44">
@@ -467,15 +468,15 @@
                     <div class="grid grid-cols-3 gap-2 mb-2">
                         <div class="bg-slate-800/50 rounded p-1.5 text-center">
                             <div class="text-base font-bold text-orange-400">5</div>
-                            <div class="text-[8px] text-slate-500">变化点数量</div>
+                            <div class="text-[9px] text-slate-500">变化点数量</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-1.5 text-center">
                             <div class="text-base font-bold text-yellow-400">2</div>
-                            <div class="text-[8px] text-slate-500">未确认</div>
+                            <div class="text-[9px] text-slate-500">未确认</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-1.5 text-center">
                             <div class="text-base font-bold text-green-400">3</div>
-                            <div class="text-[8px] text-slate-500">已确认</div>
+                            <div class="text-[9px] text-slate-500">已确认</div>
                         </div>
                     </div>
                     <!-- 表格容器 -->
@@ -483,11 +484,11 @@
                         <!-- 固定表头 -->
                         <div class="bg-slate-800/80 border-b border-slate-600/50">
                             <div class="grid grid-cols-12 gap-1 px-3 py-2">
-                                <div class="col-span-3 text-[9px] text-cyan-400 font-medium">设备名称</div>
-                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium">设备编号</div>
-                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium text-center">状态</div>
-                                <div class="col-span-3 text-[9px] text-cyan-400 font-medium">变化点日期</div>
-                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium">申请人</div>
+                                <div class="col-span-3 text-[10px] text-cyan-400 font-medium">设备名称</div>
+                                <div class="col-span-2 text-[10px] text-cyan-400 font-medium">设备编号</div>
+                                <div class="col-span-2 text-[10px] text-cyan-400 font-medium text-center">状态</div>
+                                <div class="col-span-3 text-[10px] text-cyan-400 font-medium">变化点日期</div>
+                                <div class="col-span-2 text-[10px] text-cyan-400 font-medium">申请人</div>
                             </div>
                         </div>
                         <!-- 滚动列表 -->
@@ -495,75 +496,75 @@
                             <div class="auto-scroll-content" id="change-scroll">
                                 <!-- 数据行 -->
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">革新机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-001</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">赵六</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">革新机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-001</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">赵六</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">搪塑机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-002</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/26</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">钱七</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">搪塑机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-002</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/26</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">钱七</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">清漆排风机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-003</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">孙八</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">清漆排风机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-003</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">孙八</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">注塑机A</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-004</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/25</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">周九</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">注塑机A</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-004</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/25</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">周九</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">模具研磨机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-005</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/29</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">吴十</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">模具研磨机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-005</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/29</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">吴十</div>
                                 </div>
                                 <!-- 复制一份用于无缝滚动 -->
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">革新机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-001</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">赵六</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">革新机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-001</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">赵六</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">搪塑机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-002</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/26</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">钱七</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">搪塑机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-002</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/26</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">钱七</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">清漆排风机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-003</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">孙八</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">清漆排风机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-003</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">孙八</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">注塑机A</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-004</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/25</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">周九</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">注塑机A</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-004</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/25</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">周九</div>
                                 </div>
                                 <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
-                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">模具研磨机</div>
-                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-005</div>
-                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
-                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/29</div>
-                                    <div class="col-span-2 text-[10px] text-slate-300">吴十</div>
+                                    <div class="col-span-3 text-[11px] text-slate-300 truncate">模具研磨机</div>
+                                    <div class="col-span-2 text-[11px] text-slate-400">EQ-005</div>
+                                    <div class="col-span-2 text-center"><span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[11px] text-slate-400">2025/1/29</div>
+                                    <div class="col-span-2 text-[11px] text-slate-300">吴十</div>
                                 </div>
                             </div>
                         </div>
@@ -579,42 +580,42 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-pink-400">4</div>
-                            <div class="text-[9px] text-slate-500">不具合件数</div>
+                            <div class="text-[10px] text-slate-500">不具合件数</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">2</div>
-                            <div class="text-[9px] text-slate-500">处置完成</div>
+                            <div class="text-[10px] text-slate-500">处置完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400">1</div>
-                            <div class="text-[9px] text-slate-500">已关闭</div>
+                            <div class="text-[10px] text-slate-500">已关闭</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">1</div>
-                            <div class="text-[9px] text-slate-500">处理中</div>
+                            <div class="text-[10px] text-slate-500">处理中</div>
                         </div>
                     </div>
                     <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
                         <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-red-500">
                             <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">【S级】4#革新机-PJ5轴承箱油位低漏油</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">处理中</span>
+                                <div class="text-[12px] text-slate-300 flex-1">【S级】4#革新机-PJ5轴承箱油位低漏油</div>
+                                <span class="text-[10px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">处理中</span>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/28 | 负责: 张三</div>
+                            <div class="text-[10px] text-slate-500 mt-1">发生: 1/28 | 负责: 张三</div>
                         </div>
                         <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
                             <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">【C级】2BP RTO排气VOC检测-冷凝器温度超过基准</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
+                                <div class="text-[12px] text-slate-300 flex-1">【C级】2BP RTO排气VOC检测-冷凝器温度超过基准</div>
+                                <span class="text-[10px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/26 | 处置: 1/28</div>
+                            <div class="text-[10px] text-slate-500 mt-1">发生: 1/26 | 处置: 1/28</div>
                         </div>
                         <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
                             <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">【B级】3线仪表盘-鼓风机皮带断裂</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
+                                <div class="text-[12px] text-slate-300 flex-1">【B级】3线仪表盘-鼓风机皮带断裂</div>
+                                <span class="text-[10px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/22 | 处置: 1/23</div>
+                            <div class="text-[10px] text-slate-500 mt-1">发生: 1/22 | 处置: 1/23</div>
                         </div>
                     </div>
                 </div>
@@ -630,32 +631,32 @@
                         <div class="bg-slate-800/40 rounded-lg p-3 border border-blue-500/30">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm font-bold text-blue-400">A班（白班）</span>
-                                <span class="text-[10px] text-slate-400">08:00-16:00</span>
+                                <span class="text-[11px] text-slate-400">08:00-16:00</span>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]">张</div>
-                                        <span class="text-[11px] text-slate-300">张三（班长）</span>
+                                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[11px]">张</div>
+                                        <span class="text-[12px] text-slate-300">张三（班长）</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-[10px]">李</div>
-                                        <span class="text-[11px] text-slate-300">李四</span>
+                                        <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-[11px]">李</div>
+                                        <span class="text-[12px] text-slate-300">李四</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-[10px]">王</div>
-                                        <span class="text-[11px] text-slate-300">王五</span>
+                                        <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-[11px]">王</div>
+                                        <span class="text-[12px] text-slate-300">王五</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-slate-700">
-                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
-                                <div class="text-[10px] text-slate-300">· 涂装设备定期点检</div>
-                                <div class="text-[10px] text-slate-300">· 传送带润滑保养</div>
+                                <div class="text-[11px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[11px] text-slate-300">· 涂装设备定期点检</div>
+                                <div class="text-[11px] text-slate-300">· 传送带润滑保养</div>
                             </div>
                         </div>
                         
@@ -663,32 +664,32 @@
                         <div class="bg-slate-800/40 rounded-lg p-3 border border-cyan-500/30">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm font-bold text-cyan-400">B班（中班）</span>
-                                <span class="text-[10px] text-slate-400">16:00-00:00</span>
+                                <span class="text-[11px] text-slate-400">16:00-00:00</span>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-[10px]">赵</div>
-                                        <span class="text-[11px] text-slate-300">赵六（班长）</span>
+                                        <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-[11px]">赵</div>
+                                        <span class="text-[12px] text-slate-300">赵六（班长）</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-[10px]">钱</div>
-                                        <span class="text-[11px] text-slate-300">钱七</span>
+                                        <div class="w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-[11px]">钱</div>
+                                        <span class="text-[12px] text-slate-300">钱七</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-[10px]">孙</div>
-                                        <span class="text-[11px] text-slate-300">孙八</span>
+                                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-[11px]">孙</div>
+                                        <span class="text-[12px] text-slate-300">孙八</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-slate-700">
-                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
-                                <div class="text-[10px] text-slate-300">· 夜间巡检</div>
-                                <div class="text-[10px] text-slate-300">· 设备异常监控</div>
+                                <div class="text-[11px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[11px] text-slate-300">· 夜间巡检</div>
+                                <div class="text-[11px] text-slate-300">· 设备异常监控</div>
                             </div>
                         </div>
                         
@@ -696,31 +697,31 @@
                         <div class="bg-slate-800/40 rounded-lg p-3 border border-emerald-500/30">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm font-bold text-emerald-400">C班（夜班）</span>
-                                <span class="text-[10px] text-slate-400">00:00-08:00</span>
+                                <span class="text-[11px] text-slate-400">00:00-08:00</span>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-[10px]">周</div>
-                                        <span class="text-[11px] text-slate-300">周九（班长）</span>
+                                        <div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-[11px]">周</div>
+                                        <span class="text-[12px] text-slate-300">周九（班长）</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-[10px]">吴</div>
-                                        <span class="text-[11px] text-slate-300">吴十</span>
+                                        <div class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-[11px]">吴</div>
+                                        <span class="text-[12px] text-slate-300">吴十</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center bg-slate-900/50 rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center text-[10px]">郑</div>
-                                        <span class="text-[11px] text-slate-300">郑十一</span>
+                                        <div class="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center text-[11px]">郑</div>
+                                        <span class="text-[12px] text-slate-300">郑十一</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-slate-700">
-                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
-                                <div class="text-[10px] text-slate-300">· 休息日</div>
+                                <div class="text-[11px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[11px] text-slate-300">· 休息日</div>
                             </div>
                         </div>
                     </div>
@@ -750,23 +751,23 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-[11px] text-cyan-400">当日可动率</div>
                                 <div class="text-xl font-bold text-green-400">100%</div>
                             </div>
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-[11px] text-cyan-400">当日异常</div>
                                 <div class="text-xl font-bold text-green-400">0</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-[11px] text-slate-500">前日可动率</div>
                                 <div class="text-lg font-medium text-slate-300">99.5%</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-[11px] text-slate-500">前日异常</div>
                                 <div class="text-lg font-medium text-yellow-400">1</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
-                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="text-[11px] text-slate-500 mb-1">目标达成 99%</div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
@@ -786,19 +787,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                            <div class="text-[10px] text-slate-500">当日可动率</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400">0分</div>
-                            <div class="text-[9px] text-slate-500">当日停机</div>
+                            <div class="text-[10px] text-slate-500">当日停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">35分</div>
-                            <div class="text-[9px] text-slate-500">本月累计</div>
+                            <div class="text-[10px] text-slate-500">本月累计</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-slate-300">18分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -814,19 +815,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">1</div>
-                            <div class="text-[9px] text-slate-500">本月故障</div>
+                            <div class="text-[10px] text-slate-500">本月故障</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-orange-400">22分</div>
-                            <div class="text-[9px] text-slate-500">累计停机</div>
+                            <div class="text-[10px] text-slate-500">累计停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">22分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">关闭率</div>
+                            <div class="text-[10px] text-slate-500">关闭率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -842,19 +843,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-emerald-400">32</div>
-                            <div class="text-[9px] text-slate-500">本月计划</div>
+                            <div class="text-[10px] text-slate-500">本月计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">30</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
+                            <div class="text-[10px] text-slate-500">已完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">2</div>
-                            <div class="text-[9px] text-slate-500">延迟数</div>
+                            <div class="text-[10px] text-slate-500">延迟数</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400">94%</div>
-                            <div class="text-[9px] text-slate-500">完成率</div>
+                            <div class="text-[10px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -885,23 +886,23 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-[11px] text-cyan-400">当日可动率</div>
                                 <div class="text-xl font-bold text-yellow-400">97.9%</div>
                             </div>
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-[11px] text-cyan-400">当日异常</div>
                                 <div class="text-xl font-bold text-red-400">2</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-[11px] text-slate-500">前日可动率</div>
                                 <div class="text-lg font-medium text-slate-300">98.5%</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-[11px] text-slate-500">前日异常</div>
                                 <div class="text-lg font-medium text-yellow-400">1</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
-                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="text-[11px] text-slate-500 mb-1">目标达成 99%</div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-yellow-500 rounded-full" style="width: 97.9%"></div>
@@ -921,19 +922,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">97.9%</div>
-                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                            <div class="text-[10px] text-slate-500">当日可动率</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">45分</div>
-                            <div class="text-[9px] text-slate-500">当日停机</div>
+                            <div class="text-[10px] text-slate-500">当日停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">112分</div>
-                            <div class="text-[9px] text-slate-500">本月累计</div>
+                            <div class="text-[10px] text-slate-500">本月累计</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-slate-300">28分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -949,19 +950,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">2</div>
-                            <div class="text-[9px] text-slate-500">本月故障</div>
+                            <div class="text-[10px] text-slate-500">本月故障</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-orange-400">67分</div>
-                            <div class="text-[9px] text-slate-500">累计停机</div>
+                            <div class="text-[10px] text-slate-500">累计停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">34分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">关闭率</div>
+                            <div class="text-[10px] text-slate-500">关闭率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -977,19 +978,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-emerald-400">32</div>
-                            <div class="text-[9px] text-slate-500">本月计划</div>
+                            <div class="text-[10px] text-slate-500">本月计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">28</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
+                            <div class="text-[10px] text-slate-500">已完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">4</div>
-                            <div class="text-[9px] text-slate-500">延迟数</div>
+                            <div class="text-[10px] text-slate-500">延迟数</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">88%</div>
-                            <div class="text-[9px] text-slate-500">完成率</div>
+                            <div class="text-[10px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1020,23 +1021,23 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-[11px] text-cyan-400">当日可动率</div>
                                 <div class="text-xl font-bold text-green-400">100%</div>
                             </div>
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-[11px] text-cyan-400">当日异常</div>
                                 <div class="text-xl font-bold text-green-400">0</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-[11px] text-slate-500">前日可动率</div>
                                 <div class="text-lg font-medium text-slate-300">100%</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-[11px] text-slate-500">前日异常</div>
                                 <div class="text-lg font-medium text-slate-300">0</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
-                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="text-[11px] text-slate-500 mb-1">目标达成 99%</div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
@@ -1056,19 +1057,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                            <div class="text-[10px] text-slate-500">当日可动率</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400">0分</div>
-                            <div class="text-[9px] text-slate-500">当日停机</div>
+                            <div class="text-[10px] text-slate-500">当日停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">0分</div>
-                            <div class="text-[9px] text-slate-500">本月累计</div>
+                            <div class="text-[10px] text-slate-500">本月累计</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-slate-300">-</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1084,19 +1085,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">0</div>
-                            <div class="text-[9px] text-slate-500">本月故障</div>
+                            <div class="text-[10px] text-slate-500">本月故障</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">0分</div>
-                            <div class="text-[9px] text-slate-500">累计停机</div>
+                            <div class="text-[10px] text-slate-500">累计停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-slate-400">-</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">-</div>
-                            <div class="text-[9px] text-slate-500">关闭率</div>
+                            <div class="text-[10px] text-slate-500">关闭率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1112,19 +1113,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-emerald-400">28</div>
-                            <div class="text-[9px] text-slate-500">本月计划</div>
+                            <div class="text-[10px] text-slate-500">本月计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">26</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
+                            <div class="text-[10px] text-slate-500">已完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">2</div>
-                            <div class="text-[9px] text-slate-500">延迟数</div>
+                            <div class="text-[10px] text-slate-500">延迟数</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">93%</div>
-                            <div class="text-[9px] text-slate-500">完成率</div>
+                            <div class="text-[10px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1155,23 +1156,23 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-[11px] text-cyan-400">当日可动率</div>
                                 <div class="text-xl font-bold text-green-400">100%</div>
                             </div>
                             <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
-                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-[11px] text-cyan-400">当日异常</div>
                                 <div class="text-xl font-bold text-green-400">0</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-[11px] text-slate-500">前日可动率</div>
                                 <div class="text-lg font-medium text-slate-300">99.8%</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
-                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-[11px] text-slate-500">前日异常</div>
                                 <div class="text-lg font-medium text-yellow-400">1</div>
                             </div>
                             <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
-                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="text-[11px] text-slate-500 mb-1">目标达成 99%</div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
@@ -1191,19 +1192,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                            <div class="text-[10px] text-slate-500">当日可动率</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-cyan-400">0分</div>
-                            <div class="text-[9px] text-slate-500">当日停机</div>
+                            <div class="text-[10px] text-slate-500">当日停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">7分</div>
-                            <div class="text-[9px] text-slate-500">本月累计</div>
+                            <div class="text-[10px] text-slate-500">本月累计</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-slate-300">7分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1219,19 +1220,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">1</div>
-                            <div class="text-[9px] text-slate-500">本月故障</div>
+                            <div class="text-[10px] text-slate-500">本月故障</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-orange-400">7分</div>
-                            <div class="text-[9px] text-slate-500">累计停机</div>
+                            <div class="text-[10px] text-slate-500">累计停机</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">7分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                            <div class="text-[10px] text-slate-500">平均MTTR</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400">100%</div>
-                            <div class="text-[9px] text-slate-500">关闭率</div>
+                            <div class="text-[10px] text-slate-500">关闭率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1247,19 +1248,19 @@
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-emerald-400">32</div>
-                            <div class="text-[9px] text-slate-500">本月计划</div>
+                            <div class="text-[10px] text-slate-500">本月计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">26</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
+                            <div class="text-[10px] text-slate-500">已完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-red-400">6</div>
-                            <div class="text-[9px] text-slate-500">延迟数</div>
+                            <div class="text-[10px] text-slate-500">延迟数</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-yellow-400">81%</div>
-                            <div class="text-[9px] text-slate-500">完成率</div>
+                            <div class="text-[10px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-40">
@@ -1357,13 +1358,13 @@
             const yearBtn = document.getElementById('btn-avail-year');
             
             if (view === 'year') {
-                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white';
-                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                yearBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all bg-cyan-600 text-white';
+                monthBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('avail-total').textContent = '156分';
                 document.getElementById('avail-total-label').textContent = '年度累计';
             } else {
-                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white';
-                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                monthBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all bg-cyan-600 text-white';
+                yearBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('avail-total').textContent = '22分';
                 document.getElementById('avail-total-label').textContent = '本月累计';
             }
@@ -1430,7 +1431,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { 
-                        legend: { labels: { color: '#94a3b8', font: { size: 8 } } },
+                        legend: { labels: { color: '#94a3b8', font: { size: 10 } } },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
@@ -1453,9 +1454,9 @@
                         }
                     },
                     scales: {
-                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
-                        y: { min: 97, max: 101, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#3b82f6', font: { size: 7 }, callback: v => v + '%' } },
-                        y1: { min: 0, max: 50, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ef4444', font: { size: 7 }, callback: v => v + '分' } }
+                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { min: 97, max: 101, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#3b82f6', font: { size: 9 }, callback: v => v + '%' } },
+                        y1: { min: 0, max: 50, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ef4444', font: { size: 9 }, callback: v => v + '分' } }
                     }
                 }
             });
@@ -1467,8 +1468,8 @@
             const yearBtn = document.getElementById('btn-maint-year');
             
             if (view === 'year') {
-                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
-                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                yearBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all bg-emerald-600 text-white';
+                monthBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('maint-dq-plan').textContent = '192';
                 document.getElementById('maint-dq-plan-label').textContent = '定期计划';
                 document.getElementById('maint-dq-done').textContent = '180';
@@ -1479,8 +1480,8 @@
                 document.getElementById('maint-dl-done-label').textContent = '定量完成';
                 document.getElementById('maint-rate').textContent = '94%';
             } else {
-                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
-                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                monthBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all bg-emerald-600 text-white';
+                yearBtn.className = 'px-3 py-1 text-[11px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('maint-dq-plan').textContent = '16';
                 document.getElementById('maint-dq-plan-label').textContent = '定期计划';
                 document.getElementById('maint-dq-done').textContent = '15';
@@ -1571,11 +1572,11 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 7 } } } },
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
                     scales: {
-                        x: { stacked: true, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
-                        y: { stacked: true, min: 0, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#10b981', font: { size: 7 } } },
-                        y1: { min: 0, max: 100, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#06b6d4', font: { size: 7 }, callback: v => v + '%' } }
+                        x: { stacked: true, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { stacked: true, min: 0, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#10b981', font: { size: 9 } } },
+                        y1: { min: 0, max: 100, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#06b6d4', font: { size: 9 }, callback: v => v + '%' } }
                     }
                 }
             });
@@ -1640,7 +1641,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { 
-                        legend: { labels: { color: '#94a3b8', font: { size: 8 } } },
+                        legend: { labels: { color: '#94a3b8', font: { size: 10 } } },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
@@ -1663,9 +1664,9 @@
                         }
                     },
                     scales: {
-                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
-                        y: { min: 0, max: 4, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#ef4444', font: { size: 7 }, stepSize: 1 } },
-                        y1: { min: 0, max: 30, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#f59e0b', font: { size: 7 }, callback: v => v + '分' } }
+                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { min: 0, max: 4, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#ef4444', font: { size: 9 }, stepSize: 1 } },
+                        y1: { min: 0, max: 30, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#f59e0b', font: { size: 9 }, callback: v => v + '分' } }
                     }
                 }
             });
@@ -1702,10 +1703,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
                         scales: {
-                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
-                            y: { min: 95, max: 101, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 }, callback: v => v + '%' } }
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { min: 95, max: 101, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => v + '%' } }
                         }
                     }
                 });
@@ -1725,10 +1726,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
                         scales: {
-                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
-                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 }, stepSize: 1 } }
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 }, stepSize: 1 } }
                         }
                     }
                 });
@@ -1749,10 +1750,10 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
                         scales: {
-                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
-                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } }
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
                         }
                     }
                 });
