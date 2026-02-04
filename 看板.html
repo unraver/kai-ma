@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成型设备1科运营看板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#3b82f6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        dark: '#0f172a',
+                        darker: '#020617',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .gradient-border {
+            position: relative;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .stat-value {
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .scroll-container {
+            animation: scroll 20s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .line-tab {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .line-tab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .line-tab:hover::before {
+            width: 80%;
+        }
+        
+        .line-tab.active {
+            background: linear-gradient(135deg, #1e40af, #0891b2) !important;
+            border-color: transparent !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .line-tab.active::before {
+            width: 100%;
+            height: 3px;
+        }
+        
+        /* 隐藏式滚动条 */
+        .custom-scrollbar {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0);
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+        }
+        
+        .custom-scrollbar:hover::-webkit-scrollbar {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white p-4 lg:p-6">
+    <!-- 顶部标题 -->
+    <header class="mb-4">
+        <div class="glass-card rounded-xl p-4 glow">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
+                            成型设备1科运营看板
+                        </h1>
+                        <p class="text-slate-400 text-sm">丰田汽车保全业务日报</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-cyan-400" id="current-time">--:--:--</div>
+                    <div class="text-slate-400 text-sm" id="current-date">----年--月--日</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 产线切换Tab -->
+    <div class="mb-2 flex items-center gap-1">
+        <button onclick="switchLine('line1')" id="tab-line1" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md">一线保险杠</button>
+        <button onclick="switchLine('line2')" id="tab-line2" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-cyan-300 hover:bg-cyan-900/50">二线保险杠</button>
+        <button onclick="switchLine('dashboard')" id="tab-dashboard" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-yellow-300 hover:bg-yellow-900/50">仪表盘</button>
+        <button onclick="switchLine('injection')" id="tab-injection" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-emerald-300 hover:bg-emerald-900/50">注塑</button>
+        <button onclick="switchLine('mold')" id="tab-mold" class="line-tab px-3 py-1 rounded text-xs font-medium transition-all duration-300 bg-slate-700/60 text-purple-300 hover:bg-purple-900/50">模具</button>
+        <span id="current-line-label" class="hidden">一线保险杠</span>
+    </div>
+
+    <!-- 产线独立视图容器 -->
+    <main>
+        <!-- 一线保险杠视图 -->
+        <div id="view-line1" class="line-view">
+            <div class="grid grid-cols-12 gap-3">
+                
+                <!-- ==================== 1. 设备运行情况 ==================== -->
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <h2 class="text-xl font-bold text-blue-300">设备运行情况</h2>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-lg text-green-400 font-medium">0故障达成</span>
+                                    <span class="text-3xl font-bold text-green-400">28</span>
+                                    <span class="text-lg text-green-400 font-medium">天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <!-- 当日数据 - 亮色风格 -->
+                            <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 rounded-lg px-4 py-2 text-center border border-blue-500/30">
+                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-2xl font-bold text-green-400">100%</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-cyan-900/50 to-cyan-800/30 rounded-lg px-4 py-2 text-center border border-cyan-500/30">
+                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-2xl font-bold text-green-400">0</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-orange-900/50 to-orange-800/30 rounded-lg px-4 py-2 text-center border border-orange-500/30">
+                                <div class="text-[10px] text-orange-400">当日不具合</div>
+                                <div class="text-2xl font-bold text-orange-400">1</div>
+                            </div>
+                            <div class="w-px h-10 bg-slate-600/50 mx-1"></div>
+                            <!-- 前日数据 - 暗色风格 -->
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-lg font-medium text-slate-400">100%</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-lg font-medium text-slate-400">0</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日不具合</div>
+                                <div class="text-lg font-medium text-slate-400">0</div>
+                            </div>
+                            <div class="w-px h-10 bg-slate-600/50 mx-1"></div>
+                            <!-- 目标达成 -->
+                            <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[140px]">
+                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-sm text-green-400 font-bold">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== 2. 可动率推移（支持年/月切换） ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold flex items-center gap-2">
+                            <span class="w-2 h-2 bg-cyan-400 rounded-full pulse-dot"></span>
+                            可动率推移
+                        </h3>
+                        <div class="flex bg-slate-800/60 rounded-lg p-0.5">
+                            <button onclick="switchAvailView('month')" id="btn-avail-month" class="px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white">月度</button>
+                            <button onclick="switchAvailView('year')" id="btn-avail-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400" id="avail-today">100%</div>
+                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400" id="avail-stop">0分</div>
+                            <div class="text-[9px] text-slate-500">当日停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400" id="avail-total">22分</div>
+                            <div class="text-[9px] text-slate-500" id="avail-total-label">本月累计</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-300" id="avail-mttr">22分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-44">
+                        <canvas id="line1-avail-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- ==================== 3. 重大故障推移 ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                        重大故障推移
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">1</div>
+                            <div class="text-[9px] text-slate-500">本月故障</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-orange-400">22分</div>
+                            <div class="text-[9px] text-slate-500">累计停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-purple-400">3</div>
+                            <div class="text-[9px] text-slate-500">对策数</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-44">
+                        <canvas id="line1-fault-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- ==================== 4. 对策明细清单 ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-purple-400 rounded-full pulse-dot"></span>
+                        对策明细清单
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-purple-400">3</div>
+                            <div class="text-[9px] text-slate-500">对策总数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">2</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">1</div>
+                            <div class="text-[9px] text-slate-500">进行中</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-green-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">涂装机器人异常停机对策</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">负责人: 张三 | 完成: 2025/1/25</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-green-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">传送带速度异常改善</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">负责人: 李四 | 完成: 2025/1/20</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">温度传感器精度提升</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">负责人: 王五 | 预计: 2025/2/10</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== 5. 定期定量推进（支持年/月切换） ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold flex items-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                            定期定量推进
+                        </h3>
+                        <div class="flex bg-slate-800/60 rounded-lg p-0.5">
+                            <button onclick="switchMaintView('month')" id="btn-maint-month" class="px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white">月度</button>
+                            <button onclick="switchMaintView('year')" id="btn-maint-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-emerald-400" id="maint-plan">32</div>
+                            <div class="text-[9px] text-slate-500" id="maint-plan-label">本月计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400" id="maint-done">30</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400" id="maint-rate">94%</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-44">
+                        <canvas id="line1-maint-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- ==================== 6. 变化点管理 ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-orange-400 rounded-full pulse-dot"></span>
+                        变化点管理
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-orange-400">5</div>
+                            <div class="text-[9px] text-slate-500">变化点总数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">3</div>
+                            <div class="text-[9px] text-slate-500">已确认</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">2</div>
+                            <div class="text-[9px] text-slate-500">待确认</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">革新机 - 参数调整</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">2025/1/28 | 申请人: 赵六</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-purple-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">搪塑机 - 模具更换</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">2025/1/26 | 申请人: 钱七</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">清漆排风机 - 风量调整</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">2025/1/28 | 申请人: 孙八</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== 7. 不具合管理 ==================== -->
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-pink-400 rounded-full pulse-dot"></span>
+                        不具合管理
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-pink-400">4</div>
+                            <div class="text-[9px] text-slate-500">不具合件数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">2</div>
+                            <div class="text-[9px] text-slate-500">处置完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400">1</div>
+                            <div class="text-[9px] text-slate-500">已关闭</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">1</div>
+                            <div class="text-[9px] text-slate-500">处理中</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-red-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">【S级】4#革新机-PJ5轴承箱油位低漏油</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">处理中</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/28 | 负责: 张三</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">【C级】2BP RTO排气VOC检测-冷凝器温度超过基准</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/26 | 处置: 1/28</div>
+                        </div>
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
+                            <div class="flex justify-between items-start">
+                                <div class="text-[11px] text-slate-300 flex-1">【C级】外观轻微划痕</div>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">发生: 1/22 | 处置: 1/23</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== 8. 人员去向每值工作安排 ==================== -->
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-indigo-400 rounded-full pulse-dot"></span>
+                        人员去向 / 每值工作安排
+                    </h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- A班 -->
+                        <div class="bg-slate-800/40 rounded-lg p-3 border border-blue-500/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold text-blue-400">A班（白班）</span>
+                                <span class="text-[10px] text-slate-400">08:00-16:00</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]">张</div>
+                                        <span class="text-[11px] text-slate-300">张三（班长）</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center text-[10px]">李</div>
+                                        <span class="text-[11px] text-slate-300">李四</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-[10px]">王</div>
+                                        <span class="text-[11px] text-slate-300">王五</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-slate-700">
+                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[10px] text-slate-300">· 涂装设备定期点检</div>
+                                <div class="text-[10px] text-slate-300">· 传送带润滑保养</div>
+                            </div>
+                        </div>
+                        
+                        <!-- B班 -->
+                        <div class="bg-slate-800/40 rounded-lg p-3 border border-cyan-500/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold text-cyan-400">B班（中班）</span>
+                                <span class="text-[10px] text-slate-400">16:00-00:00</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-[10px]">赵</div>
+                                        <span class="text-[11px] text-slate-300">赵六（班长）</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-[10px]">钱</div>
+                                        <span class="text-[11px] text-slate-300">钱七</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-[10px]">孙</div>
+                                        <span class="text-[11px] text-slate-300">孙八</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-slate-700">
+                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[10px] text-slate-300">· 夜间巡检</div>
+                                <div class="text-[10px] text-slate-300">· 设备异常监控</div>
+                            </div>
+                        </div>
+                        
+                        <!-- C班 -->
+                        <div class="bg-slate-800/40 rounded-lg p-3 border border-emerald-500/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold text-emerald-400">C班（夜班）</span>
+                                <span class="text-[10px] text-slate-400">00:00-08:00</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-[10px]">周</div>
+                                        <span class="text-[11px] text-slate-300">周九（班长）</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-[10px]">吴</div>
+                                        <span class="text-[11px] text-slate-300">吴十</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center bg-slate-900/50 rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center text-[10px]">郑</div>
+                                        <span class="text-[11px] text-slate-300">郑十一</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-slate-700">
+                                <div class="text-[10px] text-slate-400 mb-1">今日工作安排:</div>
+                                <div class="text-[10px] text-slate-300">· 休息日</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- 二线保险杠视图 -->
+        <div id="view-line2" class="line-view hidden">
+            <div class="grid grid-cols-12 gap-3">
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                                <span class="text-xl font-bold">2线</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-cyan-300">二线保险杠</h2>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+                                    <span class="text-sm text-green-400">运行中</span>
+                                    <span class="text-slate-600 mx-2">|</span>
+                                    <span class="text-sm text-green-400">0故障达成 <span class="font-bold text-lg">15</span> 天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-xl font-bold text-green-400">100%</div>
+                            </div>
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-xl font-bold text-green-400">0</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-lg font-medium text-slate-300">99.5%</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-lg font-medium text-yellow-400">1</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
+                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-sm text-green-400 font-bold">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full pulse-dot"></span>
+                        一、可动率推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400">0分</div>
+                            <div class="text-[9px] text-slate-500">当日停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">35分</div>
+                            <div class="text-[9px] text-slate-500">本月累计</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-300">18分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="line2-avail-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                        二、重大故障推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">1</div>
+                            <div class="text-[9px] text-slate-500">本月故障</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-orange-400">22分</div>
+                            <div class="text-[9px] text-slate-500">累计停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">22分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">关闭率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="line2-fault-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                        三、定期定量推进
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-emerald-400">32</div>
+                            <div class="text-[9px] text-slate-500">本月计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">30</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">2</div>
+                            <div class="text-[9px] text-slate-500">延迟数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400">94%</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="line2-maint-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 仪表盘视图 -->
+        <div id="view-dashboard" class="line-view hidden">
+            <div class="grid grid-cols-12 gap-3">
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
+                                <span class="text-lg font-bold">仪表</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-yellow-300">仪表盘</h2>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="w-2 h-2 bg-yellow-400 rounded-full pulse-dot"></span>
+                                    <span class="text-sm text-yellow-400">运行中(异常)</span>
+                                    <span class="text-slate-600 mx-2">|</span>
+                                    <span class="text-sm text-yellow-400">0故障达成 <span class="font-bold text-lg">0</span> 天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-xl font-bold text-yellow-400">97.9%</div>
+                            </div>
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-xl font-bold text-red-400">2</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-lg font-medium text-slate-300">98.5%</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-lg font-medium text-yellow-400">1</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
+                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-500 rounded-full" style="width: 97.9%"></div>
+                                    </div>
+                                    <span class="text-sm text-yellow-400 font-bold">97.9%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full pulse-dot"></span>
+                        一、可动率推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">97.9%</div>
+                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">45分</div>
+                            <div class="text-[9px] text-slate-500">当日停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">112分</div>
+                            <div class="text-[9px] text-slate-500">本月累计</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-300">28分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="dashboard-avail-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                        二、重大故障推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">2</div>
+                            <div class="text-[9px] text-slate-500">本月故障</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-orange-400">67分</div>
+                            <div class="text-[9px] text-slate-500">累计停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">34分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">关闭率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="dashboard-fault-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                        三、定期定量推进
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-emerald-400">32</div>
+                            <div class="text-[9px] text-slate-500">本月计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">28</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">4</div>
+                            <div class="text-[9px] text-slate-500">延迟数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">88%</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="dashboard-maint-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注塑视图 -->
+        <div id="view-injection" class="line-view hidden">
+            <div class="grid grid-cols-12 gap-3">
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                                <span class="text-lg font-bold">注塑</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-emerald-300">注塑</h2>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+                                    <span class="text-sm text-green-400">运行中</span>
+                                    <span class="text-slate-600 mx-2">|</span>
+                                    <span class="text-sm text-green-400">0故障达成 <span class="font-bold text-lg">45</span> 天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-xl font-bold text-green-400">100%</div>
+                            </div>
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-xl font-bold text-green-400">0</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-lg font-medium text-slate-300">100%</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-lg font-medium text-slate-300">0</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
+                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-sm text-green-400 font-bold">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full pulse-dot"></span>
+                        一、可动率推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400">0分</div>
+                            <div class="text-[9px] text-slate-500">当日停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">0分</div>
+                            <div class="text-[9px] text-slate-500">本月累计</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-300">-</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="injection-avail-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                        二、重大故障推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">0</div>
+                            <div class="text-[9px] text-slate-500">本月故障</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">0分</div>
+                            <div class="text-[9px] text-slate-500">累计停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-400">-</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">-</div>
+                            <div class="text-[9px] text-slate-500">关闭率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="injection-fault-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                        三、定期定量推进
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-emerald-400">28</div>
+                            <div class="text-[9px] text-slate-500">本月计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">26</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">2</div>
+                            <div class="text-[9px] text-slate-500">延迟数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">93%</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="injection-maint-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 模具视图 -->
+        <div id="view-mold" class="line-view hidden">
+            <div class="grid grid-cols-12 gap-3">
+                <div class="col-span-12 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                <span class="text-lg font-bold">模具</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-purple-300">模具</h2>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+                                    <span class="text-sm text-green-400">运行中</span>
+                                    <span class="text-slate-600 mx-2">|</span>
+                                    <span class="text-sm text-green-400">0故障达成 <span class="font-bold text-lg">12</span> 天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日可动率</div>
+                                <div class="text-xl font-bold text-green-400">100%</div>
+                            </div>
+                            <div class="bg-slate-800/60 rounded-lg px-4 py-2 text-center">
+                                <div class="text-[10px] text-cyan-400">当日异常</div>
+                                <div class="text-xl font-bold text-green-400">0</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日可动率</div>
+                                <div class="text-lg font-medium text-slate-300">99.8%</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-3 py-2 text-center">
+                                <div class="text-[10px] text-slate-500">前日异常</div>
+                                <div class="text-lg font-medium text-yellow-400">1</div>
+                            </div>
+                            <div class="bg-slate-800/40 rounded-lg px-4 py-2 min-w-[120px]">
+                                <div class="text-[10px] text-slate-500 mb-1">目标达成 99%</div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-sm text-green-400 font-bold">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyan-400 rounded-full pulse-dot"></span>
+                        一、可动率推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">当日可动率</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-cyan-400">0分</div>
+                            <div class="text-[9px] text-slate-500">当日停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">7分</div>
+                            <div class="text-[9px] text-slate-500">本月累计</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-slate-300">7分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="mold-avail-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                        二、重大故障推移
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">1</div>
+                            <div class="text-[9px] text-slate-500">本月故障</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-orange-400">7分</div>
+                            <div class="text-[9px] text-slate-500">累计停机</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">7分</div>
+                            <div class="text-[9px] text-slate-500">平均MTTR</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-green-400">100%</div>
+                            <div class="text-[9px] text-slate-500">关闭率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="mold-fault-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                        三、定期定量推进
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-emerald-400">32</div>
+                            <div class="text-[9px] text-slate-500">本月计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">26</div>
+                            <div class="text-[9px] text-slate-500">已完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-red-400">6</div>
+                            <div class="text-[9px] text-slate-500">延迟数</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-lg font-bold text-yellow-400">81%</div>
+                            <div class="text-[9px] text-slate-500">完成率</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                        <canvas id="mold-maint-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="mt-6 text-center text-slate-500 text-sm">
+        <p>丰田汽车保全资源系统 · 成型设备1科 · 数据更新时间: <span id="update-time">--:--:--</span></p>
+    </footer>
+
+    <script>
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+            const dateStr = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            document.getElementById('current-time').textContent = timeStr;
+            document.getElementById('current-date').textContent = dateStr;
+            document.getElementById('update-time').textContent = timeStr;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // 产线切换功能
+        const lineNames = {
+            'line1': '一线保险杠',
+            'line2': '二线保险杠',
+            'dashboard': '仪表盘',
+            'injection': '注塑',
+            'mold': '模具'
+        };
+        
+        const lineColors = {
+            'line1': 'from-blue-600 to-cyan-500',
+            'line2': 'from-cyan-500 to-cyan-600',
+            'dashboard': 'from-yellow-500 to-yellow-600',
+            'injection': 'from-emerald-500 to-emerald-600',
+            'mold': 'from-purple-500 to-purple-600'
+        };
+        
+        let currentLine = 'line1';
+        
+        function switchLine(line) {
+            document.querySelectorAll('.line-tab').forEach(tab => {
+                tab.classList.remove('active');
+                const tabLine = tab.id.replace('tab-', '');
+                if (tabLine === 'line1') {
+                    tab.className = 'line-tab px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-slate-800/60 text-blue-300 hover:bg-blue-900/50 border border-blue-500/30';
+                } else if (tabLine === 'line2') {
+                    tab.className = 'line-tab px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-slate-800/60 text-cyan-300 hover:bg-cyan-900/50 border border-cyan-500/30';
+                } else if (tabLine === 'dashboard') {
+                    tab.className = 'line-tab px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-slate-800/60 text-yellow-300 hover:bg-yellow-900/50 border border-yellow-500/30';
+                } else if (tabLine === 'injection') {
+                    tab.className = 'line-tab px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-slate-800/60 text-emerald-300 hover:bg-emerald-900/50 border border-emerald-500/30';
+                } else if (tabLine === 'mold') {
+                    tab.className = 'line-tab px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-slate-800/60 text-purple-300 hover:bg-purple-900/50 border border-purple-500/30';
+                }
+            });
+            
+            const activeTab = document.getElementById('tab-' + line);
+            activeTab.className = 'line-tab active px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-gradient-to-r ' + lineColors[line] + ' text-white shadow-lg';
+            document.getElementById('current-line-label').textContent = lineNames[line];
+            currentLine = line;
+            
+            document.querySelectorAll('.line-view').forEach(view => view.classList.add('hidden'));
+            const viewMap = {
+                'line1': 'view-line1',
+                'line2': 'view-line2',
+                'dashboard': 'view-dashboard',
+                'injection': 'view-injection',
+                'mold': 'view-mold'
+            };
+            document.getElementById(viewMap[line]).classList.remove('hidden');
+            
+            if (!lineCharts[line]) {
+                initLineCharts(line);
+                lineCharts[line] = true;
+            }
+        }
+        
+        // 图表存储
+        const lineCharts = {};
+        let line1AvailChart = null;
+        let line1FaultChart = null;
+        let line1MaintChart = null;
+        
+        // ==================== 可动率推移 年/月切换 ====================
+        function switchAvailView(view) {
+            const monthBtn = document.getElementById('btn-avail-month');
+            const yearBtn = document.getElementById('btn-avail-year');
+            
+            if (view === 'year') {
+                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white';
+                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                document.getElementById('avail-total').textContent = '156分';
+                document.getElementById('avail-total-label').textContent = '年度累计';
+                document.getElementById('avail-mttr').textContent = '26分';
+            } else {
+                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white';
+                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                document.getElementById('avail-total').textContent = '22分';
+                document.getElementById('avail-total-label').textContent = '本月累计';
+                document.getElementById('avail-mttr').textContent = '22分';
+            }
+            
+            initAvailChart(view);
+        }
+        
+        function initAvailChart(view) {
+            const ctx = document.getElementById('line1-avail-chart');
+            if (!ctx) return;
+            
+            if (line1AvailChart) {
+                line1AvailChart.destroy();
+            }
+            
+            const yearData = {
+                labels: ['2024/4', '5', '6', '7', '8', '9', '10', '11', '12', '2025/1'],
+                avail: [99.5, 99.8, 100, 99.9, 100, 99.7, 100, 99.8, 100, 100],
+                stop: [35, 15, 0, 8, 0, 22, 0, 12, 0, 22]
+            };
+            
+            const monthData = {
+                labels: ['1/1', '1/5', '1/10', '1/15', '1/20', '1/25', '1/28'],
+                avail: [100, 100, 99.8, 100, 100, 99.9, 100],
+                stop: [0, 0, 12, 0, 0, 10, 0]
+            };
+            
+            const data = view === 'year' ? yearData : monthData;
+            
+            line1AvailChart = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '可动率',
+                        data: data.avail,
+                        type: 'line',
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        order: 1,
+                    }, {
+                        label: '停机(分)',
+                        data: data.stop,
+                        backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                        borderColor: '#ef4444',
+                        yAxisID: 'y1',
+                        order: 2,
+                    }, {
+                        label: '目标',
+                        data: data.avail.map(() => 99),
+                        type: 'line',
+                        borderColor: '#f97316',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0,
+                        yAxisID: 'y',
+                        order: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
+                        y: { min: 97, max: 101, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#3b82f6', font: { size: 7 }, callback: v => v + '%' } },
+                        y1: { min: 0, max: 50, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ef4444', font: { size: 7 }, callback: v => v + '分' } }
+                    }
+                }
+            });
+        }
+        
+        // ==================== 定期定量推进 年/月切换 ====================
+        function switchMaintView(view) {
+            const monthBtn = document.getElementById('btn-maint-month');
+            const yearBtn = document.getElementById('btn-maint-year');
+            
+            if (view === 'year') {
+                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
+                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                document.getElementById('maint-plan').textContent = '384';
+                document.getElementById('maint-plan-label').textContent = '年度计划';
+                document.getElementById('maint-done').textContent = '360';
+                document.getElementById('maint-rate').textContent = '94%';
+            } else {
+                monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
+                yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
+                document.getElementById('maint-plan').textContent = '32';
+                document.getElementById('maint-plan-label').textContent = '本月计划';
+                document.getElementById('maint-done').textContent = '30';
+                document.getElementById('maint-rate').textContent = '94%';
+            }
+            
+            initMaintChart(view);
+        }
+        
+        function initMaintChart(view) {
+            const ctx = document.getElementById('line1-maint-chart');
+            if (!ctx) return;
+            
+            if (line1MaintChart) {
+                line1MaintChart.destroy();
+            }
+            
+            const yearData = {
+                labels: ['2024/4', '5', '6', '7', '8', '9', '10', '11', '12', '2025/1'],
+                plan: [32, 32, 32, 32, 32, 32, 32, 32, 32, 32],
+                done: [32, 30, 32, 31, 32, 30, 32, 31, 32, 30],
+                rate: [100, 94, 100, 97, 100, 94, 100, 97, 100, 94]
+            };
+            
+            const monthData = {
+                labels: ['第1周', '第2周', '第3周', '第4周'],
+                plan: [8, 8, 8, 8],
+                done: [8, 8, 7, 7],
+                rate: [100, 100, 88, 88]
+            };
+            
+            const data = view === 'year' ? yearData : monthData;
+            
+            line1MaintChart = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '计划',
+                        data: data.plan,
+                        backgroundColor: 'rgba(16, 185, 129, 0.3)',
+                        borderColor: '#10b981',
+                    }, {
+                        label: '完成',
+                        data: data.done,
+                        backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                        borderColor: '#22c55e',
+                    }, {
+                        label: '完成率',
+                        data: data.rate,
+                        type: 'line',
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        fill: false,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                        pointRadius: 3,
+                        pointBackgroundColor: '#06b6d4',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
+                        y: { min: 0, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#10b981', font: { size: 7 } } },
+                        y1: { min: 0, max: 100, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#06b6d4', font: { size: 7 }, callback: v => v + '%' } }
+                    }
+                }
+            });
+        }
+        
+        // ==================== 故障图表初始化 ====================
+        function initFaultChart() {
+            const ctx = document.getElementById('line1-fault-chart');
+            if (!ctx) return;
+            
+            if (line1FaultChart) {
+                line1FaultChart.destroy();
+            }
+            
+            line1FaultChart = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['2024/8', '9', '10', '11', '12', '2025/1'],
+                    datasets: [{
+                        label: '故障次数',
+                        data: [1, 0, 0, 1, 0, 1],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: '#ef4444',
+                        yAxisID: 'y',
+                    }, {
+                        label: '停机(分)',
+                        data: [18, 0, 0, 15, 0, 22],
+                        type: 'line',
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
+                        y: { min: 0, max: 3, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#ef4444', font: { size: 7 }, stepSize: 1 } },
+                        y1: { min: 0, max: 30, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#f59e0b', font: { size: 7 }, callback: v => v + '分' } }
+                    }
+                }
+            });
+        }
+        
+        // ==================== 初始化其他产线图表 ====================
+        function initLineCharts(line) {
+            if (line === 'line1') return; // 一线保险杠单独处理
+            
+            const prefix = line;
+            
+            const availCtx = document.getElementById(prefix + '-avail-chart');
+            if (availCtx) {
+                new Chart(availCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['1/22', '1/23', '1/24', '1/25', '1/26', '1/27', '1/28'],
+                        datasets: [{
+                            label: '可动率',
+                            data: line === 'dashboard' ? [98.5, 97.9, 98.2, 97.5, 98.0, 97.8, 97.9] : [100, 100, 99.8, 100, 100, 99.9, 100],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                        }, {
+                            label: '目标',
+                            data: [99, 99, 99, 99, 99, 99, 99],
+                            borderColor: '#ef4444',
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
+                            y: { min: 95, max: 101, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 }, callback: v => v + '%' } }
+                        }
+                    }
+                });
+            }
+            
+            const faultCtx = document.getElementById(prefix + '-fault-chart');
+            if (faultCtx) {
+                const faultData = line === 'dashboard' ? [1, 0, 1, 0, 0, 0, 2] : 
+                                  line === 'line2' ? [0, 0, 1, 0, 0, 0, 0] :
+                                  line === 'mold' ? [0, 0, 0, 1, 0, 0, 0] : [0, 0, 0, 0, 0, 0, 0];
+                new Chart(faultCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['1/22', '1/23', '1/24', '1/25', '1/26', '1/27', '1/28'],
+                        datasets: [{ label: '故障次数', data: faultData, backgroundColor: 'rgba(239, 68, 68, 0.7)', borderColor: '#ef4444' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
+                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 }, stepSize: 1 } }
+                        }
+                    }
+                });
+            }
+            
+            const maintCtx = document.getElementById(prefix + '-maint-chart');
+            if (maintCtx) {
+                new Chart(maintCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['第1周', '第2周', '第3周', '第4周'],
+                        datasets: [{
+                            label: '计划', data: [8, 8, 8, 8], backgroundColor: 'rgba(16, 185, 129, 0.3)', borderColor: '#10b981',
+                        }, {
+                            label: '完成', data: line === 'dashboard' ? [7, 7, 7, 7] : [8, 8, 7, 7], backgroundColor: 'rgba(34, 197, 94, 0.7)', borderColor: '#22c55e',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } },
+                            y: { min: 0, grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 8 } } }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // 初始化一线保险杠图表
+        initAvailChart('month');
+        initFaultChart();
+        initMaintChart('month');
+        lineCharts['line1'] = true;
+
+    </script>
+</body>
+</html>
