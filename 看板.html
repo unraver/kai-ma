@@ -147,6 +147,24 @@
         .custom-scrollbar:hover::-webkit-scrollbar {
             opacity: 1;
         }
+        
+        /* 自动滚动动画 */
+        .auto-scroll-content {
+            animation: autoScroll 12s linear infinite;
+        }
+        
+        .auto-scroll-content:hover {
+            animation-play-state: paused;
+        }
+        
+        @keyframes autoScroll {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen text-white p-4 lg:p-6">
@@ -259,7 +277,7 @@
                             <button onclick="switchAvailView('year')" id="btn-avail-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-4 gap-2 mb-3">
+                    <div class="grid grid-cols-3 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
                             <div class="text-lg font-bold text-green-400" id="avail-today">100%</div>
                             <div class="text-[9px] text-slate-500">当日可动率</div>
@@ -272,82 +290,110 @@
                             <div class="text-lg font-bold text-yellow-400" id="avail-total">22分</div>
                             <div class="text-[9px] text-slate-500" id="avail-total-label">本月累计</div>
                         </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-slate-300" id="avail-mttr">22分</div>
-                            <div class="text-[9px] text-slate-500">平均MTTR</div>
-                        </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-44">
                         <canvas id="line1-avail-chart"></canvas>
                     </div>
                 </div>
                 
-                <!-- ==================== 3. 重大故障推移 ==================== -->
-                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
-                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
-                        重大故障推移
-                    </h3>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-red-400">1</div>
-                            <div class="text-[9px] text-slate-500">本月故障</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-orange-400">22分</div>
-                            <div class="text-[9px] text-slate-500">累计停机</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-purple-400">3</div>
-                            <div class="text-[9px] text-slate-500">对策数</div>
+                <!-- ==================== 3. 重大故障与对策 ==================== -->
+                <div class="col-span-8 glass-card rounded-xl p-4 gradient-border">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-semibold flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-400 rounded-full pulse-dot"></span>
+                            重大故障与对策
+                        </h3>
+                        <div class="flex items-center gap-4 text-[10px]">
+                            <div class="flex items-center gap-1">
+                                <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                                <span class="text-slate-400">完成 2</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                                <span class="text-slate-400">进行中 1</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="bg-slate-800/30 rounded-lg p-2 h-44">
-                        <canvas id="line1-fault-chart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- ==================== 4. 对策明细清单 ==================== -->
-                <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
-                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-purple-400 rounded-full pulse-dot"></span>
-                        对策明细清单
-                    </h3>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-purple-400">3</div>
-                            <div class="text-[9px] text-slate-500">对策总数</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-green-400">2</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-yellow-400">1</div>
-                            <div class="text-[9px] text-slate-500">进行中</div>
-                        </div>
-                    </div>
-                    <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-green-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">涂装机器人异常停机对策</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                    <div class="grid grid-cols-12 gap-4">
+                        <!-- 左侧：统计 + 图表 -->
+                        <div class="col-span-7 pr-4 border-r border-slate-600/50">
+                            <div class="grid grid-cols-4 gap-2 mb-3">
+                                <div class="bg-slate-800/50 rounded p-2 text-center">
+                                    <div class="text-lg font-bold text-red-400">1</div>
+                                    <div class="text-[9px] text-slate-500">本月故障</div>
+                                </div>
+                                <div class="bg-slate-800/50 rounded p-2 text-center">
+                                    <div class="text-lg font-bold text-orange-400">22分</div>
+                                    <div class="text-[9px] text-slate-500">累计停机</div>
+                                </div>
+                                <div class="bg-slate-800/50 rounded p-2 text-center">
+                                    <div class="text-lg font-bold text-purple-400">3</div>
+                                    <div class="text-[9px] text-slate-500">对策数</div>
+                                </div>
+                                <div class="bg-slate-800/50 rounded p-2 text-center">
+                                    <div class="text-lg font-bold text-green-400">2</div>
+                                    <div class="text-[9px] text-slate-500">处置完成</div>
+                                </div>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">负责人: 张三 | 完成: 2025/1/25</div>
-                        </div>
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-green-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">传送带速度异常改善</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                            <div class="bg-slate-800/30 rounded-lg p-2 h-40">
+                                <canvas id="line1-fault-chart"></canvas>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">负责人: 李四 | 完成: 2025/1/20</div>
                         </div>
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">温度传感器精度提升</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                        <!-- 右侧：对策清单 -->
+                        <div class="col-span-5 pl-2 bg-slate-800/20 rounded-lg p-3">
+                            <div class="text-[10px] text-purple-400 font-medium mb-2 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                                对策明细清单
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">负责人: 王五 | 预计: 2025/2/10</div>
+                            <div class="max-h-40 overflow-hidden relative" id="countermeasure-scroll-container">
+                                <div class="space-y-2 auto-scroll-content" id="countermeasure-scroll">
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">涂装机器人异常停机对策</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">张三 | 2025/1/25</div>
+                                    </div>
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">传送带速度异常改善</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">李四 | 2025/1/20</div>
+                                    </div>
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-yellow-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">温度传感器精度提升</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">王五 | 预计 2025/2/10</div>
+                                    </div>
+                                    <!-- 复制内容实现无缝滚动 -->
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">涂装机器人异常停机对策</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">张三 | 2025/1/25</div>
+                                    </div>
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">传送带速度异常改善</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">李四 | 2025/1/20</div>
+                                    </div>
+                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-yellow-500">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[10px] text-slate-300">温度传感器精度提升</span>
+                                            <span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                                        </div>
+                                        <div class="text-[8px] text-slate-500 mt-1">王五 | 预计 2025/2/10</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -364,18 +410,26 @@
                             <button onclick="switchMaintView('year')" id="btn-maint-year" class="px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white">年度</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
+                    <div class="grid grid-cols-5 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-emerald-400" id="maint-plan">32</div>
-                            <div class="text-[9px] text-slate-500" id="maint-plan-label">本月计划</div>
+                            <div class="text-sm font-bold text-emerald-400" id="maint-dq-plan">16</div>
+                            <div class="text-[8px] text-slate-500" id="maint-dq-plan-label">定期计划</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-green-400" id="maint-done">30</div>
-                            <div class="text-[9px] text-slate-500">已完成</div>
+                            <div class="text-sm font-bold text-green-400" id="maint-dq-done">15</div>
+                            <div class="text-[8px] text-slate-500" id="maint-dq-done-label">定期完成</div>
                         </div>
                         <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-cyan-400" id="maint-rate">94%</div>
-                            <div class="text-[9px] text-slate-500">完成率</div>
+                            <div class="text-sm font-bold text-blue-400" id="maint-dl-plan">16</div>
+                            <div class="text-[8px] text-slate-500" id="maint-dl-plan-label">定量计划</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-sm font-bold text-purple-400" id="maint-dl-done">15</div>
+                            <div class="text-[8px] text-slate-500" id="maint-dl-done-label">定量完成</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-2 text-center">
+                            <div class="text-sm font-bold text-cyan-400" id="maint-rate">94%</div>
+                            <div class="text-[8px] text-slate-500">完成率</div>
                         </div>
                     </div>
                     <div class="bg-slate-800/30 rounded-lg p-2 h-44">
@@ -467,9 +521,9 @@
                             </div>
                             <div class="text-[9px] text-slate-500 mt-1">发生: 1/26 | 处置: 1/28</div>
                         </div>
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
+                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
                             <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">【C级】外观轻微划痕</div>
+                                <div class="text-[11px] text-slate-300 flex-1">【B级】3线仪表盘-鼓风机皮带断裂</div>
                                 <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">处置完成</span>
                             </div>
                             <div class="text-[9px] text-slate-500 mt-1">发生: 1/22 | 处置: 1/23</div>
@@ -1219,13 +1273,11 @@
                 monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('avail-total').textContent = '156分';
                 document.getElementById('avail-total-label').textContent = '年度累计';
-                document.getElementById('avail-mttr').textContent = '26分';
             } else {
                 monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-cyan-600 text-white';
                 yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
                 document.getElementById('avail-total').textContent = '22分';
                 document.getElementById('avail-total-label').textContent = '本月累计';
-                document.getElementById('avail-mttr').textContent = '22分';
             }
             
             initAvailChart(view);
@@ -1268,7 +1320,7 @@
                         yAxisID: 'y',
                         order: 1,
                     }, {
-                        label: '停机(分)',
+                        label: '停止时间(分)',
                         data: data.stop,
                         backgroundColor: 'rgba(239, 68, 68, 0.6)',
                         borderColor: '#ef4444',
@@ -1289,7 +1341,29 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    plugins: { 
+                        legend: { labels: { color: '#94a3b8', font: { size: 8 } } },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (label === '目标') return null;
+                                    if (label === '可动率') {
+                                        return '可动率: ' + value + '%';
+                                    } else if (label === '停止时间(分)') {
+                                        return '停止时间: ' + value + '分';
+                                    }
+                                    return label + ': ' + value;
+                                },
+                                filter: function(tooltipItem) {
+                                    return tooltipItem.dataset.label !== '目标';
+                                }
+                            }
+                        }
+                    },
                     scales: {
                         x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
                         y: { min: 97, max: 101, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#3b82f6', font: { size: 7 }, callback: v => v + '%' } },
@@ -1307,16 +1381,26 @@
             if (view === 'year') {
                 yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
                 monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
-                document.getElementById('maint-plan').textContent = '384';
-                document.getElementById('maint-plan-label').textContent = '年度计划';
-                document.getElementById('maint-done').textContent = '360';
+                document.getElementById('maint-dq-plan').textContent = '192';
+                document.getElementById('maint-dq-plan-label').textContent = '定期计划';
+                document.getElementById('maint-dq-done').textContent = '180';
+                document.getElementById('maint-dq-done-label').textContent = '定期完成';
+                document.getElementById('maint-dl-plan').textContent = '192';
+                document.getElementById('maint-dl-plan-label').textContent = '定量计划';
+                document.getElementById('maint-dl-done').textContent = '180';
+                document.getElementById('maint-dl-done-label').textContent = '定量完成';
                 document.getElementById('maint-rate').textContent = '94%';
             } else {
                 monthBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all bg-emerald-600 text-white';
                 yearBtn.className = 'px-3 py-1 text-[10px] rounded-md transition-all text-slate-400 hover:text-white';
-                document.getElementById('maint-plan').textContent = '32';
-                document.getElementById('maint-plan-label').textContent = '本月计划';
-                document.getElementById('maint-done').textContent = '30';
+                document.getElementById('maint-dq-plan').textContent = '16';
+                document.getElementById('maint-dq-plan-label').textContent = '定期计划';
+                document.getElementById('maint-dq-done').textContent = '15';
+                document.getElementById('maint-dq-done-label').textContent = '定期完成';
+                document.getElementById('maint-dl-plan').textContent = '16';
+                document.getElementById('maint-dl-plan-label').textContent = '定量计划';
+                document.getElementById('maint-dl-done').textContent = '15';
+                document.getElementById('maint-dl-done-label').textContent = '定量完成';
                 document.getElementById('maint-rate').textContent = '94%';
             }
             
@@ -1333,15 +1417,19 @@
             
             const yearData = {
                 labels: ['2024/4', '5', '6', '7', '8', '9', '10', '11', '12', '2025/1'],
-                plan: [32, 32, 32, 32, 32, 32, 32, 32, 32, 32],
-                done: [32, 30, 32, 31, 32, 30, 32, 31, 32, 30],
+                dqPlan: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+                dqDone: [16, 15, 16, 15, 16, 15, 16, 15, 16, 15],
+                dlPlan: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+                dlDone: [16, 15, 16, 16, 16, 15, 16, 16, 16, 15],
                 rate: [100, 94, 100, 97, 100, 94, 100, 97, 100, 94]
             };
             
             const monthData = {
                 labels: ['第1周', '第2周', '第3周', '第4周'],
-                plan: [8, 8, 8, 8],
-                done: [8, 8, 7, 7],
+                dqPlan: [4, 4, 4, 4],
+                dqDone: [4, 4, 3, 4],
+                dlPlan: [4, 4, 4, 4],
+                dlDone: [4, 4, 4, 3],
                 rate: [100, 100, 88, 88]
             };
             
@@ -1352,15 +1440,29 @@
                 data: {
                     labels: data.labels,
                     datasets: [{
-                        label: '计划',
-                        data: data.plan,
+                        label: '定期计划',
+                        data: data.dqPlan,
                         backgroundColor: 'rgba(16, 185, 129, 0.3)',
                         borderColor: '#10b981',
+                        borderWidth: 1,
                     }, {
-                        label: '完成',
-                        data: data.done,
+                        label: '定期完成',
+                        data: data.dqDone,
                         backgroundColor: 'rgba(34, 197, 94, 0.7)',
                         borderColor: '#22c55e',
+                        borderWidth: 1,
+                    }, {
+                        label: '定量计划',
+                        data: data.dlPlan,
+                        backgroundColor: 'rgba(59, 130, 246, 0.3)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1,
+                    }, {
+                        label: '定量完成',
+                        data: data.dlDone,
+                        backgroundColor: 'rgba(168, 85, 247, 0.7)',
+                        borderColor: '#a855f7',
+                        borderWidth: 1,
                     }, {
                         label: '完成率',
                         data: data.rate,
@@ -1377,7 +1479,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 7 } } } },
                     scales: {
                         x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
                         y: { min: 0, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#10b981', font: { size: 7 } } },
@@ -1407,7 +1509,7 @@
                         borderColor: '#ef4444',
                         yAxisID: 'y',
                     }, {
-                        label: '停机(分)',
+                        label: '停机时间(分)',
                         data: [18, 0, 0, 15, 0, 22],
                         type: 'line',
                         borderColor: '#f59e0b',
@@ -1415,15 +1517,62 @@
                         fill: true,
                         tension: 0.3,
                         yAxisID: 'y1',
+                    }, {
+                        label: '对策数',
+                        data: [1, 0, 0, 1, 0, 3],
+                        type: 'line',
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                        fill: false,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        borderDash: [3, 3],
+                        pointStyle: 'rect',
+                        pointRadius: 4,
+                        pointBackgroundColor: '#a855f7',
+                    }, {
+                        label: '处置完成',
+                        data: [1, 0, 0, 1, 0, 2],
+                        type: 'line',
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                        fill: false,
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointStyle: 'triangle',
+                        pointRadius: 4,
+                        pointBackgroundColor: '#22c55e',
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 8 } } } },
+                    plugins: { 
+                        legend: { labels: { color: '#94a3b8', font: { size: 8 } } },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (label === '故障次数') {
+                                        return '故障次数: ' + value + '次';
+                                    } else if (label === '停机时间(分)') {
+                                        return '停机时间: ' + value + '分';
+                                    } else if (label === '对策数') {
+                                        return '对策数: ' + value + '个';
+                                    } else if (label === '处置完成') {
+                                        return '处置完成: ' + value + '个';
+                                    }
+                                    return label + ': ' + value;
+                                }
+                            }
+                        }
+                    },
                     scales: {
                         x: { grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#94a3b8', font: { size: 7 } } },
-                        y: { min: 0, max: 3, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#ef4444', font: { size: 7 }, stepSize: 1 } },
+                        y: { min: 0, max: 4, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.3)' }, ticks: { color: '#ef4444', font: { size: 7 }, stepSize: 1 } },
                         y1: { min: 0, max: 30, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#f59e0b', font: { size: 7 }, callback: v => v + '分' } }
                     }
                 }
