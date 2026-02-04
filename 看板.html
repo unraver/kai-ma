@@ -347,50 +347,70 @@
                                 </svg>
                                 对策明细清单
                             </div>
-                            <div class="max-h-40 overflow-hidden relative" id="countermeasure-scroll-container">
-                                <div class="space-y-2 auto-scroll-content" id="countermeasure-scroll">
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">涂装机器人异常停机对策</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
-                                        </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">张三 | 2025/1/25</div>
+                            <!-- 表格容器 -->
+                            <div class="bg-slate-900/50 rounded-lg overflow-hidden">
+                                <!-- 固定表头 -->
+                                <div class="bg-slate-800/80 border-b border-slate-600/50">
+                                    <div class="grid grid-cols-10 gap-1 px-2 py-1.5">
+                                        <div class="col-span-5 text-[8px] text-cyan-400 font-medium">对策内容</div>
+                                        <div class="col-span-2 text-[8px] text-cyan-400 font-medium">予定日</div>
+                                        <div class="col-span-1 text-[8px] text-cyan-400 font-medium">担当</div>
+                                        <div class="col-span-2 text-[8px] text-cyan-400 font-medium text-center">完成状态</div>
                                     </div>
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">传送带速度异常改善</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                </div>
+                                <!-- 滚动列表 -->
+                                <div class="max-h-32 overflow-hidden relative" id="countermeasure-scroll-container">
+                                    <div class="auto-scroll-content" id="countermeasure-scroll">
+                                        <!-- 数据行 -->
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">李四 | 2025/1/20</div>
-                                    </div>
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-yellow-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">温度传感器精度提升</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">王五 | 预计 2025/2/10</div>
-                                    </div>
-                                    <!-- 复制内容实现无缝滚动 -->
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">涂装机器人异常停机对策</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">张三 | 2025/1/25</div>
-                                    </div>
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-green-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">传送带速度异常改善</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">完成</span>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">李四 | 2025/1/20</div>
-                                    </div>
-                                    <div class="bg-slate-900/50 rounded p-2 border-l-2 border-yellow-500">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[10px] text-slate-300">温度传感器精度提升</span>
-                                            <span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">进行中</span>
+                                        <!-- 复制内容实现无缝滚动 -->
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">模保联络设保机内定位销打入</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
                                         </div>
-                                        <div class="text-[8px] text-slate-500 mt-1">王五 | 预计 2025/2/10</div>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">定位销打入后是否还存在异响 <span class="text-cyan-400">(1周/次×4)</span></div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-10 gap-1 px-2 py-1.5 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                            <div class="col-span-5 text-[9px] text-slate-400 truncate">现场进行定位销打入手顺培训</div>
+                                            <div class="col-span-2 text-[9px] text-slate-400">2026-01-19</div>
+                                            <div class="col-span-1 text-[9px] text-slate-300">张三</div>
+                                            <div class="col-span-2 text-center"><span class="text-[7px] px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">未开始</span></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -439,11 +459,25 @@
                 
                 <!-- ==================== 6. 变化点管理 ==================== -->
                 <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
-                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <h3 class="text-sm font-semibold mb-2 flex items-center gap-2">
                         <span class="w-2 h-2 bg-orange-400 rounded-full pulse-dot"></span>
-                        变化点管理
-                        <span class="ml-auto text-[10px] text-slate-400 font-normal">共 <span class="text-orange-400 font-bold">5</span> 条</span>
+                        月度变化点
                     </h3>
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-3 gap-2 mb-2">
+                        <div class="bg-slate-800/50 rounded p-1.5 text-center">
+                            <div class="text-base font-bold text-orange-400">5</div>
+                            <div class="text-[8px] text-slate-500">变化点数量</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-1.5 text-center">
+                            <div class="text-base font-bold text-yellow-400">2</div>
+                            <div class="text-[8px] text-slate-500">未确认</div>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-1.5 text-center">
+                            <div class="text-base font-bold text-green-400">3</div>
+                            <div class="text-[8px] text-slate-500">已确认</div>
+                        </div>
+                    </div>
                     <!-- 表格容器 -->
                     <div class="bg-slate-900/50 rounded-lg overflow-hidden">
                         <!-- 固定表头 -->
@@ -540,7 +574,7 @@
                 <div class="col-span-4 glass-card rounded-xl p-4 gradient-border">
                     <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                         <span class="w-2 h-2 bg-pink-400 rounded-full pulse-dot"></span>
-                        不具合管理
+                        月度不具合
                     </h3>
                     <div class="grid grid-cols-4 gap-2 mb-3">
                         <div class="bg-slate-800/50 rounded p-2 text-center">
