@@ -442,42 +442,96 @@
                     <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                         <span class="w-2 h-2 bg-orange-400 rounded-full pulse-dot"></span>
                         变化点管理
+                        <span class="ml-auto text-[10px] text-slate-400 font-normal">共 <span class="text-orange-400 font-bold">5</span> 条</span>
                     </h3>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-orange-400">5</div>
-                            <div class="text-[9px] text-slate-500">变化点总数</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-green-400">3</div>
-                            <div class="text-[9px] text-slate-500">已确认</div>
-                        </div>
-                        <div class="bg-slate-800/50 rounded p-2 text-center">
-                            <div class="text-lg font-bold text-yellow-400">2</div>
-                            <div class="text-[9px] text-slate-500">待确认</div>
-                        </div>
-                    </div>
-                    <div class="space-y-2 max-h-28 overflow-y-auto custom-scrollbar">
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-blue-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">革新机 - 参数调整</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span>
+                    <!-- 表格容器 -->
+                    <div class="bg-slate-900/50 rounded-lg overflow-hidden">
+                        <!-- 固定表头 -->
+                        <div class="bg-slate-800/80 border-b border-slate-600/50">
+                            <div class="grid grid-cols-12 gap-1 px-3 py-2">
+                                <div class="col-span-3 text-[9px] text-cyan-400 font-medium">设备名称</div>
+                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium">设备编号</div>
+                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium text-center">状态</div>
+                                <div class="col-span-3 text-[9px] text-cyan-400 font-medium">变化点日期</div>
+                                <div class="col-span-2 text-[9px] text-cyan-400 font-medium">申请人</div>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">2025/1/28 | 申请人: 赵六</div>
                         </div>
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-purple-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">搪塑机 - 模具更换</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span>
+                        <!-- 滚动列表 -->
+                        <div class="max-h-36 overflow-hidden relative" id="change-scroll-container">
+                            <div class="auto-scroll-content" id="change-scroll">
+                                <!-- 数据行 -->
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">革新机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-001</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">赵六</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">搪塑机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-002</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/26</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">钱七</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">清漆排风机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-003</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">孙八</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">注塑机A</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-004</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/25</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">周九</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">模具研磨机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-005</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/29</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">吴十</div>
+                                </div>
+                                <!-- 复制一份用于无缝滚动 -->
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">革新机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-001</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">赵六</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">搪塑机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-002</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/26</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">钱七</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">清漆排风机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-003</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/28</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">孙八</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">注塑机A</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-004</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">已确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/25</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">周九</div>
+                                </div>
+                                <div class="grid grid-cols-12 gap-1 px-3 py-2 border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                                    <div class="col-span-3 text-[10px] text-slate-300 truncate">模具研磨机</div>
+                                    <div class="col-span-2 text-[10px] text-slate-400">EQ-005</div>
+                                    <div class="col-span-2 text-center"><span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span></div>
+                                    <div class="col-span-3 text-[10px] text-slate-400">2025/1/29</div>
+                                    <div class="col-span-2 text-[10px] text-slate-300">吴十</div>
+                                </div>
                             </div>
-                            <div class="text-[9px] text-slate-500 mt-1">2025/1/26 | 申请人: 钱七</div>
-                        </div>
-                        <div class="bg-slate-800/40 rounded-lg p-2 border-l-2 border-yellow-500">
-                            <div class="flex justify-between items-start">
-                                <div class="text-[11px] text-slate-300 flex-1">清漆排风机 - 风量调整</div>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">待确认</span>
-                            </div>
-                            <div class="text-[9px] text-slate-500 mt-1">2025/1/28 | 申请人: 孙八</div>
                         </div>
                     </div>
                 </div>
