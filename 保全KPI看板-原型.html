@@ -1,0 +1,4003 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>成型设备1科保全业务看板 - 保全资源系统KPI看板</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      background: #f5f7fa;
+    }
+    .dashboard-fullscreen {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .dashboard-header {
+      flex-shrink: 0;
+      height: 56px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .dashboard-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+    }
+    .dashboard-body {
+      flex: 1;
+      padding: 24px;
+      overflow: auto;
+    }
+    .section {
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 16px;
+      padding-left: 8px;
+      border-left: 4px solid #1890ff;
+    }
+    .card {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.85);
+    }
+    .card-body {
+      padding: 20px;
+      min-height: 120px;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 1200px) {
+      .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+    }
+    .stat-card .stat-label {
+      font-size: 13px;
+      color: rgba(0,0,0,0.65);
+      margin-bottom: 8px;
+    }
+    .stat-card .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+    .stat-card .stat-value.blue { color: #1890ff; }
+    .stat-card .stat-value.green { color: #52c41a; }
+    .stat-card .stat-value.orange { color: #fa8c16; }
+    .stat-card .stat-trend {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #999;
+    }
+    .dashboard-grid--single-row {
+      margin-bottom: 16px;
+      grid-template-columns: 1fr;
+    }
+    .stat-card--compact {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 18px;
+      min-height: 68px;
+    }
+    .stat-card--compact .stat-meta {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .stat-card--compact .stat-label {
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.85);
+    }
+    .stat-card--compact .stat-trend {
+      margin-top: 0;
+      font-size: 12px;
+      color: #8c8c8c;
+      line-height: 1.4;
+    }
+    .stat-card--compact .stat-value {
+      flex: 0 0 auto;
+      font-size: 30px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .stat-card--compact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .stat-card--compact .stat-value {
+        font-size: 26px;
+      }
+    }
+    .panel-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 1200px) {
+      .panel-row { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .panel-row { grid-template-columns: 1fr; }
+    }
+    .panel-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+    }
+    .panel-card .panel-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .panel-card .panel-placeholder {
+      font-size: 12px;
+      color: #999;
+      min-height: 80px;
+    }
+    .table-placeholder {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .table-placeholder th,
+    .table-placeholder td {
+      border: 1px solid #f0f0f0;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .table-placeholder th {
+      background: #fafafa;
+      font-weight: 500;
+      color: rgba(0,0,0,0.85);
+    }
+    .table-placeholder td { color: #666; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 12px;
+    }
+    .tag-default { background: #f0f0f0; color: #666; }
+    .tag-success { background: #f6ffed; color: #52c41a; }
+    .tag-warning { background: #fff7e6; color: #fa8c16; }
+    .tag-error { background: #fff2f0; color: #ff4d4f; }
+    .chart-placeholder {
+      height: 240px;
+      background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bfbfbf;
+      font-size: 13px;
+    }
+    /* 科室整体KPI：左大右小两栏版式 */
+    .kpi-dept-row {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 16px;
+      align-items: stretch;
+    }
+    @media (max-width: 1024px) {
+      .kpi-dept-row { grid-template-columns: 1fr; }
+    }
+    .kpi-dept-left {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-dept-right {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-panel-title {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+    }
+    .kpi-panel-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .kpi-panel-title-row .btn-target {
+      font-size: 12px;
+      color: #1890ff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 6px;
+    }
+    .kpi-panel-title-row .btn-target:hover { text-decoration: underline; }
+    .kpi-chart-wrap {
+      flex: 1;
+      min-height: 220px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.65);
+    }
+    .kpi-chart-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kpi-chart-legend .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .kpi-chart-legend .target { color: #ff4d4f; }
+    .kpi-chart-legend .target .dot { background: none; border: 1px dashed #ff4d4f; }
+    .kpi-chart-legend--check {
+      gap: 10px 16px;
+    }
+    .kpi-chart-legend--check .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+      color: rgba(0,0,0,0.85);
+    }
+    .kpi-chart-legend--check .legend-item input[type="checkbox"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      margin: 0;
+      pointer-events: none;
+    }
+    .kpi-chart-legend--check .legend-item .legend-txt {
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .kpi-chart-legend--check .legend-item:hover {
+      opacity: 0.9;
+    }
+    .kpi-chart-legend--check .legend-item:has(input:not(:checked)) {
+      background: #f5f5f5;
+      border-color: #e8e8e8;
+      color: rgba(0,0,0,0.45);
+    }
+    .kpi-chart-legend--check .legend-item:has(input:not(:checked)) .dot {
+      opacity: 0.5;
+    }
+    .kpi-chart-legend--check .legend-item--1bp:has(input:checked) { background: rgba(24,144,255,0.1); border-color: rgba(24,144,255,0.35); }
+    .kpi-chart-legend--check .legend-item--2bp:has(input:checked) { background: rgba(194,53,49,0.1); border-color: rgba(194,53,49,0.35); }
+    .kpi-chart-legend--check .legend-item--ip:has(input:checked) { background: rgba(82,196,26,0.1); border-color: rgba(82,196,26,0.35); }
+    .kpi-chart-legend--check .legend-item--zs:has(input:checked) { background: rgba(114,46,209,0.1); border-color: rgba(114,46,209,0.35); }
+    .kpi-chart-legend--check .legend-item--mj:has(input:checked) { background: rgba(47,84,235,0.1); border-color: rgba(47,84,235,0.35); }
+    .kpi-chart-legend--check .legend-item--bj:has(input:checked) { background: rgba(250,140,22,0.1); border-color: rgba(250,140,22,0.35); }
+    .kpi-chart-legend--check .legend-item--target:has(input:checked) { background: rgba(255,77,79,0.1); border-color: rgba(255,77,79,0.35); color: #ff4d4f; }
+    .kpi-chart-legend--check .legend-item--target { color: #ff4d4f; }
+    .kpi-chart-legend--check .legend-item--target:has(input:not(:checked)) { color: rgba(255,77,79,0.5); }
+    .kpi-chart-legend--check .dot--dash {
+      background: none;
+      border: none;
+      border-top: 2px dashed currentColor;
+      border-radius: 0;
+      width: 12px;
+      height: 0;
+    }
+    .kpi-chart-area {
+      flex: 1;
+      min-height: 200px;
+      background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+      border-radius: 4px;
+      border: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bfbfbf;
+      font-size: 13px;
+      position: relative;
+    }
+    .kpi-chart-area .axis-hint {
+      position: absolute;
+      font-size: 11px;
+      color: #d9d9d9;
+    }
+    .kpi-chart-area .axis-hint.x { bottom: 8px; left: 50%; transform: translateX(-50%); }
+    .kpi-chart-area .axis-hint.y { top: 50%; left: 8px; transform: translateY(-50%) rotate(-90deg); }
+    .kpi-note {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-radius: 4px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.75);
+      line-height: 1.5;
+    }
+    .kpi-failure-body {
+      flex: 1;
+      padding: 8px 12px 6px;
+      min-height: 140px;
+    }
+    .kpi-failure-desc {
+      font-size: 12px;
+      color: rgba(0,0,0,0.65);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .kpi-failure-cats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .kpi-failure-cats .tag {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+    .failure-pie-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 20px;
+      padding: 8px 0 0;
+      margin-top: 2px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 12px;
+      color: #333;
+    }
+    .failure-pie-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .failure-pie-legend .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    /* 科整体KPI 第二排：上单列，下双列 */
+    .kpi-dept-row2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .kpi-dept-row2-split {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 1024px) {
+      .kpi-dept-row2,
+      .kpi-dept-row2-split { grid-template-columns: 1fr; }
+    }
+    .kpi-dept-panel {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-dept-panel .kpi-panel-title {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+    }
+    .kpi-dept-panel .kpi-panel-body {
+      flex: 1;
+      min-height: 220px;
+      padding: 16px;
+    }
+    .kpi-dept-panel .chart-placeholder {
+      height: 200px;
+    }
+    /* 下半部分：产线 Tab */
+    .line-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .line-tab {
+      flex: 0 0 auto;
+      padding: 8px 16px;
+      border: 1px solid #e8e8e8;
+      background: #fafafa;
+      color: rgba(0,0,0,0.75);
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .line-tab:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+      background: #fff;
+    }
+    .line-tab.is-active {
+      border-color: #1890ff;
+      color: #fff;
+      background: #1890ff;
+    }
+    /* 设备运行情况：仅展示 0故障达成天数 */
+    .equip-status-bar {
+      border: 1px solid #f0f0f0;
+      border-top: 2px solid #1890ff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      background: #fafafa;
+    }
+    .equip-status-bar--single .status-main {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .equip-status-bar .status-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+    }
+    .equip-status-bar .status-zero {
+      font-size: 15px;
+      color: #52c41a;
+    }
+    .equip-status-bar .status-zero .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: #52c41a;
+      margin: 0 4px;
+      letter-spacing: 1px;
+    }
+    /* 设备运行情况 · 四模块布局 */
+    .equip-modules { display: flex; flex-direction: column; gap: 24px; }
+    /* 月度可动率 + 日度履历：同一行左右分栏 */
+    .equip-modules-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .equip-modules-row .equip-module { min-width: 0; }
+    @media (max-width: 1200px) {
+      .equip-modules-row { grid-template-columns: 1fr; }
+    }
+    /* 可动率趋势 + 故障分类：同一行左右分栏 */
+    .equip-rate-block {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      width: 100%;
+    }
+    .equip-rate-block .equip-module { min-width: 0; }
+    @media (max-width: 1200px) {
+      .equip-rate-block { grid-template-columns: 1fr; }
+    }
+    .equip-rate-shared-title { margin-bottom: 12px; }
+    /* 最新故障明细：单独一行 */
+    .equip-distribution-row { width: 100%; }
+    .equip-distribution-row .equip-module { min-width: 0; }
+    .equip-module { }
+    .equip-module--full { width: 100%; }
+    .equip-module-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px 16px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .equip-module-header > div:first-child {
+      min-width: 0;
+    }
+    .equip-module-header .equip-module-title { margin-bottom: 0; }
+    .equip-btn-more {
+      font-size: 13px;
+      color: #1890ff;
+      text-decoration: none;
+    }
+    .equip-btn-more:hover { text-decoration: underline; }
+    .equip-module-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 4px;
+    }
+    .equip-module-desc {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+      margin-bottom: 12px;
+    }
+    .equip-chart { width: 100%; height: 280px; }
+    .equip-rate-controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+    }
+    .equip-shared-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 768px) {
+      .equip-module-header {
+        align-items: stretch;
+      }
+      .equip-rate-controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .equip-shared-toolbar {
+        justify-content: flex-start;
+      }
+    }
+    .equip-rate-toggle {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+      border: 1px solid #d9d9d9;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .equip-rate-toggle-btn {
+      border: none;
+      background: transparent;
+      color: rgba(0,0,0,0.65);
+      font-size: 13px;
+      line-height: 1;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .equip-rate-toggle-btn:hover {
+      color: #1890ff;
+    }
+    .equip-rate-toggle-btn.is-active {
+      background: #1890ff;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(24,144,255,0.24);
+    }
+    .equip-month-row { margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .equip-rate-month-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .equip-rate-month-wrap.is-hidden { display: none; }
+    .equip-month-select { padding: 6px 10px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 13px; min-width: 140px; }
+    .equip-two-pies {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .equip-two-pies { grid-template-columns: 1fr; }
+    }
+    .equip-pie-wrap { text-align: center; }
+    .equip-pie-label { font-size: 13px; color: rgba(0,0,0,0.65); margin-bottom: 8px; }
+    .equip-pie-chart { width: 100%; height: 260px; }
+    .equip-pie-legend { font-size: 12px; color: #666; margin-top: 8px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 16px; }
+    .equip-pie-legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .equip-pie-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+    .equip-table-wrap {
+      overflow: auto;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      background: #fff;
+      padding: 0;
+      height: 280px;
+      max-height: 280px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .equip-table-wrap::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+    .equip-table-wrap.is-scrolling {
+      scrollbar-width: thin;
+      -ms-overflow-style: auto;
+    }
+    .equip-table-wrap.is-scrolling::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      display: block;
+    }
+    .equip-table-wrap.is-scrolling::-webkit-scrollbar-track {
+      background: #f5f5f5;
+      border-radius: 3px;
+    }
+    .equip-table-wrap.is-scrolling::-webkit-scrollbar-thumb {
+      background: #bfbfbf;
+      border-radius: 3px;
+    }
+    .equip-table-wrap.is-scrolling::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+    .equip-fault-table {
+      width: 100%;
+      min-width: 1180px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      background: #fff;
+    }
+    .equip-fault-table th,
+    .equip-fault-table td {
+      border: none;
+      border-bottom: 1px solid #f5f5f5;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      color: rgba(0,0,0,0.72);
+      line-height: 1.5;
+    }
+    .equip-fault-table th {
+      background: #fcfcfc;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background-clip: padding-box;
+      box-shadow: inset 0 -1px 0 #ececec;
+    }
+    .equip-fault-table td { background: #fff; }
+    .equip-fault-table tbody tr:last-child td { border-bottom: none; }
+    .equip-fault-table tbody tr:hover td { background: #fafcff; }
+    .equip-fault-table .empty-hint {
+      color: #bfbfbf;
+      text-align: center;
+      font-size: 12px;
+    }
+    .equip-fault-table .col-index { width: 60px; }
+    .equip-fault-table .col-time { width: 130px; }
+    .equip-fault-table .col-duration { width: 110px; }
+    .equip-fault-table .col-line { width: 72px; }
+    .equip-fault-table .col-device { width: 150px; }
+    .equip-fault-table .col-phenomenon { width: 260px; }
+    .equip-fault-table .col-attr { width: 80px; }
+    .equip-fault-table .col-type { width: 90px; }
+    .equip-fault-table .col-status { width: 90px; }
+    .equip-fault-table .col-followup { width: 140px; }
+    .equip-fault-phenomenon {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(0,0,0,0.72);
+    }
+    .equip-fault-followups {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .equip-fault-followup-tags {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .equip-fault-followup-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f0f5ff;
+      color: #2f54eb;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .equip-fault-followup-tag--root-cause {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+    .equip-fault-followup-tag--spread {
+      background: #fff7e6;
+      color: #fa8c16;
+    }
+    .equip-fault-followup-tag--long-stop {
+      background: #f6ffed;
+      color: #52c41a;
+    }
+    .equip-fault-followup-tag--empty {
+      background: #f5f5f5;
+      color: #8c8c8c;
+    }
+    .equip-fault-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .equip-level {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .equip-level--heavy {
+      background: #fff1f0;
+      color: #ff4d4f;
+    }
+    .equip-level--light {
+      background: #fff7e6;
+      color: #fa8c16;
+    }
+    .equip-level--none {
+      background: #f0f5ff;
+      color: #597ef7;
+    }
+    .tag-info { background: #e6f7ff; color: #1890ff; }
+    /* 重大故障推移 · 5 模块 */
+    .heavy-fault-modules { display: flex; flex-direction: column; gap: 28px; }
+    .heavy-fault-top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .heavy-fault-top-row .heavy-fault-module { min-width: 0; }
+    @media (max-width: 1200px) {
+      .heavy-fault-top-row { grid-template-columns: 1fr; }
+    }
+    .heavy-fault-bottom-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .heavy-fault-bottom-row .heavy-fault-module { min-width: 0; }
+    @media (max-width: 1200px) {
+      .heavy-fault-bottom-row { grid-template-columns: 1fr; }
+    }
+    .heavy-fault-module {
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 14px 16px 12px;
+      box-shadow: 0 1px 4px rgba(31,45,61,0.04);
+    }
+    .heavy-fault-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .heavy-fault-module-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 12px;
+    }
+    .heavy-fault-title-row .heavy-fault-module-title { margin-bottom: 0; }
+    .heavy-fault-title-row .btn-target {
+      font-size: 12px;
+      color: #1890ff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 6px;
+    }
+    .heavy-fault-title-row .btn-target:hover { text-decoration: underline; }
+    .heavy-fault-module-title--bar {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 12px;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: 0;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-top: 3px solid #1890ff;
+      border-radius: 4px 4px 0 0;
+    }
+    .heavy-fault-module-title-row--bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: 0;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-top: 3px solid #1890ff;
+      border-radius: 4px 4px 0 0;
+    }
+    .heavy-fault-module-title-row--bar .heavy-fault-module-title {
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap {
+      border: 1px solid #f0f0f0;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      overflow: auto;
+      background: #fff;
+      max-height: 280px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap.is-scrolling {
+      scrollbar-width: thin;
+      -ms-overflow-style: auto;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap.is-scrolling::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      display: block;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap.is-scrolling::-webkit-scrollbar-track {
+      background: #f5f5f5;
+      border-radius: 3px;
+    }
+    .heavy-fault-module--list .heavy-fault-list-wrap.is-scrolling::-webkit-scrollbar-thumb {
+      background: #bfbfbf;
+      border-radius: 3px;
+    }
+    .heavy-fault-chart { width: 100%; height: 260px; }
+    .heavy-fault-list-table {
+      width: 100%;
+      min-width: 1080px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    .heavy-fault-list-table th,
+    .heavy-fault-list-table td {
+      border: 1px solid #f0f0f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .heavy-fault-list-table th {
+      background: #fafafa;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background-clip: padding-box;
+      box-shadow: inset 0 -1px 0 #f0f0f0;
+    }
+    .heavy-fault-list-table td { color: rgba(0,0,0,0.72); background: #fff; }
+    .heavy-fault-list-table .empty-hint { color: #bfbfbf; text-align: center; font-size: 12px; }
+    .heavy-fault-list-table--measure {
+      min-width: 0;
+      table-layout: fixed;
+    }
+    .heavy-fault-list-table--measure th,
+    .heavy-fault-list-table--measure td {
+      padding: 10px 10px;
+    }
+    .heavy-fault-list-table--measure th:nth-child(1),
+    .heavy-fault-list-table--measure td:nth-child(1) {
+      width: 56px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(2),
+    .heavy-fault-list-table--measure td:nth-child(2) {
+      width: 96px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(3),
+    .heavy-fault-list-table--measure td:nth-child(3) {
+      width: auto;
+    }
+    .heavy-fault-list-table--measure th:nth-child(4),
+    .heavy-fault-list-table--measure td:nth-child(4) {
+      width: 72px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(5),
+    .heavy-fault-list-table--measure td:nth-child(5) {
+      width: 72px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(6),
+    .heavy-fault-list-table--measure td:nth-child(6) {
+      width: 92px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(7),
+    .heavy-fault-list-table--measure td:nth-child(7) {
+      width: 92px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure th:nth-child(8),
+    .heavy-fault-list-table--measure td:nth-child(8) {
+      width: 96px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table--measure td:nth-child(3) {
+      word-break: break-word;
+    }
+    /* 定期定量推进 · 图表+清单 */
+    .periodic-trend-modules { display: flex; flex-direction: column; gap: 24px; }
+    .periodic-trend-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .periodic-trend-row > * { min-width: 0; }
+    @media (max-width: 1200px) {
+      .periodic-trend-row { grid-template-columns: 1fr; }
+    }
+    .periodic-trend-chart-wrap { }
+    .periodic-trend-chart-desc {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+      margin-bottom: 10px;
+    }
+    .periodic-trend-chart { width: 100%; height: 280px; }
+    .periodic-trend-list-wrap {
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .periodic-trend-list-wrap .heavy-fault-module-title--bar { margin-bottom: 0; border-radius: 0; }
+    .periodic-trend-list-inner {
+      min-width: 0;
+      max-height: 320px;
+      overflow: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    /* 未完成计划清单：取消 heavy-fault 大表 min-width，避免右栏被迫横向滑动 */
+    .heavy-fault-list-table.periodic-trend-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .heavy-fault-list-table.periodic-trend-table th,
+    .heavy-fault-list-table.periodic-trend-table td {
+      padding: 8px 8px;
+      vertical-align: middle;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(1),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(1) {
+      width: 44px;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(2),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(2) {
+      width: 72px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(3),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(3) {
+      width: auto;
+      min-width: 0;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(4),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(4) {
+      width: 64px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(5),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(5) {
+      width: 86px;
+      white-space: nowrap;
+    }
+    .heavy-fault-list-table.periodic-trend-table th:nth-child(6),
+    .heavy-fault-list-table.periodic-trend-table td:nth-child(6) {
+      width: 72px;
+      white-space: nowrap;
+    }
+    .periodic-trend-list-inner::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    .periodic-trend-list-inner.is-scrolling { scrollbar-width: thin; -ms-overflow-style: auto; }
+    .periodic-trend-list-inner.is-scrolling::-webkit-scrollbar { width: 6px; height: 6px; display: block; }
+    .periodic-trend-list-inner.is-scrolling::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 3px; }
+    .periodic-trend-list-inner.is-scrolling::-webkit-scrollbar-thumb { background: #bfbfbf; border-radius: 3px; }
+    /* 变化点、不具合关闭管理 · 浅色双栏（与整页一致） */
+    .change-defect-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .change-defect-row { grid-template-columns: 1fr; }
+    }
+    .change-defect-panel {
+      background: #fff;
+      border-radius: 4px;
+      padding: 16px;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .change-defect-panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 16px;
+    }
+    .change-defect-panel-title--split {
+      justify-content: space-between;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+    }
+    .change-defect-panel-title-start {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .change-defect-panel-title--split .equip-btn-more {
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .change-defect-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .change-defect-bullet--orange { background: #f5a623; }
+    .change-defect-bullet--pink { background: #eb2f96; }
+    .change-defect-kpis {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+    .change-defect-kpis--four { gap: 16px; }
+    .change-defect-kpi {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .change-defect-kpi-num {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .change-defect-kpi-num--orange { color: #f5a623; }
+    .change-defect-kpi-num--yellow { color: #d4b106; }
+    .change-defect-kpi-num--green { color: #52c41a; }
+    .change-defect-kpi-num--pink { color: #eb2f96; }
+    .change-defect-kpi-num--cyan { color: #13c2c2; }
+    .change-defect-kpi-num--amber { color: #faad14; }
+    .change-defect-kpi-label {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+    }
+    .change-defect-table-wrap {
+      /* 约表头 + 5 行数据可视，超出纵向滚动；滚动条见 bindScrollShow */
+      max-height: min(26vh, 228px);
+      overflow: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      border-radius: 4px;
+      border: 1px solid #f0f0f0;
+    }
+    .change-defect-table-wrap::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    .change-defect-table-wrap.is-scrolling { scrollbar-width: thin; -ms-overflow-style: auto; }
+    .change-defect-table-wrap.is-scrolling::-webkit-scrollbar { width: 5px; display: block; }
+    .change-defect-table-wrap.is-scrolling::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 3px; }
+    .change-defect-table-wrap.is-scrolling::-webkit-scrollbar-thumb { background: #bfbfbf; border-radius: 3px; }
+    .change-defect-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .change-defect-table th,
+    .change-defect-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .change-defect-table th {
+      background: #fafafa;
+      color: rgba(0,0,0,0.85);
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .change-defect-table td { color: rgba(0,0,0,0.65); }
+    .change-defect-table tbody tr:hover { background: #fafafa; }
+    .change-defect-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .change-defect-badge--green { background: #f6ffed; color: #52c41a; }
+    .change-defect-badge--yellow { background: #fffbe6; color: #d4b106; }
+    .change-defect-badge--amber { background: #fff7e6; color: #faad14; }
+    .change-defect-badge--cyan { background: #e6fffb; color: #13c2c2; }
+    .change-defect-list-wrap {
+      max-height: 280px;
+      overflow: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .change-defect-list-wrap::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    .change-defect-list-wrap.is-scrolling { scrollbar-width: thin; -ms-overflow-style: auto; }
+    .change-defect-list-wrap.is-scrolling::-webkit-scrollbar { width: 5px; display: block; }
+    .change-defect-list-wrap.is-scrolling::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 3px; }
+    .change-defect-list-wrap.is-scrolling::-webkit-scrollbar-thumb { background: #bfbfbf; border-radius: 3px; }
+    .change-defect-list-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      background: #fafafa;
+      border-radius: 4px;
+      border: 1px solid #f0f0f0;
+      border-left: 3px solid transparent;
+    }
+    .change-defect-list-item--s { border-left-color: #ff4d4f; }
+    .change-defect-list-item--a { border-left-color: #fa8c16; }
+    .change-defect-list-item--c { border-left-color: #1890ff; }
+    .change-defect-list-content { flex: 1; min-width: 0; }
+    .change-defect-list-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.85);
+      margin-bottom: 4px;
+    }
+    .change-defect-list-meta {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+    }
+    .change-defect-list-item .change-defect-badge { flex-shrink: 0; }
+    /* 重点不具合闭环 · 列表表格（与最新故障明细风格一致，避免 min-width 撑出横滑） */
+    .change-defect-panel--defect .change-defect-table-wrap {
+      min-width: 0;
+    }
+    .equip-fault-table.defect-loop-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .equip-fault-table.defect-loop-table th,
+    .equip-fault-table.defect-loop-table td {
+      padding: 7px 6px;
+      vertical-align: top;
+    }
+    /* 按列分配宽度：压缩短内容列，把宽度让给「不具合现象」 */
+    .equip-fault-table.defect-loop-table th:nth-child(1),
+    .equip-fault-table.defect-loop-table td:nth-child(1) {
+      width: 3%;
+      max-width: 36px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(2),
+    .equip-fault-table.defect-loop-table td:nth-child(2) {
+      width: 15%;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(3),
+    .equip-fault-table.defect-loop-table td:nth-child(3) {
+      width: 6%;
+      white-space: nowrap;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(4),
+    .equip-fault-table.defect-loop-table td:nth-child(4) {
+      width: 11%;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(5),
+    .equip-fault-table.defect-loop-table td:nth-child(5) {
+      width: 37%;
+      min-width: 0;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.45;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(6),
+    .equip-fault-table.defect-loop-table td:nth-child(6) {
+      width: 8%;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(7),
+    .equip-fault-table.defect-loop-table td:nth-child(7) {
+      width: 8%;
+      white-space: nowrap;
+    }
+    .equip-fault-table.defect-loop-table th:nth-child(8),
+    .equip-fault-table.defect-loop-table td:nth-child(8) {
+      width: 12%;
+      min-width: 0;
+      white-space: normal;
+    }
+    .equip-fault-table.defect-loop-table td:nth-child(8) .equip-fault-followup-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    .defect-th-filter {
+      white-space: nowrap;
+    }
+    .defect-th-filter .th-filter-icon {
+      margin-left: 4px;
+      font-size: 9px;
+      color: #bfbfbf;
+      vertical-align: middle;
+    }
+    .defect-urgency-tag {
+      display: inline-block;
+      min-width: 22px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .defect-urgency-tag--s { background: #fff1f0; color: #cf1322; }
+    .defect-urgency-tag--a { background: #fff7e6; color: #d46b08; }
+    .defect-urgency-tag--c { background: #e6f7ff; color: #0958d9; }
+    /* 设备变化点管理 · 列表表格 */
+    .change-defect-panel--change .change-defect-table-wrap {
+      min-width: 0;
+    }
+    .equip-fault-table.change-loop-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(1),
+    .equip-fault-table.change-loop-table td:nth-child(1) {
+      width: 40px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(2),
+    .equip-fault-table.change-loop-table td:nth-child(2) {
+      min-width: 0;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(3),
+    .equip-fault-table.change-loop-table td:nth-child(3) {
+      min-width: 0;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(4),
+    .equip-fault-table.change-loop-table td:nth-child(4) {
+      width: 108px;
+      white-space: nowrap;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(5),
+    .equip-fault-table.change-loop-table td:nth-child(5) {
+      width: 72px;
+      white-space: nowrap;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(6),
+    .equip-fault-table.change-loop-table td:nth-child(6),
+    .equip-fault-table.change-loop-table th:nth-child(7),
+    .equip-fault-table.change-loop-table td:nth-child(7) {
+      width: 102px;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+    .equip-fault-table.change-loop-table th:nth-child(8),
+    .equip-fault-table.change-loop-table td:nth-child(8) {
+      width: 80px;
+      white-space: nowrap;
+    }
+    /* 维护目标可动率弹窗 */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 24px; }
+    .modal-overlay.is-open { display: flex; }
+    .modal-box { background: #fff; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); max-width: 400px; width: 100%; }
+    .modal-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; font-size: 16px; font-weight: 600; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 12px 20px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 8px; }
+    .modal-box--wide { max-width: 720px; }
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(0,0,0,0.85); }
+    .form-row input { width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+    .target-stop-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px 16px;
+    }
+    @media (max-width: 768px) {
+      .target-stop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .target-stop-item label { margin-bottom: 6px; }
+    .btn-pri { padding: 6px 16px; background: #1890ff; color: #fff; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; }
+    .btn-sec { padding: 6px 16px; background: #fff; color: rgba(0,0,0,0.65); border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="dashboard-fullscreen">
+    <header class="dashboard-header">
+      <h1 class="dashboard-title">成型设备1科保全业务看板</h1>
+      <span style="color: #999; font-size: 13px;">保全资源系统 KPI / 闭环 / 计划执行 · 原型</span>
+    </header>
+
+    <div class="dashboard-body">
+      <!-- 一、科室经营总览（左：年度可动率各工段可动率；右：停机损失结构） -->
+      <section class="section">
+        <h2 class="section-title">一、科室经营总览</h2>
+        <div class="kpi-dept-row">
+          <div class="kpi-dept-left">
+            <div class="kpi-panel-title">
+              <div class="kpi-panel-title-row">
+                <span>年度可动率达成 / 工段对比</span>
+                <button type="button" class="btn-target" id="btn-maintain-target" aria-label="维护目标可动率">维护目标可动率</button>
+              </div>
+            </div>
+            <div class="kpi-chart-wrap">
+              <div class="kpi-chart-legend kpi-chart-legend--check" id="annual-rate-legend">
+                <label class="legend-item legend-item--1bp"><input type="checkbox" checked data-series="1BP"><i class="dot" style="background:#1890ff;"></i><span class="legend-txt">1BP</span></label>
+                <label class="legend-item legend-item--2bp"><input type="checkbox" checked data-series="2BP"><i class="dot" style="background:#c23531;"></i><span class="legend-txt">2BP</span></label>
+                <label class="legend-item legend-item--ip"><input type="checkbox" checked data-series="IP"><i class="dot" style="background:#52c41a;"></i><span class="legend-txt">IP</span></label>
+                <label class="legend-item legend-item--zs"><input type="checkbox" checked data-series="注塑"><i class="dot" style="background:#722ed1;"></i><span class="legend-txt">注塑</span></label>
+                <label class="legend-item legend-item--mj"><input type="checkbox" checked data-series="模具"><i class="dot" style="background:#2f54eb;"></i><span class="legend-txt">模具</span></label>
+                <label class="legend-item legend-item--bj"><input type="checkbox" checked data-series="补给"><i class="dot" style="background:#fa8c16;"></i><span class="legend-txt">补给</span></label>
+                <label class="legend-item legend-item--target"><input type="checkbox" checked data-series="目标"><i class="dot dot--dash"></i><span class="legend-txt">目标</span></label>
+              </div>
+              <div id="chart-annual-rate" style="height: 200px; min-height: 200px;"></div>
+            </div>
+          </div>
+          <div class="kpi-dept-right">
+            <div class="kpi-panel-title">月度故障分类（全科）</div>
+            <div class="kpi-failure-body">
+              <div id="chart-failure-pie" style="height: 170px;"></div>
+              <div class="failure-pie-legend" id="failure-pie-legend"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 科室经营总览 第二排：定期定量执行推移在上，故障/不具合闭环在下 -->
+        <div class="kpi-dept-row2">
+          <div class="kpi-dept-panel">
+            <div class="kpi-panel-title">定期定量执行推移</div>
+            <div class="kpi-panel-body">
+              <div id="chart-periodic-quantity" style="height: 280px;"></div>
+            </div>
+          </div>
+          <div class="kpi-dept-row2-split">
+            <div class="kpi-dept-panel">
+              <div class="kpi-panel-title">重大故障闭环推移</div>
+              <div class="kpi-panel-body">
+                <div id="chart-heavy-fault" style="height: 220px;"></div>
+              </div>
+            </div>
+            <div class="kpi-dept-panel">
+              <div class="kpi-panel-title">重点不具合闭环</div>
+              <div class="kpi-panel-body">
+                <div id="chart-key-defect" style="height: 220px;"></div>
+                <div class="kpi-note" style="margin-top:8px; font-size:11px;">本图仅统计 S/A 级重点不具合；按发生、关闭、残件维度跟踪，便于识别逾期闭环风险。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 二、工段业务明细（下半部分：按工段 Tab 切换） -->
+      <section class="section" id="line-section" data-current-line="1BP">
+        <h2 class="section-title">二、工段业务明细</h2>
+        <div class="line-tabs" role="tablist" aria-label="生产线">
+          <button type="button" class="line-tab is-active" role="tab" aria-selected="true" data-line="1BP">1BP</button>
+          <button type="button" class="line-tab" role="tab" aria-selected="false" data-line="2BP">2BP</button>
+          <button type="button" class="line-tab" role="tab" aria-selected="false" data-line="IP">IP</button>
+          <button type="button" class="line-tab" role="tab" aria-selected="false" data-line="注塑">注塑</button>
+          <button type="button" class="line-tab" role="tab" aria-selected="false" data-line="模具">模具</button>
+          <button type="button" class="line-tab" role="tab" aria-selected="false" data-line="补给">补给</button>
+        </div>
+
+        <!-- 1）设备运行情况 -->
+        <div class="card">
+          <div class="card-header">设备运行情况</div>
+          <div class="card-body">
+            <div class="dashboard-grid dashboard-grid--single-row">
+              <div class="stat-card stat-card--compact">
+                <div class="stat-meta">
+                  <div class="stat-label">0 故障达成</div>
+                  <div class="stat-trend" id="equip-stat-zero-trend">连续保持中</div>
+                </div>
+                <div class="stat-value green" id="equip-stat-zero-value">28 天</div>
+              </div>
+            </div>
+            <div class="equip-modules">
+              <div class="equip-shared-toolbar">
+                <div class="equip-rate-controls">
+                  <div class="equip-rate-toggle" id="equip-shared-view" role="tablist" aria-label="设备明细视图切换">
+                    <button type="button" class="equip-rate-toggle-btn is-active" data-view="year" role="tab" aria-selected="true">年视图</button>
+                    <button type="button" class="equip-rate-toggle-btn" data-view="month" role="tab" aria-selected="false">月视图</button>
+                  </div>
+                  <div id="equip-shared-month-wrap" class="equip-rate-month-wrap is-hidden">
+                    <label for="equip-shared-month">显示月份：</label>
+                    <select id="equip-shared-month" class="equip-month-select">
+                      <option value="2026-01">2026年1月</option>
+                      <option value="2026-02">2026年2月</option>
+                      <option value="2026-03" selected>2026年3月</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="equip-rate-block">
+                <div class="equip-module equip-module--full">
+                  <div class="equip-module-header">
+                    <div class="equip-module-title">可动率趋势</div>
+                  </div>
+                  <div id="chart-equip-rate" class="equip-chart"></div>
+                </div>
+                <div class="equip-module equip-module--full">
+                  <div class="equip-module-header">
+                    <div class="equip-module-title">故障分类</div>
+                  </div>
+                  <div class="equip-two-pies">
+                    <div class="equip-pie-wrap">
+                      <div class="equip-pie-label">初发 / 偶发 / 散发 / 频发（百分比+分钟）</div>
+                      <div id="chart-equip-failure-pie" class="equip-pie-chart"></div>
+                      <div id="equip-failure-pie-legend" class="equip-pie-legend"></div>
+                    </div>
+                    <div class="equip-pie-wrap">
+                      <div class="equip-pie-label">劣化 / 人为 / 磨损 / 脏 / 松脱 / 其他（百分比+件）</div>
+                      <div id="chart-equip-failure-type-pie" class="equip-pie-chart"></div>
+                      <div id="equip-failure-type-legend" class="equip-pie-legend"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="equip-distribution-row">
+                <div class="equip-module equip-module--full">
+                  <div class="equip-module-header">
+                    <div class="equip-module-title">最新故障明细</div>
+                    <a href="javascript:;" class="equip-btn-more">查看更多</a>
+                  </div>
+                  <div class="equip-table-wrap">
+                    <table class="equip-fault-table">
+                      <thead>
+                        <tr>
+                          <th class="col-index">序号</th>
+                          <th class="col-time">发生时间</th>
+                          <th class="col-duration">停止时长（min）</th>
+                          <th class="col-line">生产线</th>
+                          <th class="col-device">设备名称</th>
+                          <th class="col-phenomenon">故障现象</th>
+                          <th class="col-attr">故障属性</th>
+                          <th class="col-type">故障类型</th>
+                          <th class="col-status">状态</th>
+                          <th class="col-followup">后续处理</th>
+                        </tr>
+                      </thead>
+                      <tbody id="equip-fault-table-body">
+                        <tr>
+                          <td>1</td>
+                          <td>2026-03-18 15:44</td>
+                          <td>20</td>
+                          <td>1BP</td>
+                          <td>自动挂具机器人 R-01</td>
+                          <td><span class="equip-fault-phenomenon">吸附异常导致节拍中断，设备复位后再次报警，需要持续观察真空状态并安排点检确认真空发生器、吸盘磨损及相关气路稳定性</span></td>
+                          <td>人为</td>
+                          <td>轻故障</td>
+                          <td><span class="tag tag-info">一时保存</span></td>
+                          <td><span class="equip-fault-followup-tags"><span class="equip-fault-followup-tag equip-fault-followup-tag--root-cause">真因分析</span><span class="equip-fault-followup-tag equip-fault-followup-tag--long-stop">长停对策</span></span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2）重大故障闭环（5 个子模块） -->
+        <div class="card">
+          <div class="card-header">重大故障推移</div>
+          <div class="card-body">
+            <div class="heavy-fault-modules">
+              <div class="heavy-fault-top-row">
+                <!-- 1）重故障停机累计 vs 目标停机时间 -->
+                <div class="heavy-fault-module">
+                  <div class="heavy-fault-title-row">
+                    <div class="heavy-fault-module-title">重故障停机累计 vs 目标损失</div>
+                    <button type="button" class="btn-target" id="btn-maintain-heavy-target">维护目标累计停机时间</button>
+                  </div>
+                  <div id="chart-hf-cumulative" class="heavy-fault-chart"></div>
+                </div>
+                <!-- 2）重故障停机次数 / 真因明确次数 / 累计不明确次数 / 真因明确率 -->
+                <div class="heavy-fault-module">
+                  <div class="heavy-fault-module-title">重故障发生 / 真因明确 / 未明残件 / 明确率</div>
+                  <div id="chart-hf-trend" class="heavy-fault-chart"></div>
+                </div>
+              </div>
+              <!-- 3）故障真因未明清单 -->
+              <div class="heavy-fault-module heavy-fault-module--list">
+                <div class="heavy-fault-module-title-row--bar">
+                  <div class="heavy-fault-module-title">故障真因未明清单</div>
+                  <a href="javascript:;" class="equip-btn-more">查看更多</a>
+                </div>
+                <div class="heavy-fault-list-wrap">
+                  <table class="heavy-fault-list-table equip-fault-table">
+                    <thead>
+                      <tr><th class="col-index">序号</th><th class="col-time">发生时间</th><th class="col-duration">停止时长（min）</th><th class="col-line">生产线</th><th class="col-device">设备名称</th><th class="col-phenomenon">故障现象</th><th class="col-attr">故障属性</th><th class="col-type">故障类型</th><th class="col-status">状态</th></tr>
+                    </thead>
+                    <tbody id="hf-unclear-body">
+                      <tr><td>1</td><td>2026-02-15 09:20</td><td>45</td><td>1BP</td><td>喷涂线003</td><td>喷枪堵塞重复停机，清扫后短时间内再次出现喷涂节拍中断并伴随压力波动报警</td><td>脏</td><td>重故障</td><td>一时保存</td></tr>
+                      <tr><td>2</td><td>2026-02-08 13:40</td><td>28</td><td>1BP</td><td>6#革新机</td><td>传动侧异音再次发生，设备升速后振动增大并伴随间歇性卡顿导致停机</td><td>其他</td><td>重故障</td><td>处置完成</td></tr>
+                      <tr><td colspan="9" class="empty-hint">暂无更多真因未明记录</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="heavy-fault-bottom-row">
+                <!-- 4）对策件数 / 完成件数 / 延迟件数 / 未到期件数 / 完成率 -->
+                <div class="heavy-fault-module">
+                  <div class="heavy-fault-module-title">对策件数 / 完成 / 延迟 / 未到期 / 完成率</div>
+                  <div id="chart-hf-countermeasure" class="heavy-fault-chart"></div>
+                </div>
+                <!-- 5）未完成对策清单履历 -->
+                <div class="heavy-fault-module heavy-fault-module--list">
+                  <div class="heavy-fault-module-title heavy-fault-module-title--bar">未完成对策履历</div>
+                  <div class="heavy-fault-list-wrap">
+                    <table class="heavy-fault-list-table heavy-fault-list-table--measure">
+                      <thead>
+                        <tr><th>序号</th><th>对策类型</th><th>对策内容</th><th>周期</th><th>次数</th><th>予定日</th><th>担当</th><th>完成状态</th></tr>
+                      </thead>
+                      <tbody id="hf-measure-body">
+                        <tr><td>1</td><td>对策实施</td><td>喷涂线喷枪保养强化</td><td>-</td><td>-</td><td>2026-03-25</td><td>张三</td><td><span class="tag tag-warning">进行中</span></td></tr>
+                        <tr><td>2</td><td>对策评价</td><td>革新机传动点检标准更新</td><td>单次</td><td>1次</td><td>2026-03-30</td><td>李四</td><td><span class="tag tag-default">未开始</span></td></tr>
+                        <tr><td colspan="8" class="empty-hint">暂无更多未完成对策</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3）定期定量推移 -->
+        <div class="card">
+          <div class="card-header">定期定量推移</div>
+          <div class="card-body">
+            <div class="periodic-trend-modules">
+              <div class="periodic-trend-row">
+                <!-- 图表：年度/月度任务数、完成数、累计延迟、完成率 -->
+                <div class="periodic-trend-chart-wrap">
+                  <div class="periodic-trend-chart-desc">围绕点检、定期、定量三类计划，跟踪计划投放、完成、延迟及达成率。</div>
+                  <div id="chart-periodic-trend" class="periodic-trend-chart"></div>
+                </div>
+                <!-- 未完成任务清单 -->
+                <div class="periodic-trend-list-wrap">
+                  <div class="heavy-fault-module-title heavy-fault-module-title--bar">未完成计划清单</div>
+                  <div class="periodic-trend-list-inner">
+                    <table class="heavy-fault-list-table periodic-trend-table">
+                      <thead>
+                        <tr><th>序号</th><th>任务类型</th><th>任务信息</th><th>担当者</th><th>任务开始日</th><th>状态</th></tr>
+                      </thead>
+                      <tbody id="periodic-task-body">
+                        <tr><td>1</td><td>定期任务</td><td>1BP 月度自主点检表更新</td><td>王五</td><td>2026-03-13</td><td><span class="tag tag-warning">进行中</span></td></tr>
+                        <tr><td>2</td><td>标准任务</td><td>注塑机保养标准修订</td><td>赵六</td><td>2026-03-10</td><td><span class="tag tag-error">已延迟</span></td></tr>
+                        <tr><td>3</td><td>定期任务</td><td>模具定期清扫实施</td><td>钱七</td><td>2026-03-21</td><td><span class="tag tag-default">未开始</span></td></tr>
+                        <tr><td colspan="6" class="empty-hint">暂无更多未完成任务</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4）变化点、不具合关闭管理 -->
+        <div class="card">
+          <div class="card-header">变化点、不具合关闭管理</div>
+          <div class="card-body">
+            <div class="change-defect-row">
+              <!-- 月度不具合 -->
+              <div class="change-defect-panel change-defect-panel--defect">
+                <div class="change-defect-panel-title change-defect-panel-title--split">
+                  <div class="change-defect-panel-title-start">
+                    <i class="change-defect-bullet change-defect-bullet--pink"></i>
+                    <span>重点不具合闭环</span>
+                  </div>
+                  <a href="javascript:;" class="equip-btn-more" id="btn-defect-loop-more">查看更多</a>
+                </div>
+                <div class="change-defect-kpis change-defect-kpis--four">
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--pink" id="defect-found">4</span>
+                    <span class="change-defect-kpi-label">发生件数</span>
+                  </div>
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--green" id="defect-done">2</span>
+                    <span class="change-defect-kpi-label">处置完成</span>
+                  </div>
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--cyan" id="defect-closed">1</span>
+                    <span class="change-defect-kpi-label">已关闭</span>
+                  </div>
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--amber" id="defect-processing">1</span>
+                    <span class="change-defect-kpi-label">处理中</span>
+                  </div>
+                </div>
+                <div class="change-defect-table-wrap" id="defect-list-wrap">
+                  <table class="equip-fault-table defect-loop-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>发现时间</th>
+                        <th>生产线</th>
+                        <th>设备名称</th>
+                        <th>不具合现象</th>
+                        <th class="defect-th-filter">紧急度<span class="th-filter-icon" aria-hidden="true">▼</span></th>
+                        <th class="defect-th-filter">状态<span class="th-filter-icon" aria-hidden="true">▼</span></th>
+                        <th>后续处理</th>
+                      </tr>
+                    </thead>
+                    <tbody id="defect-table-body">
+                      <tr><td colspan="8" class="empty-hint">加载中…</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- 设备变化点 -->
+              <div class="change-defect-panel change-defect-panel--change">
+                <div class="change-defect-panel-title change-defect-panel-title--split">
+                  <div class="change-defect-panel-title-start">
+                    <i class="change-defect-bullet change-defect-bullet--orange"></i>
+                    <span>设备变化点管理</span>
+                  </div>
+                  <a href="javascript:;" class="equip-btn-more" id="btn-change-point-more">查看更多</a>
+                </div>
+                <div class="change-defect-kpis">
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--orange" id="change-point-total">5</span>
+                    <span class="change-defect-kpi-label">变化点数量</span>
+                  </div>
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--yellow" id="change-point-pending">2</span>
+                    <span class="change-defect-kpi-label">未确认</span>
+                  </div>
+                  <div class="change-defect-kpi">
+                    <span class="change-defect-kpi-num change-defect-kpi-num--green" id="change-point-confirmed">3</span>
+                    <span class="change-defect-kpi-label">已确认</span>
+                  </div>
+                </div>
+                <div class="change-defect-table-wrap">
+                  <table class="equip-fault-table change-loop-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>设备名称</th>
+                        <th>设备位置</th>
+                        <th>设备编号</th>
+                        <th>申请人</th>
+                        <th>申请日期</th>
+                        <th>变化点日期</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody id="change-point-body">
+                      <tr><td colspan="8" class="empty-hint">加载中…</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5）人员去向 / 每直工作安排 -->
+        <div class="card">
+          <div class="card-header">人员去向 / 每直工作安排 · <span class="js-line-name">1BP</span></div>
+          <div class="card-body">
+            <div class="change-defect-row">
+              <div class="change-defect-panel">
+                <div class="change-defect-panel-title">
+                  <i class="change-defect-bullet change-defect-bullet--orange"></i>
+                  <span>人员去向</span>
+                </div>
+                <table class="table-placeholder">
+                  <thead>
+                    <tr><th>人员</th><th>班次</th><th>去向</th><th>状态</th></tr>
+                  </thead>
+                  <tbody id="personnel-body">
+                    <tr><td>张三</td><td>早班</td><td><span data-tpl="{line} 巡回点检">1BP 巡回点检</span></td><td><span class="tag tag-success">进行中</span></td></tr>
+                    <tr><td>李四</td><td>早班</td><td>喷枪故障真因分析</td><td><span class="tag tag-warning">重点跟进</span></td></tr>
+                    <tr><td>王五</td><td>常日班</td><td>月度点检表修订</td><td><span class="tag tag-default">办公室</span></td></tr>
+                    <tr><td>赵六</td><td>支援</td><td>注塑区域横展确认</td><td><span class="tag tag-default">外出中</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="change-defect-panel">
+                <div class="change-defect-panel-title">
+                  <i class="change-defect-bullet change-defect-bullet--pink"></i>
+                  <span>当班重点作业</span>
+                </div>
+                <table class="table-placeholder">
+                  <thead>
+                    <tr><th>优先级</th><th>作业内容</th><th>责任人</th><th>计划完成</th></tr>
+                  </thead>
+                  <tbody id="focus-job-body">
+                    <tr><td>A</td><td><span data-tpl="{line} 搬送机器人吸附确认">1BP 搬送机器人吸附确认</span></td><td>张三</td><td>10:30</td></tr>
+                    <tr><td>A</td><td>重故障对策效果确认</td><td>李四</td><td>13:00</td></tr>
+                    <tr><td>B</td><td>自主保全点检标准再培训</td><td>王五</td><td>15:30</td></tr>
+                    <tr><td>B</td><td>变化点现场确认</td><td>赵六</td><td>16:30</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 维护目标可动率弹窗 -->
+    <div class="modal-overlay" id="modal-target-rate" role="dialog" aria-labelledby="modal-target-rate-title">
+      <div class="modal-box modal-box--wide">
+        <div class="modal-header" id="modal-target-rate-title">维护目标可动率</div>
+        <div class="modal-body">
+          <div class="target-stop-grid" id="target-rate-grid"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sec" id="btn-target-rate-cancel">取消</button>
+          <button type="button" class="btn-pri" id="btn-target-rate-ok">确定</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-overlay" id="modal-heavy-target" role="dialog" aria-labelledby="modal-heavy-target-title">
+      <div class="modal-box modal-box--wide">
+        <div class="modal-header" id="modal-heavy-target-title">维护目标累计停机时间</div>
+        <div class="modal-body">
+          <div class="target-stop-grid" id="heavy-target-grid"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sec" id="btn-heavy-target-cancel">取消</button>
+          <button type="button" class="btn-pri" id="btn-heavy-target-ok">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var months = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var targetRateSeries = [99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99];
+      var seriesNames = ['1BP', '2BP', 'IP', '注塑', '模具', '补给', '目标'];
+      var seriesSelected = {};
+      seriesNames.forEach(function (name) { seriesSelected[name] = true; });
+      var chartDom = document.getElementById('chart-annual-rate');
+      var legendDom = document.getElementById('annual-rate-legend');
+      if (!chartDom) return;
+      var chart = echarts.init(chartDom);
+      function buildOption() {
+        var targetArr = targetRateSeries.slice();
+        return {
+          grid: { left: 48, right: 24, top: 24, bottom: 32 },
+          xAxis: { type: 'category', data: months, boundaryGap: false, axisLine: { lineStyle: { color: '#e8e8e8' } }, axisLabel: { color: '#666' } },
+          yAxis: {
+            type: 'value',
+            min: 90,
+            max: 100,
+            interval: 2,
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', formatter: '{value}%' }
+          },
+          series: [
+            { name: '1BP', type: 'line', symbol: 'diamond', symbolSize: 8, data: [98.9, 99.1, 98.8, 99.0, 99.2, 99.1, 99.3, 99.4, 99.2, 99.3, 99.4, 99.5], lineStyle: { color: '#1890ff' }, itemStyle: { color: '#1890ff' } },
+            { name: '2BP', type: 'line', symbol: 'rect', symbolSize: 8, data: [98.6, 98.8, 98.7, 98.9, 99.0, 98.8, 99.1, 99.0, 99.1, 99.2, 99.0, 99.1], lineStyle: { color: '#c23531' }, itemStyle: { color: '#c23531' } },
+            { name: 'IP', type: 'line', symbol: 'triangle', symbolSize: 8, data: [99.2, 99.3, 99.1, 99.4, 99.5, 99.3, 99.6, 99.5, 99.4, 99.5, 99.6, 99.5], lineStyle: { color: '#52c41a' }, itemStyle: { color: '#52c41a' } },
+            { name: '注塑', type: 'line', symbol: 'cross', symbolSize: 8, data: [99.0, 98.9, 99.1, 99.0, 99.2, 99.1, 99.3, 99.2, 99.1, 99.3, 99.2, 99.4], lineStyle: { color: '#722ed1' }, itemStyle: { color: '#722ed1' } },
+            { name: '模具', type: 'line', symbol: 'star', symbolSize: 8, data: [99.4, 99.5, 99.3, 99.5, 99.6, 99.4, 99.6, 99.7, 99.5, 99.6, 99.7, 99.6], lineStyle: { color: '#2f54eb' }, itemStyle: { color: '#2f54eb' } },
+            { name: '补给', type: 'line', symbol: 'circle', symbolSize: 8, data: [99.1, 99.0, 98.9, 99.1, 99.2, 99.0, 99.3, 99.2, 99.1, 99.2, 99.3, 99.2], lineStyle: { color: '#fa8c16' }, itemStyle: { color: '#fa8c16' } },
+            { name: '目标', type: 'line', symbol: 'none', data: targetArr, lineStyle: { type: 'dashed', color: '#ff4d4f', width: 2 }, itemStyle: { color: '#ff4d4f' } }
+          ],
+          tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, appendToBody: true },
+          legend: { show: false, selected: seriesSelected }
+        };
+      }
+      chart.setOption(buildOption());
+      if (legendDom) {
+        legendDom.querySelectorAll('input[type="checkbox"][data-series]').forEach(function (cb) {
+          cb.addEventListener('change', function () {
+            var name = cb.getAttribute('data-series');
+            if (seriesSelected.hasOwnProperty(name)) {
+              seriesSelected[name] = cb.checked;
+              chart.setOption({ legend: { selected: seriesSelected } });
+            }
+          });
+        });
+      }
+      window.addEventListener('resize', function () { chart.resize(); });
+
+      var modal = document.getElementById('modal-target-rate');
+      var targetRateGrid = document.getElementById('target-rate-grid');
+      if (targetRateGrid && !targetRateGrid.childElementCount) {
+        targetRateGrid.innerHTML = months.map(function (month, index) {
+          return '<div class="form-row target-stop-item">' +
+            '<label for="input-target-rate-' + index + '">' + month + '目标可动率（%）</label>' +
+            '<input type="number" id="input-target-rate-' + index + '" data-index="' + index + '" min="0" max="100" step="0.1" placeholder="如 99">' +
+          '</div>';
+        }).join('');
+      }
+      document.getElementById('btn-maintain-target').addEventListener('click', function () {
+        if (targetRateGrid) {
+          [].forEach.call(targetRateGrid.querySelectorAll('input[data-index]'), function (input) {
+            var idx = parseInt(input.getAttribute('data-index'), 10);
+            input.value = targetRateSeries[idx] != null ? targetRateSeries[idx] : '';
+          });
+        }
+        modal.classList.add('is-open');
+      });
+      document.getElementById('btn-target-rate-cancel').addEventListener('click', function () { modal.classList.remove('is-open'); });
+      document.getElementById('btn-target-rate-ok').addEventListener('click', function () {
+        if (targetRateGrid) {
+          var nextSeries = targetRateSeries.slice();
+          [].forEach.call(targetRateGrid.querySelectorAll('input[data-index]'), function (input) {
+            var idx = parseInt(input.getAttribute('data-index'), 10);
+            var value = parseFloat(input.value);
+            if (!isNaN(value) && value >= 0 && value <= 100) nextSeries[idx] = +value.toFixed(1);
+          });
+          targetRateSeries = nextSeries;
+          chart.setOption(buildOption());
+        }
+        modal.classList.remove('is-open');
+      });
+      modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('is-open'); });
+    })();
+
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var pieDom = document.getElementById('chart-failure-pie');
+      var legendDom = document.getElementById('failure-pie-legend');
+      if (!pieDom || !legendDom) return;
+      var pieChart = echarts.init(pieDom);
+      var data = [
+        { name: '初发', value: 72 },
+        { name: '偶发', value: 186 },
+        { name: '频发', value: 142 },
+        { name: '散发', value: 100 }
+      ];
+      var colors = ['#597ef7', '#1890ff', '#52c41a', '#faad14'];
+      var total = data.reduce(function (sum, item) { return sum + item.value; }, 0);
+      pieChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          confine: true,
+          formatter: function (params) {
+            var pct = ((params.value / total) * 100).toFixed(1);
+            return params.name + '：' + pct + '%（' + params.value + '分钟）';
+          }
+        },
+        legend: { show: false },
+        series: [{
+          type: 'pie',
+          radius: ['40%', '58%'],
+          center: ['50%', '50%'],
+          avoidLabelOverlap: false,
+          itemStyle: { borderColor: '#fff', borderWidth: 2 },
+          label: {
+            show: true,
+            position: 'outside',
+            color: '#666',
+            fontSize: 12,
+            formatter: function (params) {
+              var pct = total ? ((params.value / total) * 100).toFixed(1) : '0.0';
+              return pct + '%（' + params.value + '分钟）';
+            }
+          },
+          labelLine: {
+            show: true,
+            lineStyle: { color: '#d9d9d9' },
+            length: 12,
+            length2: 10
+          },
+          data: data,
+          color: colors
+        }]
+      });
+      legendDom.innerHTML = data.map(function (item, i) {
+        return '<span><i class="dot" style="background:' + colors[i] + '"></i> ' + item.name + '</span>';
+      }).join('');
+      window.addEventListener('resize', function () { pieChart.resize(); });
+    })();
+
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var dom = document.getElementById('chart-heavy-fault');
+      if (!dom) return;
+      var heavyChart = echarts.init(dom);
+      var months = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var totalData = [4, 3, 2, 4, 3, 2, 3, 2, 2, 1, 1, 1];
+      var identifiedData = [3, 3, 2, 3, 3, 2, 2, 2, 2, 1, 1, 1];
+      var unclearData = months.map(function (_, i) { return totalData[i] - identifiedData[i]; });
+      var rateData = months.map(function (_, i) {
+        return totalData[i] ? Math.round((identifiedData[i] / totalData[i]) * 100) : 0;
+      });
+      heavyChart.setOption({
+        legend: {
+          data: ['重故障停机次数', '真因明确次数', '累计不明确次数', '真因明确率'],
+          top: 0,
+          left: 'center',
+          itemGap: 16,
+          textStyle: { fontSize: 11 }
+        },
+        grid: { left: 44, right: 44, top: 72, bottom: 28 },
+        xAxis: {
+          type: 'category',
+          data: months,
+          axisLine: { lineStyle: { color: '#e8e8e8' } },
+          axisLabel: { color: '#666', fontSize: 11 }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            min: 0,
+            max: 5,
+            interval: 1,
+            position: 'left',
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          {
+            type: 'value',
+            min: 0,
+            max: 100,
+            interval: 20,
+            position: 'right',
+            axisLine: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' }
+          }
+        ],
+        series: [
+          {
+            name: '重故障停机次数',
+            type: 'bar',
+            barWidth: '18%',
+            barGap: '40%',
+            data: totalData,
+            itemStyle: { color: '#1890ff' },
+            label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '真因明确次数',
+            type: 'bar',
+            barWidth: '18%',
+            barGap: '40%',
+            data: identifiedData,
+            itemStyle: { color: '#52c41a' },
+            label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '累计不明确次数',
+            type: 'bar',
+            barWidth: '18%',
+            barGap: '40%',
+            data: unclearData,
+            itemStyle: { color: '#eb2f96' },
+            label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '真因明确率',
+            type: 'line',
+            yAxisIndex: 1,
+            symbol: 'triangle',
+            symbolSize: 8,
+            data: rateData,
+            lineStyle: { color: '#389e0d', width: 2 },
+            itemStyle: { color: '#389e0d' },
+            label: { show: true, position: 'insideTop', formatter: '{c}%', fontSize: 10, color: '#389e0d' }
+          }
+        ],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          formatter: function (params) {
+            var i = params[0].dataIndex;
+            var line = params[3];
+            var rate = line ? line.value : 0;
+            return months[i] + '<br/>' +
+              '重故障停机次数：' + totalData[i] + '<br/>' +
+              '真因明确次数：' + identifiedData[i] + '<br/>' +
+              '累计不明确次数：' + unclearData[i] + '<br/>' +
+              '真因明确率：' + rate + '%';
+          }
+        }
+      });
+      window.addEventListener('resize', function () { heavyChart.resize(); });
+    })();
+
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var dom = document.getElementById('chart-periodic-quantity');
+      if (!dom) return;
+      var pqChart = echarts.init(dom);
+      var months = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var plan1BP = [86, 82, 88, 84, 90, 86, 92, 88, 94, 90, 86, 82];
+      var actual1BP = [84, 80, 85, 82, 87, 84, 90, 86, 91, 87, 84, 80];
+      var plan2BP = [72, 70, 74, 72, 76, 74, 78, 76, 80, 78, 74, 72];
+      var actual2BP = [70, 68, 72, 70, 74, 72, 76, 73, 77, 75, 72, 69];
+      var planJBP = [54, 52, 56, 54, 58, 56, 60, 58, 62, 60, 56, 54];
+      var actualJBP = [52, 50, 54, 53, 56, 54, 58, 56, 60, 58, 54, 52];
+      var planMold = [38, 36, 40, 38, 42, 40, 44, 42, 46, 44, 40, 38];
+      var actualMold = [37, 35, 39, 37, 41, 39, 43, 41, 45, 42, 39, 37];
+      var planIP = [64, 62, 66, 64, 68, 66, 70, 68, 72, 70, 66, 64];
+      var actualIP = [62, 60, 64, 62, 66, 64, 68, 66, 70, 68, 64, 62];
+      function rate(a, p) { return p.map(function (_, i) { return p[i] > 0 ? Math.round((a[i] / p[i]) * 100) : null; }); }
+      var target100 = months.map(function () { return 100; });
+      pqChart.setOption({
+        legend: {
+          data: ['1BP计划','1BP实际','2BP计划','2BP实际','革新机计划','革新机实际','模具计划','模具实际','IP计划','IP实际','目标','1BP完成率','2BP完成率','革新机完成率','模具完成率','IP完成率'],
+          top: 'auto',
+          left: 'center',
+          bottom: 0,
+          width: '92%',
+          itemGap: 10,
+          itemWidth: 12,
+          itemHeight: 9,
+          textStyle: { fontSize: 10 }
+        },
+        grid: { left: 48, right: 48, top: 56, bottom: 78 },
+        xAxis: {
+          type: 'category',
+          data: months,
+          axisLine: { lineStyle: { color: '#e8e8e8' } },
+          axisLabel: { color: '#666', fontSize: 10 }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            min: 0,
+            max: 100,
+            interval: 20,
+            position: 'left',
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', fontSize: 10 }
+          },
+          {
+            type: 'value',
+            min: 90,
+            max: 100,
+            interval: 2,
+            position: 'right',
+            axisLine: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: '#666', fontSize: 10, formatter: '{value}%' }
+          }
+        ],
+        series: [
+          { name: '1BP计划', type: 'bar', barMaxWidth: 10, data: plan1BP, itemStyle: { color: '#91d5ff' } },
+          { name: '2BP计划', type: 'bar', barMaxWidth: 10, data: plan2BP, itemStyle: { color: '#b7eb8f' } },
+          { name: '革新机计划', type: 'bar', barMaxWidth: 10, data: planJBP, itemStyle: { color: '#d3adf7' } },
+          { name: '模具计划', type: 'bar', barMaxWidth: 10, data: planMold, itemStyle: { color: '#ffd591' } },
+          { name: 'IP计划', type: 'bar', barMaxWidth: 10, data: planIP, itemStyle: { color: '#87e8de' } },
+          { name: '1BP实际', type: 'bar', barMaxWidth: 10, data: actual1BP, itemStyle: { color: '#1890ff' } },
+          { name: '2BP实际', type: 'bar', barMaxWidth: 10, data: actual2BP, itemStyle: { color: '#52c41a' } },
+          { name: '革新机实际', type: 'bar', barMaxWidth: 10, data: actualJBP, itemStyle: { color: '#722ed1' } },
+          { name: '模具实际', type: 'bar', barMaxWidth: 10, data: actualMold, itemStyle: { color: '#fa8c16' } },
+          { name: 'IP实际', type: 'bar', barMaxWidth: 10, data: actualIP, itemStyle: { color: '#13c2c2' } },
+          { name: '目标', type: 'line', yAxisIndex: 1, symbol: 'none', data: target100, lineStyle: { color: '#ff4d4f', type: 'dashed', width: 2 }, itemStyle: { color: '#ff4d4f' } },
+          { name: '1BP完成率', type: 'line', yAxisIndex: 1, symbol: 'circle', symbolSize: 6, data: rate(actual1BP, plan1BP), lineStyle: { color: '#1890ff', width: 1.5 }, itemStyle: { color: '#1890ff' } },
+          { name: '2BP完成率', type: 'line', yAxisIndex: 1, symbol: 'rect', symbolSize: 6, data: rate(actual2BP, plan2BP), lineStyle: { color: '#52c41a', width: 1.5 }, itemStyle: { color: '#52c41a' } },
+          { name: '革新机完成率', type: 'line', yAxisIndex: 1, symbol: 'triangle', symbolSize: 6, data: rate(actualJBP, planJBP), lineStyle: { color: '#722ed1', width: 1.5 }, itemStyle: { color: '#722ed1' } },
+          { name: '模具完成率', type: 'line', yAxisIndex: 1, symbol: 'diamond', symbolSize: 6, data: rate(actualMold, planMold), lineStyle: { color: '#fa8c16', width: 1.5 }, itemStyle: { color: '#fa8c16' } },
+          { name: 'IP完成率', type: 'line', yAxisIndex: 1, symbol: 'roundRect', symbolSize: 6, data: rate(actualIP, planIP), lineStyle: { color: '#13c2c2', width: 1.5 }, itemStyle: { color: '#13c2c2' } }
+        ],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          appendToBody: true,
+          formatter: function (params) {
+            var i = params[0].dataIndex;
+            var lines = [months[i]];
+            lines.push('1BP：计划 ' + plan1BP[i] + ' / 实际 ' + actual1BP[i] + ' / 完成率 ' + rate(actual1BP, plan1BP)[i] + '%');
+            lines.push('2BP：计划 ' + plan2BP[i] + ' / 实际 ' + actual2BP[i] + ' / 完成率 ' + rate(actual2BP, plan2BP)[i] + '%');
+            lines.push('革新机：计划 ' + planJBP[i] + ' / 实际 ' + actualJBP[i] + ' / 完成率 ' + rate(actualJBP, planJBP)[i] + '%');
+            lines.push('模具：计划 ' + planMold[i] + ' / 实际 ' + actualMold[i] + ' / 完成率 ' + rate(actualMold, planMold)[i] + '%');
+            lines.push('IP：计划 ' + planIP[i] + ' / 实际 ' + actualIP[i] + ' / 完成率 ' + rate(actualIP, planIP)[i] + '%');
+            lines.push('目标：100%');
+            return lines.join('<br/>');
+          }
+        }
+      });
+      window.addEventListener('resize', function () { pqChart.resize(); });
+    })();
+
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var dom = document.getElementById('chart-key-defect');
+      if (!dom) return;
+      var kdChart = echarts.init(dom);
+      var months = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var foundData = [10, 9, 8, 9, 7, 6, 8, 7, 6, 5, 4, 4];
+      var doneData = [9, 8, 7, 8, 6, 6, 7, 6, 5, 5, 4, 3];
+      var remainData = months.map(function (_, i) { return Math.max(0, (foundData[i] || 0) - (doneData[i] || 0)); });
+      var rateData = months.map(function (_, i) {
+        var f = foundData[i];
+        return f ? Math.round(((doneData[i] || 0) / f) * 100) : null;
+      });
+      kdChart.setOption({
+        legend: {
+          data: ['发现件数', '关闭件数', '残留件数', '完成率'],
+          top: 6,
+          left: 'center',
+          itemGap: 16,
+          textStyle: { fontSize: 11 }
+        },
+        grid: { left: 44, right: 44, top: 48, bottom: 28 },
+        xAxis: {
+          type: 'category',
+          data: months,
+          axisLine: { lineStyle: { color: '#e8e8e8' } },
+          axisLabel: { color: '#666', fontSize: 10 }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            min: 0,
+            max: 12,
+            interval: 2,
+            position: 'left',
+            name: '件',
+            nameTextStyle: { fontSize: 10, color: '#666' },
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', fontSize: 10 }
+          },
+          {
+            type: 'value',
+            min: 50,
+            max: 100,
+            interval: 10,
+            position: 'right',
+            axisLine: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: '#666', fontSize: 10, formatter: '{value}%' }
+          }
+        ],
+        series: [
+          {
+            name: '发现件数',
+            type: 'bar',
+            barWidth: 16,
+            barGap: '50%',
+            data: foundData,
+            itemStyle: { color: '#1890ff' },
+            label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '关闭件数',
+            type: 'bar',
+            barWidth: 16,
+            barGap: '50%',
+            data: doneData,
+            itemStyle: { color: '#ff4d4f' },
+            label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '残留件数',
+            type: 'bar',
+            barWidth: 16,
+            barGap: '50%',
+            data: remainData,
+            itemStyle: { color: '#95de64' },
+            label: { show: true, position: 'inside', fontSize: 10, color: '#333' }
+          },
+          {
+            name: '完成率',
+            type: 'line',
+            yAxisIndex: 1,
+            symbol: 'diamond',
+            symbolSize: 8,
+            data: rateData,
+            lineStyle: { color: '#722ed1', width: 2 },
+            itemStyle: { color: '#722ed1' },
+            label: { show: true, position: 'top', formatter: function (p) { return p.value != null ? p.value + '%' : ''; }, fontSize: 9, color: '#722ed1' }
+          }
+        ],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          appendToBody: true,
+          formatter: function (params) {
+            var i = params[0].dataIndex;
+            var rate = rateData[i] != null ? rateData[i] + '%' : '—';
+            return months[i] + '<br/>' +
+              '发现件数：' + (foundData[i] || 0) + ' 件<br/>' +
+              '关闭件数：' + (doneData[i] || 0) + ' 件<br/>' +
+              '残留件数：' + (remainData[i] || 0) + ' 件<br/>' +
+              '完成率：' + rate;
+          }
+        }
+      });
+      window.addEventListener('resize', function () { kdChart.resize(); });
+    })();
+
+    /* ---------- 重大故障推移 · 5 模块图表 ---------- */
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var months7to6 = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var months1to12 = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+      var cumDom = document.getElementById('chart-hf-cumulative');
+      if (cumDom) {
+        var cumChart = echarts.init(cumDom);
+        var actualCum = [0.6, 1.1, 1.8, 2.4, 3.0, 3.5, 4.1, 4.6, 5.2, 5.8, 6.3, 6.9];
+        var targetCum = [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0];
+        cumChart.setOption({
+          legend: {
+            data: ['重故障停机累计', '目标停机时间'],
+            top: 8,
+            left: 'center',
+            itemGap: 24,
+            textStyle: { fontSize: 11 }
+          },
+          grid: { left: 48, right: 48, top: 40, bottom: 28 },
+          xAxis: {
+            type: 'category',
+            data: months1to12,
+            axisLine: { lineStyle: { color: '#e8e8e8' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          yAxis: {
+            type: 'value',
+            min: 0,
+            max: 10,
+            interval: 1,
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          series: [
+            { name: '重故障停机累计', type: 'bar', barWidth: '32%', data: actualCum, itemStyle: { color: '#1890ff' }, label: { show: true, position: 'inside', fontSize: 10, color: '#fff' } },
+            { name: '目标停机时间', type: 'line', symbol: 'none', data: targetCum, lineStyle: { type: 'dashed', color: '#ff4d4f', width: 2 }, itemStyle: { color: '#ff4d4f' }, label: { show: true, position: 'top', fontSize: 10, color: '#ff4d4f' } }
+          ],
+          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true }
+        });
+        window.addEventListener('resize', function () { cumChart.resize(); });
+      }
+
+      var trendDom = document.getElementById('chart-hf-trend');
+      if (trendDom) {
+        var trendChart = echarts.init(trendDom);
+        var totalData = [4, 3, 2, 4, 3, 2, 3, 2, 2, 1, 1, 1];
+        var identifiedData = [3, 2, 2, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+        var unclearData = months7to6.map(function (_, i) { return totalData[i] - identifiedData[i]; });
+        var rateData = months7to6.map(function (_, i) {
+          return totalData[i] ? Math.round((identifiedData[i] / totalData[i]) * 100) : null;
+        });
+        trendChart.setOption({
+          legend: {
+            data: ['重故障停机次数', '真因明确次数', '累计不明确次数', '真因明确率'],
+            top: 0,
+            left: 'center',
+            itemGap: 16,
+            textStyle: { fontSize: 11 }
+          },
+          grid: { left: 48, right: 48, top: 72, bottom: 28 },
+          xAxis: {
+            type: 'category',
+            data: months7to6,
+            axisLine: { lineStyle: { color: '#e8e8e8' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          yAxis: [
+            { type: 'value', min: 0, max: 5, interval: 1, position: 'left', axisLine: { show: false }, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { color: '#666', fontSize: 11 } },
+            { type: 'value', min: 0, max: 100, interval: 20, position: 'right', axisLine: { show: false }, splitLine: { show: false }, axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' } }
+          ],
+          series: [
+            { name: '重故障停机次数', type: 'bar', barWidth: '18%', barGap: '40%', data: totalData, itemStyle: { color: '#1890ff' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+            { name: '真因明确次数', type: 'bar', barWidth: '18%', barGap: '40%', data: identifiedData, itemStyle: { color: '#52c41a' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+            { name: '累计不明确次数', type: 'bar', barWidth: '18%', barGap: '40%', data: unclearData, itemStyle: { color: '#eb2f96' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+            { name: '真因明确率', type: 'line', yAxisIndex: 1, symbol: 'triangle', symbolSize: 8, data: rateData, lineStyle: { color: '#389e0d', width: 2 }, itemStyle: { color: '#389e0d' }, label: { show: true, position: 'insideTop', formatter: function (p) { return p.value != null ? p.value + '%' : ''; }, fontSize: 10, color: '#389e0d' } }
+          ],
+          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true }
+        });
+        window.addEventListener('resize', function () { trendChart.resize(); });
+      }
+
+      var cmDom = document.getElementById('chart-hf-countermeasure');
+      if (cmDom) {
+        var cmChart = echarts.init(cmDom);
+        var planData = [14, 13, 15, 16, 12, 11, 10, 9, 8, 8, 7, 6];
+        var doneData = [12, 12, 14, 14, 11, 10, 9, 8, 7, 7, 6, 5];
+        var delayData = [1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 0];
+        var notDueData = [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1];
+        var rateCm = months7to6.map(function (_, i) {
+          return planData[i] ? Math.round((doneData[i] / planData[i]) * 1000) / 10 : null;
+        });
+        cmChart.setOption({
+          legend: {
+            data: ['对策件数', '完成件数', '延迟件数', '未到期件数', '完成率'],
+            top: 8,
+            left: 'center',
+            type: 'scroll',
+            itemGap: 12,
+            textStyle: { fontSize: 10 }
+          },
+          grid: { left: 48, right: 48, top: 44, bottom: 28 },
+          xAxis: {
+            type: 'category',
+            data: months7to6,
+            axisLine: { lineStyle: { color: '#e8e8e8' } },
+            axisLabel: { color: '#666', fontSize: 10 }
+          },
+          yAxis: [
+            { type: 'value', min: 0, max: 20, interval: 5, position: 'left', name: '件', nameTextStyle: { fontSize: 10, color: '#666' }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { color: '#666', fontSize: 10 } },
+            { type: 'value', min: 0, max: 100, interval: 20, position: 'right', axisLine: { show: false }, splitLine: { show: false }, axisLabel: { color: '#666', fontSize: 10, formatter: '{value}%' } }
+          ],
+          series: [
+            { name: '对策件数', type: 'bar', barWidth: '14%', barGap: '35%', data: planData, itemStyle: { color: '#1890ff' }, label: { show: true, position: 'top', fontSize: 9, color: '#333' } },
+            { name: '完成件数', type: 'bar', barWidth: '14%', barGap: '35%', data: doneData, itemStyle: { color: '#ff4d4f' }, label: { show: true, position: 'top', fontSize: 9, color: '#333' } },
+            { name: '延迟件数', type: 'bar', barWidth: '14%', barGap: '35%', data: delayData, itemStyle: { color: '#52c41a' }, label: { show: true, position: 'top', fontSize: 9, color: '#333' } },
+            { name: '未到期件数', type: 'bar', barWidth: '14%', barGap: '35%', data: notDueData, itemStyle: { color: '#722ed1' }, label: { show: true, position: 'top', fontSize: 9, color: '#333' } },
+            { name: '完成率', type: 'line', yAxisIndex: 1, symbol: 'diamond', symbolSize: 6, data: rateCm, lineStyle: { color: '#333', width: 2 }, itemStyle: { color: '#333' }, label: { show: true, position: 'top', formatter: function (p) { return p.value != null ? p.value + '%' : ''; }, fontSize: 9, color: '#333' } }
+          ],
+          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true }
+        });
+        window.addEventListener('resize', function () { cmChart.resize(); });
+      }
+    })();
+
+    /* ---------- 定期定量推进 · 图表 + 未完成任务清单 ---------- */
+    (function () {
+      if (typeof echarts === 'undefined') return;
+      var dom = document.getElementById('chart-periodic-trend');
+      if (!dom) return;
+      var months = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var planDelayData = [236, 224, 248, 232, 254, 240, 268, 252, 276, 260, 244, 230];
+      var doneData = [228, 216, 239, 225, 246, 232, 259, 243, 267, 251, 236, 221];
+      var delayCumData = [18, 20, 16, 15, 13, 12, 14, 12, 11, 10, 9, 8];
+      var rateData = [97, 96, 96, 97, 97, 97, 97, 96, 97, 97, 97, 96];
+      var chart = echarts.init(dom);
+      chart.setOption({
+        legend: {
+          data: ['计划+延迟件数', '完成件数', '累计延迟', '完成率'],
+          top: 8,
+          left: 'center',
+          itemGap: 20,
+          textStyle: { fontSize: 11 }
+        },
+        grid: { left: 52, right: 52, top: 40, bottom: 28 },
+        xAxis: {
+          type: 'category',
+          data: months,
+          axisLine: { lineStyle: { color: '#e8e8e8' } },
+          axisLabel: { color: '#666', fontSize: 11 }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            min: 0,
+            max: 300,
+            interval: 50,
+            position: 'left',
+            name: '件',
+            nameTextStyle: { fontSize: 10, color: '#666' },
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#f0f0f0' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          {
+            type: 'value',
+            min: 60,
+            max: 100,
+            interval: 10,
+            position: 'right',
+            axisLine: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' }
+          }
+        ],
+        series: [
+          { name: '计划+延迟件数', type: 'bar', barWidth: '18%', barGap: '40%', data: planDelayData, itemStyle: { color: '#fa8c16' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+          { name: '完成件数', type: 'bar', barWidth: '18%', barGap: '40%', data: doneData, itemStyle: { color: '#13c2c2' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+          { name: '累计延迟', type: 'bar', barWidth: '18%', barGap: '40%', data: delayCumData, itemStyle: { color: '#d48806' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+          { name: '完成率', type: 'line', yAxisIndex: 1, symbol: 'diamond', symbolSize: 8, data: rateData, lineStyle: { color: '#8c8c8c', width: 2 }, itemStyle: { color: '#8c8c8c' }, label: { show: true, position: 'top', formatter: function (p) { return p.value != null ? p.value + '%' : ''; }, fontSize: 10, color: '#8c8c8c' } }
+        ],
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true }
+      });
+      window.addEventListener('resize', function () { chart.resize(); });
+    })();
+
+    (function () {
+      var listEl = document.querySelector('.periodic-trend-list-inner');
+      if (!listEl) return;
+      var scrollTimer;
+      listEl.addEventListener('scroll', function () {
+        listEl.classList.add('is-scrolling');
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () { listEl.classList.remove('is-scrolling'); }, 600);
+      });
+    })();
+
+    (function () {
+      function bindScrollShow(el) {
+        if (!el) return;
+        var t;
+        el.addEventListener('scroll', function () {
+          el.classList.add('is-scrolling');
+          clearTimeout(t);
+          t = setTimeout(function () { el.classList.remove('is-scrolling'); }, 600);
+        });
+      }
+      [].forEach.call(document.querySelectorAll('.change-defect-table-wrap'), function (el) {
+        bindScrollShow(el);
+      });
+    })();
+
+    /* ---------- 设备运行情况 · 四模块图表 ---------- */
+    (function () {
+      if (typeof echarts === 'undefined') return;
+
+      var months12 = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var targetRateEquip = 99;
+
+      // 1）区域可动率：停止时间柱 + 可动率红线三角 + 目标绿虚线
+      var regionDom = document.getElementById('chart-equip-region-rate');
+      if (regionDom) {
+        var regionChart = echarts.init(regionDom);
+        var downtimeData = [96, 84, 112, 88, 76, 68, 58, 52, 48, 44, 40, 36];
+        var rateDataRegion = [98.9, 99.1, 98.7, 99.0, 99.2, 99.3, 99.4, 99.5, 99.6, 99.6, 99.7, 99.7];
+        var targetArr = months12.map(function () { return targetRateEquip; });
+        regionChart.setOption({
+          legend: {
+            data: ['停止时间', '可动率', '目标'],
+            top: 8,
+            left: 'center',
+            itemGap: 20,
+            textStyle: { fontSize: 11 }
+          },
+          grid: { left: 52, right: 52, top: 40, bottom: 28 },
+          xAxis: {
+            type: 'category',
+            data: months12,
+            axisLine: { lineStyle: { color: '#e8e8e8' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          yAxis: [
+            {
+              type: 'value',
+              min: 0,
+              max: 150,
+              interval: 30,
+              position: 'left',
+              name: '分钟',
+              nameTextStyle: { fontSize: 10, color: '#666' },
+              axisLine: { show: false },
+              splitLine: { lineStyle: { color: '#f0f0f0' } },
+              axisLabel: { color: '#666', fontSize: 11 }
+            },
+            {
+              type: 'value',
+              min: 90,
+              max: 100,
+              interval: 2,
+              position: 'right',
+              axisLine: { show: false },
+              splitLine: { show: false },
+              axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' }
+            }
+          ],
+          series: [
+            {
+              name: '停止时间',
+              type: 'bar',
+              barWidth: '28%',
+              data: downtimeData,
+              itemStyle: { color: '#1890ff' },
+              label: { show: true, position: 'top', fontSize: 10, color: '#333' }
+            },
+            {
+              name: '可动率',
+              type: 'line',
+              yAxisIndex: 1,
+              symbol: 'triangle',
+              symbolSize: 8,
+              data: rateDataRegion,
+              lineStyle: { color: '#c23531', width: 2 },
+              itemStyle: { color: '#c23531' },
+              label: { show: true, position: 'top', formatter: function (p) { return p.value + '%'; }, fontSize: 10, color: '#c23531' }
+            },
+            {
+              name: '目标',
+              type: 'line',
+              yAxisIndex: 1,
+              symbol: 'none',
+              data: targetArr,
+              lineStyle: { type: 'dashed', color: '#52c41a', width: 2 },
+              itemStyle: { color: '#52c41a' }
+            }
+          ],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'cross' },
+            appendToBody: true,
+            formatter: function (params) {
+              var i = params[0].dataIndex;
+              return months12[i] + '<br/>停止时间：' + downtimeData[i] + ' 分钟<br/>可动率：' + rateDataRegion[i] + '%<br/>目标：' + targetRateEquip + '%';
+            }
+          }
+        });
+        window.addEventListener('resize', function () { regionChart.resize(); });
+      }
+
+      // 2）日可动率与停机时间：按日柱+线，月份选择，tooltip 故障内容
+      var dailyDom = document.getElementById('chart-equip-daily-rate');
+      var dailyMonthSelect = document.getElementById('equip-daily-month');
+      if (dailyDom) {
+        var days = [];
+        for (var d = 1; d <= 31; d++) { days.push(d + '日'); }
+        var dailyDowntime = [0,0,8,0,0,12,0,0,0,6,0,0,18,0,0,0,5,0,0,0,0,9,0,0,0,4,0,0,0,0,0];
+        var dailyRate = days.map(function (_, i) {
+          return dailyDowntime[i] > 0 ? (100 - (dailyDowntime[i] / 480 * 100)).toFixed(1) : 100;
+        });
+        var faultDetails = [];
+        for (var k = 0; k < 31; k++) {
+          if (dailyDowntime[k] > 0) {
+            faultDetails[k] = '当日发生短时停机 ' + dailyDowntime[k] + ' 分钟，已完成现场恢复';
+          } else {
+            faultDetails[k] = '—';
+          }
+        }
+        faultDetails[2] = '上挂治具气缸复位不良 8 分钟；更换磁性开关后恢复';
+        faultDetails[5] = '喷涂供漆泵压力波动 12 分钟；调整稳压阀后恢复';
+        faultDetails[9] = '扫码枪通信闪断 6 分钟；重启工控机后恢复';
+        faultDetails[12] = '搬送机器人吸附异常 18 分钟；清扫真空发生器并复位';
+        faultDetails[16] = '治具定位销松动 5 分钟；现场紧固后恢复';
+        faultDetails[21] = '链条张紧不足 9 分钟；完成点检复位';
+        faultDetails[25] = '门开关感应偏移 4 分钟；调整安装位置';
+        var dailyChart = echarts.init(dailyDom);
+        function buildDailyOption() {
+          return {
+            legend: {
+              data: ['停机时间', '可动率', '目标'],
+              top: 8,
+              left: 'center',
+              itemGap: 20,
+              textStyle: { fontSize: 11 }
+            },
+            grid: { left: 48, right: 48, top: 40, bottom: 28 },
+            xAxis: {
+              type: 'category',
+              data: days,
+              axisLine: { lineStyle: { color: '#e8e8e8' } },
+              axisLabel: { color: '#666', fontSize: 10 }
+            },
+            yAxis: [
+              {
+                type: 'value',
+                min: 0,
+                max: 300,
+                interval: 60,
+                position: 'left',
+                name: '分钟',
+                nameTextStyle: { fontSize: 10, color: '#666' },
+                axisLine: { show: false },
+                splitLine: { lineStyle: { color: '#f0f0f0' } },
+                axisLabel: { color: '#666', fontSize: 10 }
+              },
+              {
+                type: 'value',
+                min: 80,
+                max: 100,
+                interval: 5,
+                position: 'right',
+                axisLine: { show: false },
+                splitLine: { show: false },
+                axisLabel: { color: '#666', fontSize: 10, formatter: '{value}%' }
+              }
+            ],
+            series: [
+              {
+                name: '停机时间',
+                type: 'bar',
+                barWidth: '60%',
+                data: dailyDowntime,
+                itemStyle: { color: '#1890ff' },
+                label: { show: true, position: 'top', fontSize: 9, color: '#333' }
+              },
+              {
+                name: '可动率',
+                type: 'line',
+                yAxisIndex: 1,
+                symbol: 'triangle',
+                symbolSize: 6,
+                data: dailyRate,
+                lineStyle: { color: '#c23531', width: 2 },
+                itemStyle: { color: '#c23531' },
+                label: { show: false }
+              },
+              {
+                name: '目标',
+                type: 'line',
+                yAxisIndex: 1,
+                symbol: 'none',
+                data: days.map(function () { return 99; }),
+                lineStyle: { type: 'dashed', color: '#52c41a', width: 1.5 },
+                itemStyle: { color: '#52c41a' }
+              }
+            ],
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: { type: 'shadow' },
+              appendToBody: true,
+              formatter: function (params) {
+                var i = params[0].dataIndex;
+                var detail = faultDetails[i] || '—';
+                return (params[0].axisValue || '') + '<br/>停机时间：' + dailyDowntime[i] + ' 分钟<br/>可动率：' + dailyRate[i] + '%<br/><span style="color:#666">故障内容：' + detail + '</span>';
+              }
+            }
+          };
+        }
+        dailyChart.setOption(buildDailyOption());
+        if (dailyMonthSelect) {
+          dailyMonthSelect.addEventListener('change', function () {
+            dailyChart.setOption(buildDailyOption());
+          });
+        }
+        window.addEventListener('resize', function () { dailyChart.resize(); });
+      }
+
+      // 3）故障频次饼图（初发、偶发、散发、频发，百分比+分钟）
+      var failurePieDom = document.getElementById('chart-equip-failure-pie');
+      var failureLegendDom = document.getElementById('equip-failure-pie-legend');
+      if (failurePieDom) {
+        var failureData = [
+          { name: '初发', value: 52 },
+          { name: '偶发', value: 48 },
+          { name: '散发', value: 46 },
+          { name: '频发', value: 44 }
+        ];
+        var failureColors = ['#1890ff', '#52c41a', '#faad14', '#ff4d4f'];
+        var failureTotal = failureData.reduce(function (s, i) { return s + i.value; }, 0);
+        var failurePieChart = echarts.init(failurePieDom);
+        failurePieChart.setOption({
+          tooltip: {
+            trigger: 'item',
+            confine: true,
+            formatter: function (params) {
+              var pct = ((params.value / failureTotal) * 100).toFixed(1);
+              return params.name + '：' + pct + '%（' + params.value + '分钟）';
+            }
+          },
+          legend: { show: false },
+          series: [{
+            type: 'pie',
+            radius: ['42%', '62%'],
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: { borderColor: '#fff', borderWidth: 2 },
+            label: { show: false },
+            labelLine: { show: false },
+            data: failureData,
+            color: failureColors,
+            emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' } }
+          }]
+        });
+        if (failureLegendDom) {
+          failureLegendDom.innerHTML = failureData.map(function (item, i) {
+            var pct = ((item.value / failureTotal) * 100).toFixed(1);
+            return '<span><i class="dot" style="background:' + failureColors[i] + '"></i> ' + item.name + ' ' + pct + '%（' + item.value + '分钟）</span>';
+          }).join('');
+        }
+        window.addEventListener('resize', function () { failurePieChart.resize(); });
+      }
+
+      // 4）故障原因饼图（劣化、人为、磨损、脏、松脱、其他，百分比+件）
+      var typePieDom = document.getElementById('chart-equip-failure-type-pie');
+      var typeLegendDom = document.getElementById('equip-failure-type-legend');
+      if (typePieDom) {
+        var typeData = [
+          { name: '劣化', value: 38 },
+          { name: '人为', value: 32 },
+          { name: '磨损', value: 28 },
+          { name: '脏', value: 22 },
+          { name: '松脱', value: 18 },
+          { name: '其他', value: 20 }
+        ];
+        var typeColors = ['#2f54eb', '#d46b08', '#c41d7f', '#52c41a', '#722ed1', '#13c2c2'];
+        var typeTotal = typeData.reduce(function (s, i) { return s + i.value; }, 0);
+        var typePieChart = echarts.init(typePieDom);
+        typePieChart.setOption({
+          tooltip: {
+            trigger: 'item',
+            confine: true,
+            formatter: function (params) {
+              var pct = typeTotal ? ((params.value / typeTotal) * 100).toFixed(1) : '0';
+              return params.name + '：' + pct + '%（' + params.value + '件）';
+            }
+          },
+          legend: { show: false },
+          series: [{
+            type: 'pie',
+            radius: ['42%', '62%'],
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: { borderColor: '#fff', borderWidth: 2 },
+            label: { show: false },
+            labelLine: { show: false },
+            data: typeData,
+            color: typeColors,
+            emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' } }
+          }]
+        });
+        if (typeLegendDom) {
+          typeLegendDom.innerHTML = typeData.map(function (item, i) {
+            var pct = typeTotal ? ((item.value / typeTotal) * 100).toFixed(1) : '0';
+            return '<span><i class="dot" style="background:' + typeColors[i] + '"></i> ' + item.name + ' ' + pct + '%（' + item.value + '件）</span>';
+          }).join('');
+        }
+        window.addEventListener('resize', function () { typePieChart.resize(); });
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      if (typeof echarts === 'undefined') return;
+
+      var months7to6 = ['7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月','6月'];
+      var months1to12 = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+      var days = [];
+      for (var d = 1; d <= 31; d++) days.push(d + '日');
+
+      function setText(id, value) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      function safeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function toDailySeries(eventMap) {
+        var downtime = new Array(31).fill(0);
+        var details = new Array(31).fill('—');
+        Object.keys(eventMap || {}).forEach(function (key) {
+          var day = parseInt(key, 10);
+          if (!isNaN(day) && day >= 1 && day <= 31) {
+            downtime[day - 1] = eventMap[key].minutes;
+            details[day - 1] = eventMap[key].detail;
+          }
+        });
+        var rate = downtime.map(function (minutes) {
+          return minutes > 0 ? +(100 - (minutes / 480 * 100)).toFixed(1) : 100;
+        });
+        return { downtime: downtime, details: details, rate: rate };
+      }
+
+      function calcRate(done, total) {
+        return total.map(function (_, i) {
+          return total[i] ? Math.round(done[i] / total[i] * 100) : null;
+        });
+      }
+
+      function calcRemain(found, done) {
+        return found.map(function (_, i) {
+          return Math.max(0, (found[i] || 0) - (done[i] || 0));
+        });
+      }
+
+      function getTagClass(status) {
+        if (status === '一时保存') return 'tag-info';
+        if (status === '处置完成') return 'tag-warning';
+        if (status === '关闭') return 'tag-success';
+        if (status === '进行中') return 'tag-warning';
+        if (status === '待开始' || status === '未开始') return 'tag-default';
+        if (status === '逾期' || status === '未完成' || status === '已延迟') return 'tag-error';
+        return 'tag-default';
+      }
+
+      function getEquipLevelClass(level) {
+        if (level === '重故障') return 'equip-level--heavy';
+        if (level === '轻故障') return 'equip-level--light';
+        return 'equip-level--none';
+      }
+
+      function getBadgeClass(status) {
+        if (status === '已确认') return 'change-defect-badge--green';
+        if (status === '待确认') return 'change-defect-badge--yellow';
+        if (status === '处理中') return 'change-defect-badge--amber';
+        if (status === '已关闭') return 'change-defect-badge--cyan';
+        if (status === '处置完成') return 'change-defect-badge--green';
+        return 'change-defect-badge--green';
+      }
+
+      function getDefectUrgencyTagClass(u) {
+        var s = String(u == null ? '' : u).toUpperCase();
+        if (s === 'S') return 'defect-urgency-tag defect-urgency-tag--s';
+        if (s === 'A') return 'defect-urgency-tag defect-urgency-tag--a';
+        return 'defect-urgency-tag defect-urgency-tag--c';
+      }
+
+      function normalizeFollowups(value) {
+        if (Array.isArray(value)) return value.filter(Boolean);
+        if (value == null || value === '—') return [];
+        return String(value).split(/[、,，/]/).map(function (item) {
+          return item.trim();
+        }).filter(Boolean);
+      }
+
+      function renderFollowupTags(value) {
+        var list = normalizeFollowups(value);
+        if (!list.length) return '<span class="equip-fault-followup-tag equip-fault-followup-tag--empty">—</span>';
+        return list.map(function (item) {
+          var cls = 'equip-fault-followup-tag';
+          if (item === '真因分析') cls += ' equip-fault-followup-tag--root-cause';
+          else if (item === '横展范围') cls += ' equip-fault-followup-tag--spread';
+          else if (item === '长停对策') cls += ' equip-fault-followup-tag--long-stop';
+          return '<span class="' + cls + '">' + safeHtml(item) + '</span>';
+        }).join('');
+      }
+
+      var lineDetailData = {
+        '1BP': {
+          summary: {
+            zeroValue: '28 天',
+            zeroTrend: '连续保持中',
+            downtimeValue: '108 分钟',
+            downtimeTrend: '较上月下降 12 分钟'
+          },
+          region: {
+            downtime: [96, 84, 112, 88, 76, 68, 58, 52, 48, 44, 40, 36],
+            rate: [98.9, 99.1, 98.8, 99.0, 99.2, 99.1, 99.3, 99.4, 99.2, 99.3, 99.4, 99.5]
+          },
+          daily: {
+            '2026-01': { 3: { minutes: 10, detail: '上挂气缸复位不良 10 分钟；更换磁性开关' }, 16: { minutes: 14, detail: '喷房转台卡滞 14 分钟；现场复位' }, 27: { minutes: 6, detail: '扫码枪通信闪断 6 分钟；重启工控机' } },
+            '2026-02': { 6: { minutes: 8, detail: '链条张紧不足 8 分钟；完成张紧调整' }, 14: { minutes: 12, detail: '吸附真空不足 12 分钟；清扫发生器' }, 23: { minutes: 5, detail: '门开关感应偏移 5 分钟；调整位置' } },
+            '2026-03': { 3: { minutes: 8, detail: '上挂治具气缸复位不良 8 分钟；更换磁性开关后恢复' }, 6: { minutes: 12, detail: '喷涂供漆泵压力波动 12 分钟；调整稳压阀后恢复' }, 10: { minutes: 6, detail: '扫码枪通信闪断 6 分钟；重启工控机后恢复' }, 13: { minutes: 18, detail: '搬送机器人吸附异常 18 分钟；清扫真空发生器并复位' }, 17: { minutes: 5, detail: '治具定位销松动 5 分钟；现场紧固后恢复' }, 22: { minutes: 9, detail: '链条张紧不足 9 分钟；完成点检复位' }, 26: { minutes: 4, detail: '门开关感应偏移 4 分钟；调整安装位置' } }
+          },
+          failurePie: [
+            { name: '初发', value: 52 },
+            { name: '偶发', value: 48 },
+            { name: '散发', value: 46 },
+            { name: '频发', value: 44 }
+          ],
+          failureType: [
+            { name: '劣化', value: 38 },
+            { name: '人为', value: 32 },
+            { name: '磨损', value: 28 },
+            { name: '脏', value: 22 },
+            { name: '松脱', value: 18 },
+            { name: '其他', value: 20 }
+          ],
+          faultEvents: [
+            ['2026-03-18 15:44', 20, '1BP', '自动挂具机器人 R-01', '吸附异常导致节拍中断，设备复位后再次报警，需要持续观察真空状态并安排点检确认真空发生器、吸盘磨损及相关气路稳定性', '人为', '轻故障', '一时保存', ['真因分析', '长停对策']],
+            ['2026-03-17 10:20', 100, '1BP', 'XLCMP3 革新机 001', '搬送机构卡滞停机，导轨阻力偏大并伴随异响，现场处理后恢复运行', '松脱', '重故障', '处置完成', ['横展范围', '长停对策']],
+            ['2026-03-16 08:05', 15, '1BP', '6#革新机', '传动侧异音告警', '其他', '非故障', '处置完成', ['真因分析']],
+            ['2026-03-14 09:15', 45, '1BP', '喷涂线003', '喷枪堵塞', '脏', '重故障', '处置完成', ['真因分析', '横展范围']],
+            ['2026-03-11 08:45', 5, '1BP', '检测仪001', '传感器误报', '其他', '非故障', '关闭', ['横展范围']],
+            ['2026-03-10 16:28', 32, '1BP', '喷房循环风机 F-02', '风机电流波动导致喷房风量不足，联锁保护触发停机', '劣化', '重故障', '处置完成', ['真因分析', '长停对策']],
+            ['2026-03-09 14:12', 12, '1BP', '挂具输送链 A-01', '链条张紧不足造成挂具节拍抖动，短时停机调整后恢复', '松脱', '轻故障', '一时保存', ['横展范围']],
+            ['2026-03-07 11:36', 18, '1BP', '供漆泵 P-03', '供漆压力异常下降，喷涂厚度波动超限需停机点检', '劣化', '重故障', '处置完成', ['真因分析']],
+            ['2026-03-05 09:08', 7, '1BP', '治具定位机构 J-02', '定位销回位不畅导致上件到位异常，复位后恢复生产', '磨损', '轻故障', '关闭', ['横展范围', '长停对策']],
+            ['2026-03-03 13:22', 9, '1BP', '扫码工位 S-01', '扫码触发延迟，连续两次读取失败后人工干预恢复', '人为', '非故障', '关闭', ['真因分析']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.6, 1.1, 1.8, 2.4, 3.0, 3.5, 4.1, 4.6, 5.2, 5.8, 6.3, 6.9], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [4, 3, 2, 4, 3, 2, 3, 2, 2, 1, 1, 1], identified: [3, 2, 2, 3, 3, 2, 2, 2, 1, 1, 1, 1] },
+            unclearList: [
+              ['2026-02-15 09:20', 45, '1BP', '喷涂线003', '喷枪堵塞重复停机，清扫后短时间内再次出现喷涂节拍中断并伴随压力波动报警', '脏', '重故障', '一时保存'],
+              ['2026-02-08 13:40', 28, '1BP', '6#革新机', '传动侧异音再次发生，设备升速后振动增大并伴随间歇性卡顿导致停机', '其他', '重故障', '处置完成']
+            ],
+            countermeasure: { plan: [14, 13, 15, 16, 12, 11, 10, 9, 8, 8, 7, 6], done: [12, 12, 14, 14, 11, 10, 9, 8, 7, 7, 6, 5], delay: [1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 0], notDue: [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1] },
+            measureList: [
+              ['喷涂线喷枪保养强化', '2026-03-25', '张三', '进行中', '60%'],
+              ['革新机传动点检标准更新', '2026-03-30', '李四', '待开始', '0%']
+            ]
+          },
+          periodic: {
+            chart: { planDelay: [236, 224, 248, 232, 254, 240, 268, 252, 276, 260, 244, 230], done: [228, 216, 239, 225, 246, 232, 259, 243, 267, 251, 236, 221], delayCum: [18, 20, 16, 15, 13, 12, 14, 12, 11, 10, 9, 8], rate: [97, 96, 96, 97, 97, 97, 97, 96, 97, 97, 97, 96] },
+            list: [
+              ['1BP 月度自主点检表更新', '2026-03-20', '王五', '进行中', '—'],
+              ['喷房供漆泵保养标准修订', '2026-03-22', '李四', '待开始', '—'],
+              ['机器人吸盘定量更换', '2026-03-18', '张三', '已延迟', '2']
+            ]
+          },
+          changePoints: {
+            summary: { total: 3, pending: 1, confirmed: 2 },
+            rows: [
+              ['喷涂机器人吸盘', '1BP 上挂岛', '1BP-CP-01', '张三', '2026-03-10', '2026-03-18', '已确认'],
+              ['供漆泵稳压阀', '喷房供漆间', '1BP-CP-02', '李四', '2026-03-08', '2026-03-15', '待确认'],
+              ['挂具定位块', '挂具输送线侧', '1BP-CP-03', '王五', '2026-03-05', '2026-03-12', '已确认']
+            ]
+          },
+          defects: {
+            summary: { found: 4, done: 1, closed: 1, processing: 2 },
+            list: [
+              ['2026-03-18 08:20', '1BP', '4#革新机', 'PJ5轴承箱油位低漏油，地面可见油渍渗出并伴随异味扩散需停机补油与密封点检', 'S', '处理中', ['真因分析', '长停对策']],
+              ['2026-03-14 09:15', '1BP', '喷涂线003', '喷枪堵塞导致喷涂节拍中断，供漆压力波动报警在短时间内反复触发需停机清扫', 'A', '处理中', ['真因分析', '横展范围']],
+              ['2026-03-26 14:00', '2BP', 'RTO排气装置', 'VOC检测冷凝器温度持续超过基准，排放侧温差偏大需评估换热效率与清洗周期', 'C', '处置完成', ['横展范围']],
+              ['2026-03-10 11:30', '1BP', '机器人吸盘', '吸盘磨耗异常造成吸附真空不足，上件节拍抖动并需更换吸盘与检查气路密封', 'C', '已关闭', ['真因分析']]
+            ]
+          },
+          personnel: [
+            ['张三', '早班', '1BP 巡回点检', '进行中'],
+            ['李四', '早班', '喷枪故障真因分析', '重点跟进'],
+            ['王五', '常日班', '月度点检表修订', '办公室'],
+            ['赵六', '支援', '注塑区域横展确认', '外出中']
+          ],
+          focusJobs: [
+            ['A', '1BP 搬送机器人吸附确认', '张三', '10:30'],
+            ['A', '重故障对策效果确认', '李四', '13:00'],
+            ['B', '自主保全点检标准再培训', '王五', '15:30'],
+            ['B', '变化点现场确认', '赵六', '16:30']
+          ]
+        },
+        '2BP': {
+          summary: {
+            zeroValue: '12 天',
+            zeroTrend: '本月恢复稳定',
+            downtimeValue: '136 分钟',
+            downtimeTrend: '较上月下降 18 分钟'
+          },
+          region: {
+            downtime: [124, 118, 132, 126, 108, 96, 88, 80, 74, 68, 62, 58],
+            rate: [98.6, 98.8, 98.7, 98.9, 99.0, 98.9, 99.0, 99.1, 99.1, 99.2, 99.2, 99.3]
+          },
+          daily: {
+            '2026-01': { 5: { minutes: 14, detail: '焊枪偏移 14 分钟；重新示教' }, 18: { minutes: 10, detail: '夹具到位信号异常 10 分钟；更换接近开关' } },
+            '2026-02': { 2: { minutes: 8, detail: '定位销磨耗 8 分钟；更换定位件' }, 20: { minutes: 16, detail: '机器人通讯闪断 16 分钟；恢复网络交换机' } },
+            '2026-03': { 4: { minutes: 9, detail: '焊枪送丝阻力增大 9 分钟；清理导丝管' }, 8: { minutes: 14, detail: '夹具限位开关异常 14 分钟；更换开关' }, 15: { minutes: 22, detail: '机器人伺服报警 22 分钟；复位并校正' }, 21: { minutes: 11, detail: '冷却水压不足 11 分钟；清理过滤网' }, 27: { minutes: 7, detail: '扫码枪读取失败 7 分钟；调整支架角度' } }
+          },
+          failurePie: [
+            { name: '初发', value: 50 },
+            { name: '偶发', value: 46 },
+            { name: '散发', value: 42 },
+            { name: '频发', value: 42 }
+          ],
+          failureType: [
+            { name: '劣化', value: 28 },
+            { name: '人为', value: 22 },
+            { name: '磨损', value: 24 },
+            { name: '脏', value: 16 },
+            { name: '松脱', value: 21 },
+            { name: '其他', value: 18 }
+          ],
+          faultEvents: [
+            ['2026-03-19 09:12', 22, '2BP', '焊接机器人 R2', '伺服报警停机', '电气', '重故障', '处置完成', ['真因分析', '长停对策']],
+            ['2026-03-16 14:08', 11, '2BP', '夹具定位机构', '限位信号异常', '磨损', '轻故障', '一时保存', ['横展范围']],
+            ['2026-03-12 10:36', 9, '2BP', '焊枪送丝机', '送丝阻力增大', '脏', '轻故障', '处置完成', ['真因分析']],
+            ['2026-03-08 08:42', 14, '2BP', '工位扫码枪', '读取失败', '人为', '非故障', '关闭', ['横展范围', '长停对策']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.9, 1.6, 2.3, 3.0, 3.6, 4.2, 4.9, 5.5, 6.0, 6.5, 7.0, 7.4], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1], identified: [4, 3, 3, 3, 3, 2, 2, 2, 2, 1, 1, 1] },
+            unclearList: [
+              ['2026-03-09 14:25', 36, '2BP', '焊接机器人 R2', '伺服报警再次发生，机器人复位后短时间内再次丢失原点并触发整站联锁停机', '电气', '重故障', '一时保存'],
+              ['2026-02-18 08:50', 24, '2BP', '定位夹具总成', '重复到位不良，夹具回零偏差逐步扩大并造成工件定位连续异常', '磨损', '重故障', '关闭']
+            ],
+            countermeasure: { plan: [16, 15, 14, 14, 13, 12, 11, 10, 9, 8, 8, 7], done: [14, 13, 13, 12, 12, 11, 10, 9, 8, 7, 7, 6], delay: [1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 0], notDue: [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1] },
+            measureList: [
+              ['焊枪示教标准修订', '2026-03-24', '陈强', '进行中', '70%'],
+              ['夹具定位销改良', '2026-03-29', '周宁', '待开始', '0%']
+            ]
+          },
+          periodic: {
+            chart: { planDelay: [208, 196, 214, 202, 216, 208, 220, 214, 226, 218, 210, 204], done: [198, 188, 206, 194, 208, 199, 212, 205, 217, 210, 202, 196], delayCum: [16, 18, 17, 15, 14, 12, 12, 11, 10, 9, 9, 8], rate: [95, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96] },
+            list: [
+              ['2BP 焊接岛月度点检', '2026-03-21', '陈强', '进行中', '—'],
+              ['夹具定位销定量更换', '2026-03-19', '周宁', '已延迟', '1'],
+              ['冷却回路季度保养', '2026-03-26', '李川', '待开始', '—']
+            ]
+          },
+          changePoints: {
+            summary: { total: 3, pending: 1, confirmed: 2 },
+            rows: [
+              ['焊枪总成', '2BP 焊接岛', '2BP-CP-01', '陈强', '2026-03-12', '2026-03-17', '已确认'],
+              ['夹具定位销', '夹具工位 H2', '2BP-CP-02', '周宁', '2026-03-10', '2026-03-13', '待确认'],
+              ['扫码枪支架', '下料扫码工位', '2BP-CP-03', '李川', '2026-03-05', '2026-03-08', '已确认']
+            ]
+          },
+          defects: {
+            summary: { found: 3, done: 2, closed: 1, processing: 0 },
+            list: [
+              ['2026-03-19 10:08', '2BP', '焊接机器人 R2', '伺服报警重复发生，复位后短时间内再次丢失原点并触发整站联锁停机', 'A', '处理中', ['真因分析', '长停对策']],
+              ['2026-03-16 15:20', '2BP', '夹具限位开关', '误触发导致到位信号丢失，节拍停顿需调整开关安装与行程裕度', 'C', '处置完成', ['横展范围']],
+              ['2026-03-08 09:40', '2BP', '工位扫码枪', '读取失败率升高，支架角度偏移导致扫码窗口与条码距离不稳定', 'C', '已关闭', ['真因分析']]
+            ]
+          },
+          personnel: [
+            ['陈强', '早班', '2BP 焊接岛巡检', '进行中'],
+            ['周宁', '早班', '夹具定位销更换', '重点跟进'],
+            ['李川', '常日班', '焊枪示教标准修订', '办公室'],
+            ['张敏', '支援', 'IP 工段横展确认', '外出中']
+          ],
+          focusJobs: [
+            ['A', '2BP 焊枪送丝机确认', '陈强', '10:00'],
+            ['A', '机器人伺服报警再发验证', '周宁', '13:30'],
+            ['B', '夹具定位销定量更换', '李川', '15:00'],
+            ['B', '变化点确认闭环', '张敏', '16:20']
+          ]
+        },
+        'IP': {
+          summary: {
+            zeroValue: '20 天',
+            zeroTrend: '本月轻故障为主',
+            downtimeValue: '92 分钟',
+            downtimeTrend: '较上月下降 9 分钟'
+          },
+          region: {
+            downtime: [78, 86, 82, 74, 68, 64, 60, 56, 48, 46, 42, 38],
+            rate: [99.1, 99.0, 99.1, 99.2, 99.3, 99.3, 99.4, 99.4, 99.5, 99.5, 99.6, 99.6]
+          },
+          daily: {
+            '2026-01': { 4: { minutes: 6, detail: '气缸动作迟滞 6 分钟；调整节流阀' }, 25: { minutes: 8, detail: '传送带跑偏 8 分钟；校正张紧轮' } },
+            '2026-02': { 7: { minutes: 5, detail: '到位传感器偏移 5 分钟；修正支架' }, 19: { minutes: 9, detail: '链条张力不足 9 分钟；完成复位' } },
+            '2026-03': { 3: { minutes: 7, detail: '传送带跑偏 7 分钟；调整张紧轮' }, 9: { minutes: 5, detail: '装配台气缸动作不良 5 分钟；更换密封圈' }, 18: { minutes: 11, detail: '感应器误报码 11 分钟；清洁反光板' }, 26: { minutes: 6, detail: '滑轨异音 6 分钟；完成润滑' } }
+          },
+          failurePie: [
+            { name: '初发', value: 32 },
+            { name: '偶发', value: 30 },
+            { name: '散发', value: 28 },
+            { name: '频发', value: 30 }
+          ],
+          failureType: [
+            { name: '劣化', value: 18 },
+            { name: '人为', value: 14 },
+            { name: '磨损', value: 16 },
+            { name: '脏', value: 12 },
+            { name: '松脱', value: 15 },
+            { name: '其他', value: 15 }
+          ],
+          faultEvents: [
+            ['2026-03-18 11:00', 30, 'IP', '装配台 B-01', '气缸动作不良', '磨损', '重故障', '处置完成', ['真因分析', '长停对策']],
+            ['2026-03-13 16:20', 12, 'IP', '传送带 M1', '皮带跑偏', '松脱', '轻故障', '一时保存', ['横展范围']],
+            ['2026-03-09 09:42', 6, 'IP', '到位感应器 S-3', '误报码', '脏', '轻故障', '关闭', ['真因分析']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.4, 0.8, 1.1, 1.6, 2.0, 2.3, 2.8, 3.2, 3.6, 4.0, 4.3, 4.6], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [2, 2, 1, 2, 2, 1, 2, 1, 1, 1, 0, 0], identified: [2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 0, 0] },
+            unclearList: [['2026-02-19 10:10', 30, 'IP', '装配台 B-01', '气缸动作不良再发，负载变化时伸缩不同步并造成装配节拍多次中断', '磨损', '重故障', '一时保存']],
+            countermeasure: { plan: [9, 9, 10, 8, 9, 8, 9, 8, 7, 7, 6, 6], done: [8, 8, 9, 8, 8, 8, 8, 7, 7, 6, 6, 6], delay: [1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0], notDue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0] },
+            measureList: [['装配台气缸选型优化', '2026-03-27', '刘峰', '进行中', '55%']]
+          },
+          periodic: {
+            chart: { planDelay: [168, 160, 172, 166, 178, 170, 182, 176, 188, 180, 170, 162], done: [162, 154, 166, 160, 172, 165, 176, 170, 181, 174, 164, 156], delayCum: [10, 9, 9, 8, 8, 7, 7, 6, 6, 6, 5, 5], rate: [96, 96, 97, 96, 97, 97, 97, 97, 96, 97, 96, 96] },
+            list: [
+              ['IP 输送线月度点检', '2026-03-23', '刘峰', '进行中', '—'],
+              ['装配台气缸密封件更换', '2026-03-20', '王安', '已延迟', '1']
+            ]
+          },
+          changePoints: {
+            summary: { total: 2, pending: 1, confirmed: 1 },
+            rows: [
+              ['输送线张紧轮', 'IP 输送线 L1', 'IP-CP-01', '刘峰', '2026-03-08', '2026-03-13', '已确认'],
+              ['装配台气缸', '装配工位 B-01', 'IP-CP-02', '王安', '2026-03-15', '2026-03-18', '待确认']
+            ]
+          },
+          defects: {
+            summary: { found: 2, done: 1, closed: 1, processing: 0 },
+            list: [
+              ['2026-03-18 11:00', 'IP', '装配台 B-01', '气缸动作不良，负载侧伸缩不同步导致装配节拍多次中断需更换密封件', 'A', '处置完成', ['真因分析', '长停对策']],
+              ['2026-03-09 09:42', 'IP', '到位感应器 S-3', '误报码增多，反光板污染与安装角度偏移叠加造成读取不稳定', 'C', '已关闭', ['真因分析']]
+            ]
+          },
+          personnel: [
+            ['刘峰', '早班', 'IP 输送线巡回点检', '进行中'],
+            ['王安', '早班', '气缸动作不良对策验证', '重点跟进'],
+            ['周洁', '常日班', '月度点检资料整理', '办公室']
+          ],
+          focusJobs: [
+            ['A', 'IP 输送线张紧确认', '刘峰', '09:50'],
+            ['A', '装配台气缸效果确认', '王安', '13:20'],
+            ['B', '感应器清扫标准培训', '周洁', '15:40']
+          ]
+        },
+        '注塑': {
+          summary: {
+            zeroValue: '16 天',
+            zeroTrend: '温控类波动已收敛',
+            downtimeValue: '124 分钟',
+            downtimeTrend: '较上月下降 6 分钟'
+          },
+          region: {
+            downtime: [118, 112, 126, 122, 110, 104, 96, 84, 78, 72, 68, 60],
+            rate: [98.8, 98.9, 98.8, 98.9, 99.0, 99.0, 99.1, 99.2, 99.2, 99.3, 99.3, 99.4]
+          },
+          daily: {
+            '2026-01': { 8: { minutes: 12, detail: '料筒温控异常 12 分钟；更换热电偶' }, 21: { minutes: 9, detail: '冷却回路流量不足 9 分钟；清洗过滤器' } },
+            '2026-02': { 11: { minutes: 7, detail: '模温机报警 7 分钟；复位并补液' }, 25: { minutes: 13, detail: '取件机械手真空不足 13 分钟；清扫管路' } },
+            '2026-03': { 5: { minutes: 10, detail: '料筒温控偏差 10 分钟；校正温控模块' }, 12: { minutes: 16, detail: '模温机流量不足 16 分钟；清洁换热器' }, 19: { minutes: 11, detail: '冷却水温异常 11 分钟；点检水路' }, 24: { minutes: 8, detail: '机械手吸附不良 8 分钟；更换真空杯' } }
+          },
+          failurePie: [
+            { name: '初发', value: 36 },
+            { name: '偶发', value: 32 },
+            { name: '散发', value: 28 },
+            { name: '频发', value: 26 }
+          ],
+          failureType: [
+            { name: '劣化', value: 34 },
+            { name: '人为', value: 18 },
+            { name: '磨损', value: 16 },
+            { name: '脏', value: 14 },
+            { name: '松脱', value: 12 },
+            { name: '其他', value: 10 }
+          ],
+          faultEvents: [
+            ['2026-03-15 14:30', 8, '注塑', '注塑机 A-02', '料筒温度异常', '劣化', '轻故障', '一时保存', ['真因分析']],
+            ['2026-03-10 13:22', 18, '注塑', '模具冷却机', '水温过高', '劣化', '轻故障', '一时保存', ['长停对策']],
+            ['2026-03-06 09:18', 16, '注塑', '模温机 T-03', '流量报警停机', '脏', '重故障', '处置完成', ['横展范围', '长停对策']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.7, 1.2, 1.9, 2.5, 3.1, 3.8, 4.2, 4.8, 5.4, 5.9, 6.4, 6.8], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1], identified: [2, 3, 2, 3, 2, 2, 2, 2, 1, 1, 1, 1] },
+            unclearList: [['2026-03-06 09:18', 16, '注塑', '模温机 T-03', '流量报警重复发生，换热器清洁后仍出现回路波动并导致设备保护停机', '脏', '重故障', '处置完成']],
+            countermeasure: { plan: [11, 10, 11, 12, 11, 10, 10, 9, 9, 8, 8, 7], done: [10, 9, 10, 11, 10, 9, 9, 8, 8, 8, 7, 6], delay: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0], notDue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1] },
+            measureList: [['模温机换热器清扫基准更新', '2026-03-26', '高洋', '进行中', '65%']]
+          },
+          periodic: {
+            chart: { planDelay: [182, 176, 186, 180, 192, 186, 198, 192, 204, 198, 188, 180], done: [174, 169, 178, 173, 185, 179, 191, 185, 196, 190, 180, 172], delayCum: [12, 12, 11, 11, 10, 10, 9, 9, 9, 8, 8, 8], rate: [96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96] },
+            list: [
+              ['注塑机月度保养', '2026-03-24', '高洋', '进行中', '—'],
+              ['模温机过滤器更换', '2026-03-18', '许飞', '已延迟', '2']
+            ]
+          },
+          changePoints: {
+            summary: { total: 2, pending: 1, confirmed: 1 },
+            rows: [
+              ['料筒热电偶', '注塑机 A-02 料筒侧', 'ZS-CP-01', '高洋', '2026-03-12', '2026-03-15', '待确认'],
+              ['模温机过滤器', '模温机 T-03 机旁', 'ZS-CP-02', '许飞', '2026-03-06', '2026-03-10', '已确认']
+            ]
+          },
+          defects: {
+            summary: { found: 2, done: 0, closed: 1, processing: 1 },
+            list: [
+              ['2026-03-18 09:30', '注塑', '模温机 T-03', '流量报警再发，清洁换热器后回路仍波动需评估过滤与补水流程', 'A', '处理中', ['真因分析', '长停对策']],
+              ['2026-03-15 14:10', '注塑', '料筒温控模块', '温控偏差扩大导致设定值与实测温差增大并影响成型尺寸稳定性', 'C', '已关闭', ['真因分析']]
+            ]
+          },
+          personnel: [
+            ['高洋', '早班', '注塑机温控巡检', '进行中'],
+            ['许飞', '早班', '模温机过滤器更换', '重点跟进'],
+            ['陈雨', '常日班', '保养标准修订', '办公室']
+          ],
+          focusJobs: [
+            ['A', '注塑机 A-02 温控确认', '高洋', '10:10'],
+            ['A', '模温机再发验证', '许飞', '13:40'],
+            ['B', '冷却回路清扫', '陈雨', '15:50']
+          ]
+        },
+        '模具': {
+          summary: {
+            zeroValue: '35 天',
+            zeroTrend: '长期稳定达成',
+            downtimeValue: '48 分钟',
+            downtimeTrend: '较上月下降 4 分钟'
+          },
+          region: {
+            downtime: [52, 48, 46, 44, 40, 38, 36, 34, 32, 30, 28, 26],
+            rate: [99.4, 99.5, 99.5, 99.5, 99.6, 99.6, 99.6, 99.7, 99.7, 99.7, 99.7, 99.8]
+          },
+          daily: {
+            '2026-01': { 12: { minutes: 5, detail: '模具锁紧传感器抖动 5 分钟；清洁处理' } },
+            '2026-02': { 22: { minutes: 7, detail: '滑块润滑不足 7 分钟；补充润滑脂' } },
+            '2026-03': { 9: { minutes: 6, detail: '模具冷却接头松动 6 分钟；重新紧固' }, 20: { minutes: 4, detail: '锁模信号抖动 4 分钟；调整传感器支架' } }
+          },
+          failurePie: [
+            { name: '初发', value: 14 },
+            { name: '偶发', value: 12 },
+            { name: '散发', value: 10 },
+            { name: '频发', value: 12 }
+          ],
+          failureType: [
+            { name: '劣化', value: 14 },
+            { name: '人为', value: 8 },
+            { name: '磨损', value: 10 },
+            { name: '脏', value: 6 },
+            { name: '松脱', value: 6 },
+            { name: '其他', value: 4 }
+          ],
+          faultEvents: [
+            ['2026-03-20 11:15', 4, '模具', '锁模传感器', '信号抖动', '松脱', '轻故障', '关闭', ['真因分析']],
+            ['2026-03-09 08:20', 6, '模具', '冷却接头', '接头松动渗漏', '松脱', '轻故障', '处置完成', ['横展范围']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.2, 0.3, 0.5, 0.7, 0.9, 1.0, 1.2, 1.4, 1.5, 1.7, 1.8, 2.0], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0], identified: [1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0] },
+            unclearList: [],
+            countermeasure: { plan: [6, 6, 7, 6, 7, 6, 6, 5, 5, 5, 4, 4], done: [6, 6, 7, 6, 7, 6, 6, 5, 5, 5, 4, 4], delay: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], notDue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+            measureList: []
+          },
+          periodic: {
+            chart: { planDelay: [94, 92, 98, 96, 100, 96, 102, 100, 104, 102, 98, 96], done: [92, 90, 96, 94, 98, 94, 100, 98, 102, 100, 96, 94], delayCum: [3, 3, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1], rate: [98, 98, 98, 98, 98, 98, 98, 98, 98, 98, 98, 98] },
+            list: [
+              ['模具季度清扫点检', '2026-03-27', '韩涛', '进行中', '—']
+            ]
+          },
+          changePoints: {
+            summary: { total: 2, pending: 0, confirmed: 2 },
+            rows: [
+              ['冷却接头', '模具冷却回路', 'MJ-CP-01', '韩涛', '2026-03-05', '2026-03-09', '已确认'],
+              ['锁模传感器', '锁模机构上模板', 'MJ-CP-02', '许晨', '2026-03-15', '2026-03-20', '已确认']
+            ]
+          },
+          defects: {
+            summary: { found: 1, done: 1, closed: 1, processing: 0 },
+            list: [
+              ['2026-03-09 08:20', '模具', '冷却接头', '接头松动渗漏导致冷却流量下降并引起模温波动，复紧后完成效果确认', 'C', '已关闭', ['横展范围']]
+            ]
+          },
+          personnel: [
+            ['韩涛', '早班', '模具冷却系统巡检', '进行中'],
+            ['许晨', '常日班', '模具点检标准整理', '办公室']
+          ],
+          focusJobs: [
+            ['A', '模具冷却接头复查', '韩涛', '10:20'],
+            ['B', '锁模传感器点检', '许晨', '14:30']
+          ]
+        },
+        '补给': {
+          summary: {
+            zeroValue: '22 天',
+            zeroTrend: '包装设备保持稳定',
+            downtimeValue: '64 分钟',
+            downtimeTrend: '较上月下降 5 分钟'
+          },
+          region: {
+            downtime: [68, 66, 72, 70, 64, 60, 56, 52, 48, 46, 42, 40],
+            rate: [99.0, 99.0, 98.9, 99.0, 99.1, 99.2, 99.2, 99.3, 99.3, 99.4, 99.4, 99.4]
+          },
+          daily: {
+            '2026-01': { 7: { minutes: 8, detail: '封口温度偏低 8 分钟；校正温控' } },
+            '2026-02': { 18: { minutes: 6, detail: '贴标机感应异常 6 分钟；清洁传感器' } },
+            '2026-03': { 8: { minutes: 9, detail: '包装机封口不严 9 分钟；更换加热条' }, 18: { minutes: 7, detail: '贴标机走带偏移 7 分钟；校正导向轮' }, 27: { minutes: 5, detail: '成箱检测误报码 5 分钟；重启检测模块' } }
+          },
+          failurePie: [
+            { name: '初发', value: 20 },
+            { name: '偶发', value: 18 },
+            { name: '散发', value: 14 },
+            { name: '频发', value: 12 }
+          ],
+          failureType: [
+            { name: '劣化', value: 12 },
+            { name: '人为', value: 10 },
+            { name: '磨损', value: 11 },
+            { name: '脏', value: 9 },
+            { name: '松脱', value: 7 },
+            { name: '其他', value: 5 }
+          ],
+          faultEvents: [
+            ['2026-03-08 15:33', 9, '补给', '包装机 P-01', '封口不严', '松脱', '轻故障', '关闭', ['长停对策']],
+            ['2026-03-18 09:26', 7, '补给', '贴标机 L-02', '走带偏移', '磨损', '轻故障', '处置完成', ['真因分析', '横展范围']]
+          ],
+          heavy: {
+            cumulative: { actual: [0.3, 0.4, 0.6, 0.8, 1.0, 1.1, 1.3, 1.5, 1.7, 1.8, 2.0, 2.1], target: [0.8, 1.5, 2.3, 3.0, 3.8, 4.5, 5.3, 6.0, 6.8, 7.5, 8.3, 9.0] },
+            trend: { total: [1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 0, 0], identified: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0] },
+            unclearList: [['2026-03-04 11:05', 18, '补给', '包装机 P-02', '封口温度漂移，升温阶段波动超限并导致连续多包封边不良需要停机调整', '劣化', '重故障', '关闭']],
+            countermeasure: { plan: [7, 7, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5], done: [6, 7, 7, 7, 7, 7, 6, 6, 6, 5, 5, 5], delay: [1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0], notDue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+            measureList: [['包装机封口温控基准修订', '2026-03-28', '孙立', '进行中', '50%']]
+          },
+          periodic: {
+            chart: { planDelay: [116, 112, 120, 118, 124, 120, 128, 124, 132, 128, 122, 118], done: [110, 108, 116, 114, 120, 116, 124, 120, 128, 124, 118, 114], delayCum: [6, 6, 5, 5, 4, 4, 4, 4, 4, 3, 3, 3], rate: [95, 96, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97] },
+            list: [
+              ['包装设备月度点检', '2026-03-21', '孙立', '进行中', '—'],
+              ['贴标机导向轮更换', '2026-03-17', '张可', '已延迟', '1']
+            ]
+          },
+          changePoints: {
+            summary: { total: 2, pending: 1, confirmed: 1 },
+            rows: [
+              ['封口加热条', '包装机 P-01 封口部', 'BJ-CP-01', '孙立', '2026-03-05', '2026-03-08', '已确认'],
+              ['贴标机导向轮', '贴标机 L-02 走带部', 'BJ-CP-02', '张可', '2026-03-15', '2026-03-18', '待确认']
+            ]
+          },
+          defects: {
+            summary: { found: 2, done: 1, closed: 0, processing: 1 },
+            list: [
+              ['2026-03-08 15:10', '补给', '包装机 P-01', '封口不严导致封边不良率上升，加热条老化与压力设定需复核并完成验证', 'A', '处理中', ['真因分析', '长停对策']],
+              ['2026-03-18 09:26', '补给', '贴标机 L-02', '走带偏移造成贴标错位，导向轮磨损与张力设定已调整并完成横展', 'C', '处置完成', ['横展范围']]
+            ]
+          },
+          personnel: [
+            ['孙立', '早班', '补给包装线巡检', '进行中'],
+            ['张可', '早班', '贴标机导向轮更换', '重点跟进'],
+            ['赵蕾', '常日班', '保养履历整理', '办公室']
+          ],
+          focusJobs: [
+            ['A', '包装机封口温控确认', '孙立', '09:40'],
+            ['A', '贴标机走带稳定性验证', '张可', '13:10'],
+            ['B', '变化点复核', '赵蕾', '15:20']
+          ]
+        }
+      };
+
+      function renderEquipSummary(data) {
+        setText('equip-stat-zero-value', data.summary.zeroValue);
+        setText('equip-stat-zero-trend', data.summary.zeroTrend);
+      }
+
+      function syncEquipRateControls() {
+        var viewToggle = document.getElementById('equip-shared-view');
+        var monthWrap = document.getElementById('equip-shared-month-wrap');
+        var activeBtn = viewToggle ? viewToggle.querySelector('.equip-rate-toggle-btn.is-active') : null;
+        var isMonthView = !!(activeBtn && activeBtn.getAttribute('data-view') === 'month');
+        if (monthWrap) monthWrap.classList.toggle('is-hidden', !isMonthView);
+        return isMonthView;
+      }
+
+      function renderEquipRate(data) {
+        var dom = document.getElementById('chart-equip-rate');
+        var monthSelect = document.getElementById('equip-shared-month');
+        var isMonthView = syncEquipRateControls();
+        if (!dom) return;
+        var chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+
+        if (isMonthView && monthSelect) {
+          var currentMonth = monthSelect.value || '2026-03';
+          var daily = toDailySeries(data.daily[currentMonth] || data.daily['2026-03'] || {});
+          var maxMinutes = Math.max.apply(null, daily.downtime.concat([10]));
+          var axisMax = Math.max(20, Math.ceil(maxMinutes / 10) * 10);
+          chart.setOption({
+            legend: { data: ['停机时间', '可动率', '目标'], top: 8, left: 'center', itemGap: 20, textStyle: { fontSize: 11 } },
+            grid: { left: 48, right: 48, top: 40, bottom: 28 },
+            xAxis: {
+              type: 'category',
+              data: days,
+              axisLine: { lineStyle: { color: '#e8e8e8' } },
+              axisLabel: { color: '#666', fontSize: 10, interval: 1 }
+            },
+            yAxis: [
+              { type: 'value', min: 0, max: axisMax, interval: axisMax / 5, position: 'left', name: '分钟', nameTextStyle: { fontSize: 10, color: '#666' }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { color: '#666', fontSize: 11 } },
+              { type: 'value', min: 95, max: 100, interval: 1, position: 'right', axisLine: { show: false }, splitLine: { show: false }, axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' } }
+            ],
+            series: [
+              { name: '停机时间', type: 'bar', barWidth: '38%', data: daily.downtime, itemStyle: { color: '#1890ff' }, label: { show: true, position: 'top', fontSize: 9, color: '#333', formatter: function (p) { return p.value > 0 ? p.value : ''; } } },
+              { name: '可动率', type: 'line', yAxisIndex: 1, symbol: 'triangle', symbolSize: 7, data: daily.rate, lineStyle: { color: '#c23531', width: 2 }, itemStyle: { color: '#c23531' } },
+              { name: '目标', type: 'line', yAxisIndex: 1, symbol: 'none', data: days.map(function () { return 99; }), lineStyle: { type: 'dashed', color: '#52c41a', width: 2 }, itemStyle: { color: '#52c41a' } }
+            ],
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: { type: 'cross' },
+              appendToBody: true,
+              formatter: function (params) {
+                var i = params[0].dataIndex;
+                return (params[0].axisValue || '') + '<br/>停机时间：' + daily.downtime[i] + ' 分钟<br/>可动率：' + daily.rate[i] + '%<br/><span style="color:#666">故障内容：' + daily.details[i] + '</span>';
+              }
+            }
+          }, true);
+          return;
+        }
+
+        var downtimeMax = Math.max.apply(null, data.region.downtime.concat([60]));
+        var interval = downtimeMax <= 80 ? 20 : downtimeMax <= 120 ? 30 : 40;
+        var axisMaxYear = Math.ceil(downtimeMax / interval) * interval;
+        chart.setOption({
+          legend: { data: ['停止时间', '可动率', '目标'], top: 8, left: 'center', itemGap: 20, textStyle: { fontSize: 11 } },
+          grid: { left: 52, right: 52, top: 40, bottom: 28 },
+          xAxis: {
+            type: 'category',
+            data: months7to6,
+            axisLine: { lineStyle: { color: '#e8e8e8' } },
+            axisLabel: { color: '#666', fontSize: 11 }
+          },
+          yAxis: [
+            { type: 'value', min: 0, max: axisMaxYear, interval: interval, position: 'left', name: '分钟', nameTextStyle: { fontSize: 10, color: '#666' }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { color: '#666', fontSize: 11 } },
+            { type: 'value', min: 98, max: 100, interval: 0.5, position: 'right', axisLine: { show: false }, splitLine: { show: false }, axisLabel: { color: '#666', fontSize: 11, formatter: '{value}%' } }
+          ],
+          series: [
+            { name: '停止时间', type: 'bar', barWidth: '28%', data: data.region.downtime, itemStyle: { color: '#1890ff' }, label: { show: true, position: 'top', fontSize: 10, color: '#333' } },
+            { name: '可动率', type: 'line', yAxisIndex: 1, symbol: 'triangle', symbolSize: 8, data: data.region.rate, lineStyle: { color: '#c23531', width: 2 }, itemStyle: { color: '#c23531' }, label: { show: true, position: 'top', formatter: function (p) { return p.value + '%'; }, fontSize: 10, color: '#c23531' } },
+            { name: '目标', type: 'line', yAxisIndex: 1, symbol: 'none', data: months7to6.map(function () { return 99; }), lineStyle: { type: 'dashed', color: '#52c41a', width: 2 }, itemStyle: { color: '#52c41a' } }
+          ],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'cross' },
+            appendToBody: true,
+            formatter: function (params) {
+              var i = params[0].dataIndex;
+              return months7to6[i] + '<br/>停止时间：' + data.region.downtime[i] + ' 分钟<br/>可动率：' + data.region.rate[i] + '%<br/>目标：99%';
+            }
+          }
+        }, true);
+      }
+
+      function getFailureDistributionData(line, data) {
+        var monthSelect = document.getElementById('equip-shared-month');
+        var isMonthView = syncEquipRateControls();
+        if (!isMonthView || !monthSelect) {
+          return { pie: data.failurePie, type: data.failureType };
+        }
+
+        var month = monthSelect.value || '2026-03';
+        var monthProfiles = {
+          '2026-01': { pie: [0.92, 1.05, 0.86, 1.12], type: [1.08, 0.88, 0.94, 1.12, 0.96, 1.02] },
+          '2026-02': { pie: [1.04, 0.96, 1.08, 0.9], type: [0.96, 1.06, 1.02, 0.92, 1.08, 0.98] },
+          '2026-03': { pie: [1, 1, 1, 1], type: [1, 1, 1, 1, 1, 1] }
+        };
+        var lineProfiles = {
+          '1BP': { pie: [1, 1.02, 0.98, 1], type: [1.02, 1, 0.98, 1, 1, 1] },
+          '2BP': { pie: [0.98, 1, 1.04, 0.96], type: [0.96, 1.04, 1.02, 0.98, 1.06, 0.94] },
+          'IP': { pie: [1.06, 0.98, 1, 0.94], type: [1, 0.96, 1.04, 1, 0.94, 1.08] },
+          '注塑': { pie: [0.94, 1, 1.02, 1.08], type: [1.08, 0.92, 0.98, 1.04, 1, 1.02] },
+          '模具': { pie: [1.02, 0.94, 1, 1.06], type: [0.94, 1, 1.06, 0.98, 1.04, 1] },
+          '补给': { pie: [1, 1.06, 0.94, 0.98], type: [0.98, 1.02, 1, 0.96, 1.08, 0.92] }
+        };
+
+        var monthProfile = monthProfiles[month] || monthProfiles['2026-03'];
+        var lineProfile = lineProfiles[line] || lineProfiles['1BP'];
+
+        function scaleSeries(base, monthFactors, lineFactors) {
+          return (base || []).map(function (item, index) {
+            var factor = (monthFactors[index] || 1) * (lineFactors[index] || 1);
+            return { name: item.name, value: Math.max(1, Math.round(item.value * factor)) };
+          });
+        }
+
+        return {
+          pie: scaleSeries(data.failurePie, monthProfile.pie, lineProfile.pie),
+          type: scaleSeries(data.failureType, monthProfile.type, lineProfile.type)
+        };
+      }
+
+      function renderPie(domId, legendId, data, colors, formatter) {
+        var dom = document.getElementById(domId);
+        var legendDom = document.getElementById(legendId);
+        if (!dom || !legendDom) return;
+        var chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        var total = data.reduce(function (sum, item) { return sum + item.value; }, 0);
+        chart.setOption({
+          series: [{ data: data, color: colors }],
+          tooltip: {
+            formatter: function (params) {
+              var pct = total ? ((params.value / total) * 100).toFixed(1) : '0';
+              return formatter(params, pct);
+            }
+          }
+        });
+        var unit = legendId === 'equip-failure-type-legend' ? '件' : '分钟';
+        legendDom.innerHTML = data.map(function (item, i) {
+          var pct = total ? ((item.value / total) * 100).toFixed(1) : '0';
+          return '<span><i class="dot" style="background:' + colors[i] + '"></i> ' + safeHtml(item.name) + ' ' + pct + '%（' + item.value + unit + '）</span>';
+        }).join('');
+      }
+
+      function renderFailureDistribution(line, data) {
+        var dist = getFailureDistributionData(line, data);
+        renderPie('chart-equip-failure-pie', 'equip-failure-pie-legend', dist.pie, ['#1890ff', '#52c41a', '#faad14', '#ff4d4f'], function (params, pct) {
+          return params.name + '：' + pct + '%（' + params.value + '分钟）';
+        });
+        renderPie('chart-equip-failure-type-pie', 'equip-failure-type-legend', dist.type, ['#2f54eb', '#d46b08', '#c41d7f', '#52c41a', '#722ed1', '#13c2c2'], function (params, pct) {
+          return params.name + '：' + pct + '%（' + params.value + '件）';
+        });
+      }
+
+      function renderFaultTable(data) {
+        var list = document.getElementById('equip-fault-table-body');
+        if (!list) return;
+        list.innerHTML = data.faultEvents.map(function (row, index) {
+          return '<tr>' +
+            '<td>' + (index + 1) + '</td>' +
+            '<td>' + safeHtml(row[0]) + '</td>' +
+            '<td>' + safeHtml(row[1]) + '</td>' +
+            '<td>' + safeHtml(row[2]) + '</td>' +
+            '<td>' + safeHtml(row[3]) + '</td>' +
+            '<td><span class="equip-fault-phenomenon">' + safeHtml(row[4]) + '</span></td>' +
+            '<td>' + safeHtml(row[5]) + '</td>' +
+            '<td><span class="equip-level ' + getEquipLevelClass(row[6]) + '">' + safeHtml(row[6]) + '</span></td>' +
+            '<td><span class="tag ' + getTagClass(row[7]) + '">' + safeHtml(row[7]) + '</span></td>' +
+            '<td><span class="equip-fault-followup-tags">' + renderFollowupTags(row[8]) + '</span></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function renderHeavy(data) {
+        var cumChart = echarts.getInstanceByDom(document.getElementById('chart-hf-cumulative'));
+        if (cumChart) {
+          cumChart.setOption({
+            series: [
+              { data: data.heavy.cumulative.actual },
+              { data: data.heavy.cumulative.target }
+            ],
+            tooltip: {
+              formatter: function (params) {
+                var i = params[0].dataIndex;
+                return months1to12[i] + '<br/>重故障停机累计：' + data.heavy.cumulative.actual[i] + ' 小时<br/>目标停机时间：' + data.heavy.cumulative.target[i] + ' 小时';
+              }
+            }
+          });
+        }
+
+        var trendChart = echarts.getInstanceByDom(document.getElementById('chart-hf-trend'));
+        if (trendChart) {
+          var unclear = data.heavy.trend.total.map(function (_, i) { return data.heavy.trend.total[i] - data.heavy.trend.identified[i]; });
+          var rate = calcRate(data.heavy.trend.identified, data.heavy.trend.total);
+          trendChart.setOption({
+            series: [
+              { data: data.heavy.trend.total },
+              { data: data.heavy.trend.identified },
+              { data: unclear },
+              { data: rate }
+            ],
+            tooltip: {
+              formatter: function (params) {
+                var i = params[0].dataIndex;
+                return months7to6[i] + '<br/>重故障停机次数：' + data.heavy.trend.total[i] + '<br/>真因明确次数：' + data.heavy.trend.identified[i] + '<br/>累计不明确次数：' + unclear[i] + '<br/>真因明确率：' + (rate[i] == null ? '—' : rate[i] + '%');
+              }
+            }
+          });
+        }
+
+        var cmChart = echarts.getInstanceByDom(document.getElementById('chart-hf-countermeasure'));
+        if (cmChart) {
+          var rateCm = data.heavy.countermeasure.plan.map(function (_, i) {
+            return data.heavy.countermeasure.plan[i] ? Math.round((data.heavy.countermeasure.done[i] / data.heavy.countermeasure.plan[i]) * 1000) / 10 : null;
+          });
+          cmChart.setOption({
+            series: [
+              { data: data.heavy.countermeasure.plan },
+              { data: data.heavy.countermeasure.done },
+              { data: data.heavy.countermeasure.delay },
+              { data: data.heavy.countermeasure.notDue },
+              { data: rateCm }
+            ]
+          });
+        }
+
+        var unclearBody = document.getElementById('hf-unclear-body');
+        if (unclearBody) {
+          unclearBody.innerHTML = data.heavy.unclearList.length ? data.heavy.unclearList.map(function (row, index) {
+            return '<tr><td>' + (index + 1) + '</td><td>' + safeHtml(row[0]) + '</td><td>' + safeHtml(row[1]) + '</td><td>' + safeHtml(row[2]) + '</td><td>' + safeHtml(row[3]) + '</td><td>' + safeHtml(row[4]) + '</td><td>' + safeHtml(row[5]) + '</td><td>' + safeHtml(row[6]) + '</td><td>' + safeHtml(row[7]) + '</td></tr>';
+          }).join('') : '<tr><td colspan="9" class="empty-hint">暂无更多真因未明记录</td></tr>';
+        }
+
+        var measureBody = document.getElementById('hf-measure-body');
+        if (measureBody) {
+          measureBody.innerHTML = data.heavy.measureList.length ? data.heavy.measureList.map(function (row, index) {
+            var content = row[0] || '';
+            var type = '通用';
+            var cycle = '-';
+            var times = '-';
+            var status = row[3] === '待开始' ? '未开始' : row[3];
+            if (/标准|基准|评价/.test(content)) {
+              type = '对策评价';
+              cycle = '单次';
+              times = '1次';
+              if (/月度/.test(content)) {
+                cycle = '月度';
+                times = '每月';
+              } else if (/季度/.test(content)) {
+                cycle = '季度';
+                times = '每季';
+              } else if (/年度|年次/.test(content)) {
+                cycle = '年度';
+                times = '每年';
+              }
+            } else if (/实施|改良|更换|强化/.test(content)) {
+              type = '对策实施';
+            }
+            return '<tr><td>' + (index + 1) + '</td><td>' + safeHtml(type) + '</td><td>' + safeHtml(content) + '</td><td>' + safeHtml(cycle) + '</td><td>' + safeHtml(times) + '</td><td>' + safeHtml(row[1]) + '</td><td>' + safeHtml(row[2]) + '</td><td><span class="tag ' + getTagClass(status) + '">' + safeHtml(status) + '</span></td></tr>';
+          }).join('') : '<tr><td colspan="8" class="empty-hint">暂无更多未完成对策</td></tr>';
+        }
+      }
+
+      function getCurrentLineKey() {
+        var section = document.getElementById('line-section');
+        return section ? section.getAttribute('data-current-line') || '1BP' : '1BP';
+      }
+
+      function getCurrentLineData() {
+        var line = getCurrentLineKey();
+        return lineDetailData[line] || lineDetailData['1BP'];
+      }
+
+      var CHANGE_DEFECT_TABLE_ROWS = 10;
+
+      function padChangePointRowsToTen(rows, lineKey) {
+        var out = (rows || []).slice();
+        var lk = lineKey || '1BP';
+        while (out.length < CHANGE_DEFECT_TABLE_ROWS) {
+          var idx = out.length + 1;
+          var pending = (out.length % 3 === 0);
+          out.push([
+            '样例设备-' + idx,
+            lk + ' 区域',
+            lk + '-CP-D' + idx,
+            '系统',
+            '2026-02-' + String(5 + (out.length % 20)).padStart(2, '0'),
+            '2026-02-' + String(8 + (out.length % 18)).padStart(2, '0'),
+            pending ? '待确认' : '已确认'
+          ]);
+        }
+        return out;
+      }
+
+      function padDefectListToTen(list, lineKey) {
+        var out = (list || []).slice();
+        var lk = lineKey || '1BP';
+        var statuses = ['已关闭', '处理中', '处置完成'];
+        while (out.length < CHANGE_DEFECT_TABLE_ROWS) {
+          var idx = out.length + 1;
+          var st = statuses[out.length % 3];
+          var follow = st === '已关闭' ? ['真因分析'] : (st === '处置完成' ? ['横展范围'] : ['真因分析', '长停对策']);
+          out.push([
+            '2026-02-' + String(10 + (out.length % 17)).padStart(2, '0') + ' 09:30:00',
+            lk,
+            '样例设备-' + idx,
+            '样例行：用于演示列表固定十条与纵向滚动，正式环境由接口返回。',
+            'C',
+            st,
+            follow
+          ]);
+        }
+        return out;
+      }
+
+      function renderPeriodic(data) {
+        var chart = echarts.getInstanceByDom(document.getElementById('chart-periodic-trend'));
+        if (chart) {
+          chart.setOption({
+            series: [
+              { data: data.periodic.chart.planDelay },
+              { data: data.periodic.chart.done },
+              { data: data.periodic.chart.delayCum },
+              { data: data.periodic.chart.rate }
+            ]
+          });
+        }
+        var tbody = document.getElementById('periodic-task-body');
+        if (tbody) {
+          tbody.innerHTML = data.periodic.list.length ? data.periodic.list.map(function (row, index) {
+            var taskInfo = row[0] || '';
+            var status = row[3] === '待开始' ? '未开始' : row[3];
+            var taskType = '标准任务';
+            var leadDays = 5;
+            if (/月度|季度|点检|保养|清扫/.test(taskInfo)) {
+              taskType = '定期任务';
+              leadDays = 7;
+            } else if (/定量|更换/.test(taskInfo)) {
+              taskType = '定量任务';
+              leadDays = 3;
+            }
+            var startDate = row[1];
+            if (/^\d{4}-\d{2}-\d{2}$/.test(row[1] || '')) {
+              var start = new Date(row[1] + 'T00:00:00');
+              if (!isNaN(start.getTime())) {
+                start.setDate(start.getDate() - leadDays);
+                startDate = start.getFullYear() + '-' + String(start.getMonth() + 1).padStart(2, '0') + '-' + String(start.getDate()).padStart(2, '0');
+              }
+            }
+            return '<tr><td>' + (index + 1) + '</td><td>' + safeHtml(taskType) + '</td><td>' + safeHtml(taskInfo) + '</td><td>' + safeHtml(row[2]) + '</td><td>' + safeHtml(startDate) + '</td><td><span class="tag ' + getTagClass(status) + '">' + safeHtml(status) + '</span></td></tr>';
+          }).join('') : '<tr><td colspan="6" class="empty-hint">暂无更多未完成任务</td></tr>';
+        }
+      }
+
+      function renderChangePoints(data) {
+        var lineKey = getCurrentLineKey();
+        var rawRows = (data.changePoints && data.changePoints.rows) || [];
+        var rows = padChangePointRowsToTen(rawRows, lineKey);
+        var pending = 0;
+        var confirmed = 0;
+        rows.forEach(function (r) {
+          if (r[6] === '待确认') pending++;
+          else if (r[6] === '已确认') confirmed++;
+        });
+        setText('change-point-total', rows.length);
+        setText('change-point-pending', pending);
+        setText('change-point-confirmed', confirmed);
+        var tbody = document.getElementById('change-point-body');
+        if (!tbody) return;
+        tbody.innerHTML = rows.map(function (row, index) {
+          return '<tr><td>' + (index + 1) + '</td><td>' + safeHtml(row[0]) + '</td><td>' + safeHtml(row[1]) + '</td><td>' + safeHtml(row[2]) + '</td><td>' + safeHtml(row[3]) + '</td><td>' + safeHtml(row[4]) + '</td><td>' + safeHtml(row[5]) + '</td><td><span class="change-defect-badge ' + getBadgeClass(row[6]) + '">' + safeHtml(row[6]) + '</span></td></tr>';
+        }).join('');
+      }
+
+      function renderDefects(data) {
+        var lineKey = getCurrentLineKey();
+        var rawList = (data.defects && data.defects.list) || [];
+        var list = padDefectListToTen(rawList, lineKey);
+        var done = 0;
+        var closed = 0;
+        var processing = 0;
+        list.forEach(function (r) {
+          if (r[5] === '处理中') processing++;
+          else if (r[5] === '处置完成') done++;
+          else if (r[5] === '已关闭') closed++;
+        });
+        setText('defect-found', list.length);
+        setText('defect-done', done);
+        setText('defect-closed', closed);
+        setText('defect-processing', processing);
+        var tbody = document.getElementById('defect-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = list.map(function (row, index) {
+          var urg = '<span class="' + getDefectUrgencyTagClass(row[4]) + '">' + safeHtml(row[4]) + '</span>';
+          var follow = '<div class="equip-fault-followup-tags">' + renderFollowupTags(row[6]) + '</div>';
+          return '<tr><td>' + (index + 1) + '</td><td>' + safeHtml(row[0]) + '</td><td>' + safeHtml(row[1]) + '</td><td>' + safeHtml(row[2]) + '</td><td>' + safeHtml(row[3]) + '</td><td>' + urg + '</td><td><span class="change-defect-badge ' + getBadgeClass(row[5]) + '">' + safeHtml(row[5]) + '</span></td><td>' + follow + '</td></tr>';
+        }).join('');
+      }
+
+      function renderSimpleTable(bodyId, rows) {
+        var tbody = document.getElementById(bodyId);
+        if (!tbody) return;
+        tbody.innerHTML = rows.map(function (row) {
+          return '<tr>' + row.map(function (cell, idx) {
+            if (bodyId === 'personnel-body' && idx === 3) {
+              return '<td><span class="tag ' + getTagClass(cell) + '">' + safeHtml(cell) + '</span></td>';
+            }
+            return '<td>' + safeHtml(cell) + '</td>';
+          }).join('') + '</tr>';
+        }).join('');
+      }
+
+      function renderLineDetail(line) {
+        var data = lineDetailData[line] || lineDetailData['1BP'];
+        renderEquipSummary(data);
+        renderEquipRate(data);
+        renderFailureDistribution(line, data);
+        renderFaultTable(data);
+        renderHeavy(data);
+        renderPeriodic(data);
+        renderChangePoints(data);
+        renderDefects(data);
+        renderSimpleTable('personnel-body', data.personnel);
+        renderSimpleTable('focus-job-body', data.focusJobs);
+      }
+
+      window.__renderLineDetail = renderLineDetail;
+
+      function rerenderCurrentLineDetail() {
+        renderLineDetail(getCurrentLineKey());
+      }
+
+      var rateViewToggle = document.getElementById('equip-shared-view');
+      if (rateViewToggle && !rateViewToggle.__lineDetailBound) {
+        rateViewToggle.__lineDetailBound = true;
+        var rateViewButtons = rateViewToggle.querySelectorAll('.equip-rate-toggle-btn[data-view]');
+        [].forEach.call(rateViewButtons, function (btn) {
+          btn.addEventListener('click', function () {
+            [].forEach.call(rateViewButtons, function (item) {
+              var active = item === btn;
+              item.classList.toggle('is-active', active);
+              item.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+            rerenderCurrentLineDetail();
+          });
+        });
+      }
+
+      var monthSelect = document.getElementById('equip-shared-month');
+      if (monthSelect && !monthSelect.__lineDetailBound) {
+        monthSelect.__lineDetailBound = true;
+        monthSelect.addEventListener('change', rerenderCurrentLineDetail);
+      }
+
+      var heavyTargetModal = document.getElementById('modal-heavy-target');
+      var heavyTargetGrid = document.getElementById('heavy-target-grid');
+      var heavyTargetBtn = document.getElementById('btn-maintain-heavy-target');
+      if (heavyTargetGrid && !heavyTargetGrid.childElementCount) {
+        heavyTargetGrid.innerHTML = months1to12.map(function (month, index) {
+          return '<div class="form-row target-stop-item">' +
+            '<label for="input-heavy-target-' + index + '">' + month + '目标（小时）</label>' +
+            '<input type="number" id="input-heavy-target-' + index + '" data-index="' + index + '" min="0" step="0.1" placeholder="如 0.8">' +
+          '</div>';
+        }).join('');
+      }
+
+      function openHeavyTargetModal() {
+        if (!heavyTargetModal || !heavyTargetGrid) return;
+        var data = getCurrentLineData();
+        var targets = (data && data.heavy && data.heavy.cumulative && data.heavy.cumulative.target) || [];
+        [].forEach.call(heavyTargetGrid.querySelectorAll('input[data-index]'), function (input) {
+          var idx = parseInt(input.getAttribute('data-index'), 10);
+          input.value = targets[idx] != null ? targets[idx] : '';
+        });
+        heavyTargetModal.classList.add('is-open');
+      }
+
+      if (heavyTargetBtn && !heavyTargetBtn.__lineDetailBound) {
+        heavyTargetBtn.__lineDetailBound = true;
+        heavyTargetBtn.addEventListener('click', openHeavyTargetModal);
+      }
+
+      var heavyTargetCancelBtn = document.getElementById('btn-heavy-target-cancel');
+      if (heavyTargetCancelBtn && !heavyTargetCancelBtn.__lineDetailBound) {
+        heavyTargetCancelBtn.__lineDetailBound = true;
+        heavyTargetCancelBtn.addEventListener('click', function () {
+          if (heavyTargetModal) heavyTargetModal.classList.remove('is-open');
+        });
+      }
+
+      var heavyTargetOkBtn = document.getElementById('btn-heavy-target-ok');
+      if (heavyTargetOkBtn && !heavyTargetOkBtn.__lineDetailBound) {
+        heavyTargetOkBtn.__lineDetailBound = true;
+        heavyTargetOkBtn.addEventListener('click', function () {
+          var data = getCurrentLineData();
+          if (!data || !data.heavy || !data.heavy.cumulative || !heavyTargetGrid) return;
+          var nextTarget = data.heavy.cumulative.target.slice();
+          [].forEach.call(heavyTargetGrid.querySelectorAll('input[data-index]'), function (input) {
+            var idx = parseInt(input.getAttribute('data-index'), 10);
+            var value = parseFloat(input.value);
+            if (!isNaN(value) && value >= 0) nextTarget[idx] = +value.toFixed(1);
+          });
+          data.heavy.cumulative.target = nextTarget;
+          rerenderCurrentLineDetail();
+          if (heavyTargetModal) heavyTargetModal.classList.remove('is-open');
+        });
+      }
+
+      if (heavyTargetModal && !heavyTargetModal.__lineDetailBound) {
+        heavyTargetModal.__lineDetailBound = true;
+        heavyTargetModal.addEventListener('click', function (e) {
+          if (e.target === heavyTargetModal) heavyTargetModal.classList.remove('is-open');
+        });
+      }
+    })();
+
+    (function () {
+      var section = document.getElementById('line-section');
+      if (!section) return;
+
+      var tabs = section.querySelectorAll('.line-tab[data-line]');
+      var lineNameEls = section.querySelectorAll('.js-line-name');
+      var tplEls = section.querySelectorAll('[data-tpl]');
+
+      function setLine(line) {
+        section.setAttribute('data-current-line', line);
+        [].forEach.call(tabs, function (btn) {
+          var active = btn.getAttribute('data-line') === line;
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        [].forEach.call(lineNameEls, function (el) { el.textContent = line; });
+        [].forEach.call(tplEls, function (el) {
+          var tpl = el.getAttribute('data-tpl') || '';
+          el.textContent = tpl.replace(/\{line\}/g, line);
+        });
+        if (window.__renderLineDetail) window.__renderLineDetail(line);
+      }
+
+      [].forEach.call(tabs, function (btn) {
+        btn.addEventListener('click', function () {
+          setLine(btn.getAttribute('data-line'));
+        });
+      });
+
+      setLine(section.getAttribute('data-current-line') || '1BP');
+    })();
+
+    (function () {
+      var wrap = document.querySelector('.equip-table-wrap');
+      if (!wrap) return;
+      var scrollTimer;
+      wrap.addEventListener('scroll', function () {
+        wrap.classList.add('is-scrolling');
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () {
+          wrap.classList.remove('is-scrolling');
+        }, 600);
+      });
+    })();
+
+    (function () {
+      var wrap = document.querySelector('.heavy-fault-module--list .heavy-fault-list-wrap');
+      if (!wrap) return;
+      var scrollTimer;
+      wrap.addEventListener('scroll', function () {
+        wrap.classList.add('is-scrolling');
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () {
+          wrap.classList.remove('is-scrolling');
+        }, 600);
+      });
+    })();
+  </script>
+</body>
+</html>
