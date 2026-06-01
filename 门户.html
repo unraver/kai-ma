@@ -1,0 +1,2805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>丰田保全系统 - 首页门户</title>
+    <style>
+        /* ========================================
+           设计规范 - Design System
+           ======================================== */
+        
+        /* 
+        ┌─────────────────────────────────────────┐
+        │  色彩体系 Color System                   │
+        ├─────────────────────────────────────────┤
+        │  主背景色: #F5F7FA (浅灰)                │
+        │  品牌红:   #EB0A1E (丰田红-点缀)         │
+        │  工业蓝:   #2563EB (主操作色)            │
+        │  深灰文本: #111827 (主文本)              │
+        │  次要文本: #6B7280                       │
+        │  辅助文本: #9CA3AF                       │
+        │  边框色:   #E5E7EB                       │
+        ├─────────────────────────────────────────┤
+        │  状态色:                                 │
+        │  - 成功: #10B981 / #D1FAE5              │
+        │  - 警告: #F59E0B / #FEF3C7              │
+        │  - 错误: #DC2626 / #FEE2E2              │
+        │  - 信息: #2563EB / #DBEAFE              │
+        └─────────────────────────────────────────┘
+        
+        ┌─────────────────────────────────────────┐
+        │  字体层级 Typography                     │
+        ├─────────────────────────────────────────┤
+        │  H1: 24px/600 - 页面标题                │
+        │  H2: 18px/600 - 模块标题                │
+        │  H3: 16px/600 - 卡片标题                │
+        │  H4: 14px/600 - 子标题                  │
+        │  H5: 13px/500 - 小标题                  │
+        │  正文: 14px/400 - 内容文本              │
+        │  辅助: 12px/400 - 次要信息              │
+        │  微型: 11px/400 - 标签/时间戳           │
+        └─────────────────────────────────────────┘
+        
+        ┌─────────────────────────────────────────┐
+        │  间距体系 Spacing (8px栅格)              │
+        ├─────────────────────────────────────────┤
+        │  4px  - 紧凑元素间距                    │
+        │  8px  - 基础间距                        │
+        │  12px - 小间距                          │
+        │  16px - 标准间距                        │
+        │  24px - 模块间距                        │
+        │  32px - 区块间距                        │
+        └─────────────────────────────────────────┘
+        
+        ┌─────────────────────────────────────────┐
+        │  圆角规范 Border Radius                  │
+        ├─────────────────────────────────────────┤
+        │  4px  - 按钮、输入框                    │
+        │  8px  - 卡片、下拉框                    │
+        │  12px - 大卡片、弹窗                    │
+        │  50%  - 头像、状态点                    │
+        └─────────────────────────────────────────┘
+        */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 主色板 */
+            --bg-primary: #F5F7FA;
+            --bg-white: #FFFFFF;
+            --brand-red: #EB0A1E;
+            --brand-red-light: #FEE2E2;
+            --primary-blue: #2563EB;
+            --primary-blue-hover: #1D4ED8;
+            --primary-blue-light: #DBEAFE;
+            
+            /* 文本色 */
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            
+            /* 边框与分割 */
+            --border-color: #E5E7EB;
+            --divider: #F3F4F6;
+            
+            /* 状态色 */
+            --success: #10B981;
+            --success-bg: #D1FAE5;
+            --warning: #F59E0B;
+            --warning-bg: #FEF3C7;
+            --error: #DC2626;
+            --error-bg: #FEE2E2;
+            --info: #2563EB;
+            --info-bg: #DBEAFE;
+            
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            
+            /* 间距 */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 24px;
+            --space-6: 32px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* ========================================
+           顶部导航栏 - Global Header
+           信息层级：全局导航
+           ======================================== */
+        .header {
+            height: 56px;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* 全局搜索 - 3秒内可识别并操作 */
+        .global-search {
+            display: flex;
+            align-items: center;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: var(--space-2) var(--space-3);
+            width: 320px;
+            transition: all 0.2s;
+        }
+
+        .global-search:focus-within {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--primary-blue-light);
+        }
+
+        .global-search svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-tertiary);
+            margin-right: var(--space-2);
+            flex-shrink: 0;
+        }
+
+        .global-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .global-search input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .shift-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--info-bg);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-blue);
+        }
+
+        .shift-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .datetime {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+
+        /* 图标按钮 - 统一交互 */
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--border-color);
+        }
+
+        .icon-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-blue-light);
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-secondary);
+        }
+
+        .icon-btn .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--error);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 4px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .user-menu:hover {
+            background: var(--bg-primary);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), #3B82F6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-name {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* ========================================
+           主体布局 - Main Layout
+           信息层级：模块导航 + 内容区
+           ======================================== */
+        .main-container {
+            display: flex;
+            margin-top: 56px;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* 左侧菜单 - 模块导航 */
+        .sidebar {
+            width: 220px;
+            background: var(--bg-white);
+            border-right: 1px solid var(--border-color);
+            padding: var(--space-3) 0;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 50;
+        }
+
+        .menu-section {
+            padding: 0 var(--space-3);
+            margin-bottom: var(--space-3);
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: var(--space-2) var(--space-3);
+            margin-bottom: var(--space-1);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: 10px var(--space-3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .menu-item.active {
+            background: var(--primary-blue-light);
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .menu-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .menu-item .menu-badge {
+            margin-left: auto;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--error);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: var(--space-3) var(--space-4);
+        }
+
+        /* 内容区域 - 左右等高 */
+        .content {
+            flex: 1;
+            margin-left: 220px;
+            padding: var(--space-5);
+            display: flex;
+            gap: var(--space-5);
+            align-items: stretch;
+        }
+
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-5);
+            min-width: 0;
+        }
+
+        /* 左侧最后一个元素自动填充剩余空间 */
+        .main-panel > .stats-grid {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .main-panel > .stats-grid > .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-panel > .stats-grid > .card > .card-body {
+            flex: 1;
+        }
+
+        .right-panel {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           用户信息与任务概览
+           ======================================== */
+        .user-info-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-5);
+            padding: var(--space-4) var(--space-5);
+            background: var(--bg-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .user-profile-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), #3B82F6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-profile-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-profile-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--text-tertiary);
+        }
+
+        .meta-item.shift {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .meta-item.shift svg {
+            color: var(--primary-blue);
+        }
+
+        .meta-divider {
+            color: var(--border-color);
+        }
+
+        .task-summary {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-left: auto;
+            padding: 0 var(--space-4);
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .task-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 70px;
+        }
+
+        .task-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .task-stat-value.pending {
+            color: var(--warning);
+        }
+
+        .task-stat-value.completed {
+            color: var(--success);
+        }
+
+        .task-stat-value.uncompleted {
+            color: var(--error);
+        }
+
+        .task-stat-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .task-stat-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border-color);
+        }
+
+        .task-summary {
+            margin-left: auto;
+            border-right: none;
+        }
+
+        /* 按钮组件 - Button Components */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 主按钮 */
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-blue-hover);
+            border-color: var(--primary-blue-hover);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-blue-light);
+        }
+
+        /* 危险按钮 */
+        .btn-danger {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+
+        /* 次要按钮 */
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--text-tertiary);
+        }
+
+        /* 文本按钮 */
+        .btn-text {
+            background: transparent;
+            color: var(--primary-blue);
+            padding: 8px 12px;
+        }
+
+        .btn-text:hover {
+            background: var(--primary-blue-light);
+        }
+
+        /* 禁用状态 */
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ========================================
+           卡片组件 - Card Component
+           ======================================== */
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-white);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary-blue);
+        }
+
+        .card-title .count {
+            margin-left: 4px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--error);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .card-action {
+            font-size: 12px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-action:hover {
+            text-decoration: underline;
+        }
+
+        .card-body {
+            padding: var(--space-4);
+        }
+
+        .card-body.no-padding {
+            padding: 0;
+        }
+
+        /* ========================================
+           KPI 看板 - KPI Dashboard
+           首屏核心信息，3秒内可识别
+           ======================================== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: var(--space-4);
+        }
+
+        .kpi-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: var(--space-4);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .kpi-card.alert {
+            border-color: var(--error);
+            background: linear-gradient(135deg, var(--bg-white), var(--error-bg));
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: var(--space-3);
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .kpi-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .kpi-icon.blue { background: var(--info-bg); color: var(--primary-blue); }
+        .kpi-icon.green { background: var(--success-bg); color: var(--success); }
+        .kpi-icon.yellow { background: var(--warning-bg); color: var(--warning); }
+        .kpi-icon.red { background: var(--error-bg); color: var(--error); }
+
+        .kpi-trend {
+            font-size: 11px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .kpi-trend.up { color: var(--error); }
+        .kpi-trend.down { color: var(--success); }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .kpi-value.alert { color: var(--error); }
+
+        .kpi-value .unit {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .kpi-sub .highlight {
+            color: var(--error);
+            font-weight: 500;
+        }
+
+        /* ========================================
+           设备状态卡片 - Device Status Card
+           ======================================== */
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+
+        .device-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .device-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-3) var(--space-4);
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .device-name {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .device-name svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-blue);
+        }
+
+        .device-name .count {
+            margin-left: 4px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--error);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 标签组件 - Tag Component */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .tag-success { background: var(--success-bg); color: var(--success); }
+        .tag-warning { background: var(--warning-bg); color: var(--warning); }
+        .tag-error { background: var(--error-bg); color: var(--error); }
+        .tag-info { background: var(--info-bg); color: var(--primary-blue); }
+        .tag-default { background: var(--bg-primary); color: var(--text-secondary); }
+
+        .device-card-body {
+            padding: var(--space-4);
+        }
+
+        .device-params {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-3);
+        }
+
+        .param-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .param-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .param-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .param-value.warning { color: var(--warning); }
+        .param-value.danger { color: var(--error); }
+
+        .device-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-3) var(--space-4);
+            background: #FAFAFA;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* 保养到期列表 */
+        .pm-due-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .pm-due-item {
+            display: grid;
+            grid-template-columns: minmax(150px, 1.2fr) minmax(92px, 0.9fr) minmax(68px, 0.7fr) minmax(78px, 0.8fr) 64px;
+            align-items: center;
+            column-gap: var(--space-2);
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .pm-due-item:last-child {
+            border-bottom: none;
+        }
+
+        .pm-device {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 500;
+            min-width: 0;
+        }
+
+        .pm-location {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            padding: 2px 8px;
+            background: #F9FAFB;
+            border: 1px solid var(--divider);
+            border-radius: 999px;
+            white-space: nowrap;
+            justify-self: start;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pm-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            justify-self: start;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pm-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--divider);
+            background: #F9FAFB;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            justify-self: start;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pm-status.warning {
+            background: var(--warning-bg);
+            border-color: #FDE68A;
+            color: #92400E;
+        }
+
+        .pm-status.success {
+            background: var(--success-bg);
+            border-color: #A7F3D0;
+            color: #065F46;
+        }
+
+        .pm-status.muted {
+            background: var(--bg-primary);
+            border-color: var(--divider);
+            color: var(--text-secondary);
+        }
+
+        .pm-time {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-align: right;
+            white-space: nowrap;
+            justify-self: end;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 任务处理进度统计 */
+        .task-progress-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: var(--space-4);
+        }
+
+        .progress-stat-item {
+            text-align: center;
+        }
+
+        .progress-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .progress-stat-value.pending { color: var(--warning); }
+        .progress-stat-value.processing { color: var(--primary-blue); }
+        .progress-stat-value.completed { color: var(--success); }
+        .progress-stat-value.error { color: var(--error); }
+
+        .progress-stat-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        .task-progress-bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--border-color);
+            margin-bottom: var(--space-3);
+        }
+
+        .progress-segment {
+            height: 100%;
+        }
+
+        .progress-segment.completed { background: var(--success); }
+        .progress-segment.processing { background: var(--primary-blue); }
+        .progress-segment.pending { background: var(--warning); }
+        .progress-segment.error { background: var(--error); }
+
+        .task-progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 任务类型分布（TTSC：task_pool.task_type） */
+        .task-type-panel {
+            margin-top: var(--space-4);
+            padding-top: var(--space-3);
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--space-4);
+        }
+
+        .task-type-title {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .task-type-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        .type-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1;
+        }
+
+        .type-chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .type-chip .count {
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 16px;
+            text-align: right;
+        }
+
+        .type-chip.temp .dot { background: var(--warning); }
+        .type-chip.outsourced .dot { background: #8B5CF6; }
+        .type-chip.maintenance .dot { background: var(--success); }
+        .type-chip.longstop .dot { background: var(--error); }
+        .type-chip.expansion .dot { background: var(--text-tertiary); }
+
+        /* 任务类型分布卡片（替换任务处理进度） */
+        .task-type-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            height: 100%;
+        }
+
+        .task-type-top {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: var(--space-4);
+            flex: 1;
+        }
+
+        .task-type-total {
+            width: 108px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: var(--space-3);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .task-type-total .label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .task-type-total .value {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 2px;
+            color: var(--text-primary);
+        }
+
+        .task-type-total .sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        .task-type-bars {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: var(--space-3);
+            min-width: 0;
+        }
+
+        .type-bar-row {
+            display: grid;
+            grid-template-columns: 64px 1fr 36px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .type-bar-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .type-bar-track {
+            height: 12px;
+            background: var(--divider);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .type-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+        }
+
+        .type-bar-fill.maintenance { background: linear-gradient(90deg, var(--success), #34D399); }
+        .type-bar-fill.temp { background: linear-gradient(90deg, var(--warning), #FBBF24); }
+        .type-bar-fill.outsourced { background: linear-gradient(90deg, #8B5CF6, #A78BFA); }
+        .type-bar-fill.longstop { background: linear-gradient(90deg, var(--error), #F87171); }
+        .type-bar-fill.expansion { background: linear-gradient(90deg, #6B7280, #9CA3AF); }
+
+        .type-bar-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* 紧凑常用功能布局 */
+        .quick-functions-compact {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-2);
+        }
+
+        .quick-functions-compact .quick-func {
+            padding: var(--space-3) var(--space-2);
+        }
+
+        .quick-functions-compact .quick-func-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+        }
+
+        .quick-functions-compact .quick-func-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========================================
+           待办事项列表 - Todo List
+           ======================================== */
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-item:hover {
+            background: #FAFAFA;
+        }
+
+        .todo-item.urgent {
+            background: linear-gradient(90deg, var(--error-bg), transparent);
+        }
+
+        .todo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .todo-icon.alarm { background: var(--error-bg); color: var(--error); }
+        .todo-icon.work-order { background: var(--info-bg); color: var(--primary-blue); }
+        .todo-icon.inspection { background: var(--success-bg); color: var(--success); }
+        .todo-icon.approval { background: #EDE9FE; color: #8B5CF6; }
+
+        .todo-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .todo-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .todo-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .todo-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .todo-time.urgent {
+            color: var(--error);
+            font-weight: 500;
+        }
+
+        /* ========================================
+           告警列表 - Alert List
+           ======================================== */
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item:hover {
+            background: #FAFAFA;
+        }
+
+        .alert-level-bar {
+            width: 4px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .alert-level-bar.critical { background: var(--error); }
+        .alert-level-bar.high { background: var(--warning); }
+        .alert-level-bar.medium { background: var(--primary-blue); }
+        .alert-level-bar.low { background: var(--success); }
+
+        .alert-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .alert-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .alert-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .alert-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+
+        .alert-btn {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+        }
+
+        .alert-btn:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .alert-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .alert-btn.primary:hover {
+            background: var(--primary-blue-hover);
+        }
+
+        /* ========================================
+           常用功能 - Quick Functions
+           ======================================== */
+        .quick-functions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-3);
+        }
+
+        .quick-func {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-4) var(--space-3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .quick-func:hover {
+            background: var(--bg-primary);
+            border-color: var(--border-color);
+        }
+
+        .quick-func-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-func-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .quick-func-name {
+            font-size: 12px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* ========================================
+           统计图表区域 - Statistics
+           ======================================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+
+        .chart-container {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FAFAFA;
+            border-radius: 8px;
+        }
+
+        /* 今日故障处置看板 */
+        .fault-today-dashboard {
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background: #FAFAFA;
+            border-radius: 8px;
+            border: 1px solid var(--divider);
+        }
+
+        .fault-today-top {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: var(--space-4);
+            flex: 1;
+        }
+
+        .fault-today-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            flex: 1;
+        }
+
+        .fault-kpi {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            height: 100%;
+        }
+
+        .fault-kpi-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .fault-kpi-label .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .fault-kpi-value {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .fault-kpi-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fault-kpi.save .fault-kpi-label .dot { background: var(--warning); }
+        .fault-kpi.done .fault-kpi-label .dot { background: var(--success); }
+        .fault-kpi.closed .fault-kpi-label .dot { background: var(--text-tertiary); }
+
+        .fault-today-summary {
+            width: 108px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+            height: 100%;
+        }
+
+        .fault-severity {
+            margin-top: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .fault-severity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .fault-severity-item .left {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .fault-severity-item .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .fault-severity-item.heavy .dot { background: var(--error); }
+        .fault-severity-item.light .dot { background: var(--warning); }
+
+        .fault-severity-item .count {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .fault-today-summary .value {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-primary);
+        }
+
+        .fault-today-summary .label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .fault-today-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3);
+        }
+
+        .fault-mini-metric {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: var(--space-3);
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: var(--space-3);
+            min-width: 0;
+        }
+
+        .fault-mini-metric .name {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .fault-mini-metric .num {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .fault-mini-metric .num strong {
+            font-size: 18px;
+        }
+
+        /* 模拟柱状图 */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 140px;
+            width: 100%;
+            padding: var(--space-4);
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bar {
+            width: 28px;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, var(--primary-blue), #60A5FA);
+            transition: height 0.3s;
+        }
+
+        .bar.highlight {
+            background: linear-gradient(180deg, var(--error), #F87171);
+        }
+
+        .bar-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* 工单统计 */
+        .work-order-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: var(--space-4);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .stat-value.pending { color: var(--warning); }
+        .stat-value.processing { color: var(--primary-blue); }
+        .stat-value.completed { color: var(--success); }
+        .stat-value.error { color: var(--error); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ========================================
+           审批列表 - Approval List
+           ======================================== */
+        .approval-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .approval-item:last-child {
+            border-bottom: none;
+        }
+
+        .approval-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .approval-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .approval-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .approval-title {
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .approval-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .approval-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+        }
+
+        .approval-btn.approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .approval-btn.approve:hover {
+            background: #059669;
+        }
+
+        .approval-btn.reject {
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .approval-btn.reject:hover {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* ========================================
+           备件库存预警 - Spare Parts Warning
+           ======================================== */
+        .spare-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: 10px var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spare-item:last-child {
+            border-bottom: none;
+        }
+
+        .spare-name {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.low { background: var(--error); }
+        .progress-fill.warning { background: var(--warning); }
+        .progress-fill.normal { background: var(--success); }
+
+        .spare-stock {
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .spare-stock.low { color: var(--error); }
+        .spare-stock.warning { color: var(--warning); }
+
+        /* ========================================
+           停机排行 - Downtime Ranking
+           ======================================== */
+        .downtime-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: 10px var(--space-4);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .downtime-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .rank-badge.top1 { background: var(--error); color: white; }
+        .rank-badge.top2 { background: var(--warning); color: white; }
+        .rank-badge.top3 { background: var(--primary-blue); color: white; }
+        .rank-badge.other { background: var(--border-color); color: var(--text-secondary); }
+
+        .downtime-device {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .downtime-duration {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--error);
+        }
+
+        /* ========================================
+           底部状态栏 - Footer
+           ======================================== */
+        .footer {
+            padding: 10px var(--space-5);
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-left: 220px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .update-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .update-time svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ========================================
+           筛选器 - Filter Bar
+           ======================================== */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .filter-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        .filter-chip svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ========================================
+           响应式适配
+           ======================================== */
+        @media (max-width: 1600px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .right-panel {
+                width: 340px;
+            }
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .device-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-6);
+            color: var(--text-tertiary);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: var(--space-3);
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ========================================
+         顶部导航栏
+         ======================================== -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <ellipse cx="24" cy="24" rx="22" ry="14" stroke="#EB0A1E" stroke-width="2.5" fill="none"/>
+                        <ellipse cx="24" cy="24" rx="10" ry="18" stroke="#EB0A1E" stroke-width="2.5" fill="none"/>
+                        <line x1="2" y1="24" x2="46" y2="24" stroke="#EB0A1E" stroke-width="2.5"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title">丰田保全系统</span>
+                    <span class="logo-subtitle">设备维保管理平台</span>
+                </div>
+            </div>
+            <div class="global-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" placeholder="搜索设备编号、工单号、故障代码..." aria-label="全局搜索">
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="shift-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>早班</span>
+            </div>
+            <div class="datetime" id="datetime">2026年4月8日 星期三 09:30:00</div>
+            <div class="header-actions">
+                <button class="icon-btn" title="消息中心" aria-label="消息中心">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="badge">5</span>
+                </button>
+                <button class="icon-btn" title="系统设置" aria-label="系统设置">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">张</div>
+                <div>
+                    <div class="user-name">张工</div>
+                    <div class="user-role">设备保全员</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- ========================================
+             左侧菜单 - 模块导航
+             ======================================== -->
+        <aside class="sidebar">
+            <div class="menu-section">
+                <div class="menu-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9,22 9,12 15,12 15,22"/>
+                    </svg>
+                    <span>维保总览</span>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">设备管理</div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="8" rx="2"/>
+                        <rect x="2" y="14" width="20" height="8" rx="2"/>
+                        <line x1="6" y1="6" x2="6.01" y2="6"/>
+                        <line x1="6" y1="18" x2="6.01" y2="18"/>
+                    </svg>
+                    <span>设备台账</span>
+                </div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                    <span>PM项目管理</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">计划管理</div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span>年度计划</span>
+                </div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span>点检表管理</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">异常处理</div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <span>故障管理</span>
+                    <span class="menu-badge">8</span>
+                </div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span>不具合管理</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">任务中心</div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                        <rect x="8" y="2" width="8" height="4" rx="1"/>
+                        <path d="M9 14l2 2 4-4"/>
+                    </svg>
+                    <span>待办事项池</span>
+                    <span class="menu-badge">12</span>
+                </div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span>交接班工单</span>
+                </div>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <div class="menu-section">
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/>
+                        <line x1="12" y1="20" x2="12" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <span>报表中心</span>
+                </div>
+                <div class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span>系统设置</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========================================
+             主内容区域
+             ======================================== -->
+        <main class="content">
+            <div class="main-panel">
+                <!-- 用户信息与任务概览 -->
+                <div class="user-info-bar">
+                    <div class="user-profile">
+                        <div class="user-profile-avatar">张</div>
+                        <div class="user-profile-info">
+                            <div class="user-profile-name">张工</div>
+                            <div class="user-profile-meta">
+                                <span class="meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                    保全一组
+                                </span>
+                                <span class="meta-divider">|</span>
+                                <span class="meta-item shift">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M12 6v6l4 2"/>
+                                    </svg>
+                                    早班 08:00-17:00
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-summary">
+                        <div class="task-stat">
+                            <div class="task-stat-value pending">12</div>
+                            <div class="task-stat-label">待办任务</div>
+                        </div>
+                        <div class="task-stat-divider"></div>
+                        <div class="task-stat">
+                            <div class="task-stat-value completed">8</div>
+                            <div class="task-stat-label">今日已完成</div>
+                        </div>
+                        <div class="task-stat-divider"></div>
+                        <div class="task-stat">
+                            <div class="task-stat-value uncompleted">4</div>
+                            <div class="task-stat-label">未完成任务</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 设备保全概况 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="8" rx="2"/>
+                                <rect x="2" y="14" width="20" height="8" rx="2"/>
+                            </svg>
+                            设备保全概况
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="device-grid">
+                            <!-- 今日代办任务 -->
+                            <div class="device-card">
+                                <div class="device-card-header">
+                                    <div class="device-name">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 11l3 3L22 4"/>
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                        </svg>
+                                        今日代办任务
+                                        <span class="count">3</span>
+                                    </div>
+                                    <span class="card-action">全部 →</span>
+                                </div>
+                                <div class="device-card-body">
+                                    <div class="todo-list" style="margin: -8px -16px;">
+                                        <div class="todo-item">
+                                            <div class="todo-icon inspection">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M9 11l3 3L22 4"/>
+                                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                                </svg>
+                                            </div>
+                                            <div class="todo-content">
+                                                <div class="todo-title">
+                                                    A线日常点检（搪塑机#RM-001~005）
+                                                    <span class="tag tag-info" style="padding: 2px 8px; font-size: 11px;">点检</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="todo-item">
+                                            <div class="todo-icon work-order">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                                                </svg>
+                                            </div>
+                                            <div class="todo-content">
+                                                <div class="todo-title">
+                                                    火焰机#FL-002 月度定期保全
+                                                    <span class="tag tag-success" style="padding: 2px 8px; font-size: 11px;">定期保全</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="todo-item">
+                                            <div class="todo-icon approval">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                                    <circle cx="9" cy="7" r="4"/>
+                                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                                </svg>
+                                            </div>
+                                            <div class="todo-content">
+                                                <div class="todo-title">
+                                                    早班→夜班交接确认
+                                                    <span class="tag tag-default" style="padding: 2px 8px; font-size: 11px;">交接班</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 待办审批（左栏 device-card 布局） -->
+                            <div class="device-card">
+                                <div class="device-card-header">
+                                    <div class="device-name">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                            <circle cx="8.5" cy="7" r="4"/>
+                                            <polyline points="17,11 19,13 23,9"/>
+                                        </svg>
+                                        待办审批
+                                        <span class="count">2</span>
+                                    </div>
+                                    <span class="card-action">全部 →</span>
+                                </div>
+                                <div class="device-card-body">
+                                    <div class="pm-due-list">
+                                        <div class="pm-due-item">
+                                            <span class="pm-device">点检结果审批 - A线日常点检</span>
+                                            <span class="pm-location">搪塑机#RM-001~005</span>
+                                            <span class="pm-type">32项OK/2项NG</span>
+                                            <span class="pm-status warning">待审批</span>
+                                            <span class="pm-time">08:45</span>
+                                        </div>
+                                        <div class="pm-due-item">
+                                            <span class="pm-device">故障关闭确认 - 火焰机#FL-002</span>
+                                            <span class="pm-location">故障码E-0815喷嘴堵塞</span>
+                                            <span class="pm-type">已更换喷嘴并试运行OK</span>
+                                            <span class="pm-status warning">待审批</span>
+                                            <span class="pm-time">09:20</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 常用功能 + 故障趋势 放在一行 -->
+                <div class="stats-grid">
+                    <!-- 常用功能 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/>
+                                    <rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="14" y="14" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/>
+                                </svg>
+                                常用功能
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-functions-compact">
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: var(--error-bg); color: var(--error);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">设备台账</span>
+                                </div>
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: var(--info-bg); color: var(--primary-blue);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <line x1="12" y1="18" x2="12" y2="12"/>
+                                            <line x1="9" y1="15" x2="15" y2="15"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">PM项目管理</span>
+                                </div>
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: var(--success-bg); color: var(--success);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 11l3 3L22 4"/>
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">年度计划管理</span>
+                                </div>
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: var(--warning-bg); color: var(--warning);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">故障管理</span>
+                                </div>
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: #EDE9FE; color: #8B5CF6;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">待办事项池管理</span>
+                                </div>
+                                <div class="quick-func">
+                                    <div class="quick-func-icon" style="background: #DBEAFE; color: #1E40AF;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8"/>
+                                            <path d="M21 21l-4.35-4.35"/>
+                                        </svg>
+                                    </div>
+                                    <span class="quick-func-name">交接班工单管理</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 今日故障处置看板 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 3v10"/>
+                                    <path d="M12 13l3 3"/>
+                                    <path d="M21 12a9 9 0 1 1-9-9"/>
+                                </svg>
+                                今日故障处置看板
+                            </div>
+                            <div class="card-actions">
+                                <span class="card-action">全部 →</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="fault-today-dashboard">
+                                <div class="fault-today-top">
+                                    <div class="fault-today-kpis">
+                                        <div class="fault-kpi save">
+                                            <div class="fault-kpi-label"><span class="dot"></span>一时保存</div>
+                                            <div class="fault-kpi-value">2</div>
+                                            <div class="fault-kpi-sub">占比 25%</div>
+                                        </div>
+                                        <div class="fault-kpi done">
+                                            <div class="fault-kpi-label"><span class="dot"></span>处置完成</div>
+                                            <div class="fault-kpi-value">5</div>
+                                            <div class="fault-kpi-sub">占比 62.5%</div>
+                                        </div>
+                                        <div class="fault-kpi closed">
+                                            <div class="fault-kpi-label"><span class="dot"></span>关闭</div>
+                                            <div class="fault-kpi-value">1</div>
+                                            <div class="fault-kpi-sub">占比 12.5%</div>
+                                        </div>
+                                    </div>
+                                    <div class="fault-today-summary">
+                                        <div class="label">今日总故障</div>
+                                        <div class="value">8</div>
+                                        <div class="label">起</div>
+                                        <div class="fault-severity" aria-label="故障类型分布">
+                                            <div class="fault-severity-item heavy">
+                                                <span class="left"><span class="dot"></span>重故障</span>
+                                                <span class="count">3</span>
+                                            </div>
+                                            <div class="fault-severity-item light">
+                                                <span class="left"><span class="dot"></span>轻故障</span>
+                                                <span class="count">5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fault-today-bottom">
+                                    <div class="fault-mini-metric">
+                                        <span class="name">累计停机</span>
+                                        <span class="num"><strong style="color: var(--error);">165</strong> min</span>
+                                    </div>
+                                    <div class="fault-mini-metric">
+                                        <span class="name">平均停机时长</span>
+                                        <span class="num"><strong style="color: var(--primary-blue);">21</strong> min</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================
+                 右侧告警/待办区域
+                 ======================================== -->
+            <div class="right-panel">
+                <!-- 告警管理 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            告警管理
+                        </div>
+                        <span class="card-action">全部 →</span>
+                    </div>
+                    <div class="card-body no-padding">
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <div class="alert-level-bar critical"></div>
+                                <div class="alert-content">
+                                    <div class="alert-header">
+                                        <div class="alert-title">搪塑机#RM-003 温度异常</div>
+                                        <div class="alert-time">09:12</div>
+                                    </div>
+                                    <div class="alert-desc">告警代码 E-1024｜加热区3号温控器超限</div>
+                                    <div class="alert-meta">
+                                        <span>位置：仪表盘</span>
+                                        <span>状态：告警</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-level-bar high"></div>
+                                <div class="alert-content">
+                                    <div class="alert-header">
+                                        <div class="alert-title">火焰机#FL-002 压力不足</div>
+                                        <div class="alert-time">08:47</div>
+                                    </div>
+                                    <div class="alert-desc">告警代码 P-0301｜燃气压力低于下限</div>
+                                    <div class="alert-meta">
+                                        <span>位置：辅助装置（2BP）</span>
+                                        <span>状态：告警</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-level-bar medium"></div>
+                                <div class="alert-content">
+                                    <div class="alert-header">
+                                        <div class="alert-title">搪塑机#RM-007 振动偏高</div>
+                                        <div class="alert-time">08:15</div>
+                                    </div>
+                                    <div class="alert-desc">告警代码 V-0110｜主轴振动超限（预警）</div>
+                                    <div class="alert-meta">
+                                        <span>位置：注塑</span>
+                                        <span>状态：告警</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近故障记录（右栏 card 布局） -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            最近故障记录
+                        </div>
+                        <span class="card-action">全部 →</span>
+                    </div>
+                    <div class="card-body no-padding">
+                        <div class="approval-item">
+                            <div class="approval-icon" style="background: var(--warning-bg); color: var(--warning);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                    <line x1="12" y1="9" x2="12" y2="13"/>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                            </div>
+                            <div class="approval-content">
+                                <div class="approval-title">搪塑机 #RM-003 磨损</div>
+                                <div class="approval-meta">仪表盘 | 一时保存 | 09:12</div>
+                            </div>
+                        </div>
+                        <div class="approval-item">
+                            <div class="approval-icon" style="background: var(--error-bg); color: var(--error);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </div>
+                            <div class="approval-content">
+                                <div class="approval-title">火焰机 #FL-002 劣化</div>
+                                <div class="approval-meta">辅助装置（2BP） | 关闭 | 08:47</div>
+                            </div>
+                        </div>
+                        <div class="approval-item">
+                            <div class="approval-icon" style="background: var(--success-bg); color: var(--success);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 11l3 3L22 4"/>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                </svg>
+                            </div>
+                            <div class="approval-content">
+                                <div class="approval-title">搪塑机 #RM-007 人为</div>
+                                <div class="approval-meta">注塑 | 处置完成 | 08:15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 停机排行 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            停机时长TOP5
+                        </div>
+                    </div>
+                    <div class="card-body no-padding">
+                        <div class="downtime-item">
+                            <div class="rank-badge top1">1</div>
+                            <span class="downtime-device">搪塑机 #RM-003</span>
+                            <span class="downtime-duration">4.5h</span>
+                        </div>
+                        <div class="downtime-item">
+                            <div class="rank-badge top2">2</div>
+                            <span class="downtime-device">火焰机 #FL-002</span>
+                            <span class="downtime-duration">2.8h</span>
+                        </div>
+                        <div class="downtime-item">
+                            <div class="rank-badge top3">3</div>
+                            <span class="downtime-device">搪塑机 #RM-001</span>
+                            <span class="downtime-duration">1.5h</span>
+                        </div>
+                        <div class="downtime-item">
+                            <div class="rank-badge other">4</div>
+                            <span class="downtime-device">火焰机 #FL-005</span>
+                            <span class="downtime-duration">1.2h</span>
+                        </div>
+                        <div class="downtime-item">
+                            <div class="rank-badge other">5</div>
+                            <span class="downtime-device">搪塑机 #RM-007</span>
+                            <span class="downtime-duration">0.8h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <footer class="footer">
+        <div class="footer-left">
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>系统运行正常</span>
+            </div>
+            <span>|</span>
+            <div class="update-time">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23,4 23,10 17,10"/>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+                <span>数据每30秒自动刷新 | 最后更新：<span id="updateTime">2026-04-08 09:30:00</span></span>
+            </div>
+            <span>|</span>
+            <span>版本：V2.5.0</span>
+        </div>
+        <div>© 2026 丰田保全系统 版权所有</div>
+    </footer>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekDay = weekDays[now.getDay()];
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('datetime').textContent = 
+                `${year}年${month}月${day}日 ${weekDay} ${hours}:${minutes}:${seconds}`;
+            
+            document.getElementById('updateTime').textContent = 
+                `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+    </script>
+</body>
+</html>
